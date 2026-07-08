@@ -1,0 +1,155 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Profil RÉEL (reconstruit du code)</title>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<style>
+:root{--mint:#33A089;--mintDeep:#0B7A62;--mint2:#54D6A6;--ink:#16201c;--sub:#7d8c87;--line:#e6eae8;--bg:#fff}
+*{box-sizing:border-box;font-family:-apple-system,Segoe UI,Roboto,sans-serif}
+body{margin:0;background:#10120f;display:flex;gap:24px;padding:26px;flex-wrap:wrap;justify-content:center}
+.col{display:flex;flex-direction:column;gap:8px;align-items:center}
+.cap{color:#cfe;font-size:13px;font-weight:700;max-width:300px;text-align:center}
+.rect{color:#ffcaca;font-size:11px;max-width:300px;text-align:center;line-height:1.4}
+.phone{width:300px;height:620px;border-radius:26px;overflow:hidden;border:1px solid #2a2a2a;background:var(--bg);position:relative;display:flex;flex-direction:column}
+.cover{height:118px;background:linear-gradient(160deg,#caa6b8,#d9b8c6);position:relative;flex:0 0 118px}
+.gear{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:17px;background:#0006;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px}
+.back{position:absolute;top:12px;left:12px;width:34px;height:34px;border-radius:17px;background:#0006;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px}
+.av{width:78px;height:78px;border-radius:39px;border:3px solid #fff;background:#b9a;position:absolute;left:16px;top:-40px}
+.meta{padding:46px 16px 0;position:relative}
+.nm{font-size:19px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:5px}
+.vb{color:#3B82F6;font-size:16px}
+.subm{font-size:13px;color:var(--sub);margin-top:2px}
+/* STATS — reproduit le vrai style cramped-left gap:22 */
+.stats{display:flex;flex-direction:row;gap:22px;padding:14px 16px 4px}
+.stat{display:flex;flex-direction:row;align-items:baseline;gap:5px}
+.sv{font-size:15px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.sl{font-size:13px;color:var(--sub)}
+.groups{display:flex;gap:8px;padding:6px 16px 0}
+.grp{font-size:13px;font-weight:700;color:var(--mintDeep);background:#33a08915;border:1px solid #33a08930;border-radius:999px;padding:4px 12px;display:flex;align-items:center;gap:5px}
+.grp.off{color:var(--sub);background:transparent;border-color:var(--line)}
+.tabs{display:flex;gap:18px;padding:10px 16px 8px;border-bottom:1px solid var(--line)}
+.tab{font-size:13px;color:var(--sub);padding-bottom:6px}
+.tab.on{color:var(--ink);font-weight:700;border-bottom:2px solid var(--mintDeep)}
+.body{flex:1;overflow:hidden;padding:10px 16px;background:#fafbfb}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px}
+.cell{aspect-ratio:1;border-radius:7px}
+.bnav{height:52px;border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center;color:var(--sub);font-size:20px}
+.bnav .on{color:var(--mintDeep)}
+/* panes */
+.card{border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px;background:#fff}
+.badge{font-size:10px;font-weight:800;color:var(--mintDeep);background:#33a08915;border-radius:999px;padding:3px 9px;display:inline-block;letter-spacing:.4px}
+.row3{display:flex;gap:8px;margin:10px 0}
+.tile{flex:1;border:1px solid var(--line);border-radius:12px;padding:8px;text-align:center}
+.tile b{font-size:15px;color:var(--ink)} .tile span{font-size:10px;color:var(--sub)}
+.cta{height:44px;border-radius:12px;border:1.5px solid var(--mint);color:var(--mintDeep);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;margin-top:8px}
+.cta.fill{background:linear-gradient(90deg,#36B596,#2999A6);color:#fff;border:0}
+.lock{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 30px;gap:8px}
+.lockchip{width:60px;height:60px;border-radius:30px;background:#33a08915;display:flex;align-items:center;justify-content:center;color:var(--mintDeep);font-size:28px}
+.lt{font-size:18px;font-weight:800;color:var(--ink)} .lst{font-size:13px;color:var(--sub)}
+.stub{font-size:9px;color:#c00;background:#fee;border-radius:4px;padding:1px 5px;position:absolute;right:8px}
+h3{color:#fff;font-size:14px;margin:6px 0 0;width:100%;max-width:300px}
+.muted{font-size:12px;color:var(--sub);text-align:center;padding:20px}
+</style></head><body>
+
+<!-- 1. OWNER CREATOR — Lifestyle -->
+<div class="col">
+  <div class="cap">1 · Owner créateur — onglet Lifestyle</div>
+  <div class="phone">
+    <div class="cover"><div class="gear"><ion-icon name="settings-outline"></ion-icon></div><div class="av"></div></div>
+    <div class="meta"><div class="nm">Alena V. <ion-icon class="vb" name="checkmark-circle"></ion-icon></div><div class="subm">Digital Creator · Outdoor Enthusiast</div></div>
+    <div class="stats"><div class="stat"><span class="sv">10K</span><span class="sl">Fans</span></div><div class="stat"><span class="sv">412</span><span class="sl">Posts</span></div><div class="stat"><span class="sv">89</span><span class="sl">Peaks</span></div></div>
+    <div class="groups"><span class="grp"><ion-icon name="leaf-outline"></ion-icon>Lifestyle</span><span class="grp off"><ion-icon name="sparkles-outline"></ion-icon>Channel</span></div>
+    <div class="tabs"><span class="tab on">Posts</span><span class="tab">Peaks</span><span class="tab">Activités</span><span class="tab">Enregistrés</span></div>
+    <div class="body"><div class="grid"><div class="cell" style="background:#9aa89a"></div><div class="cell" style="background:#d9b3a3"></div><div class="cell" style="background:#2b2f3a"></div><div class="cell" style="background:#b9c2bb"></div><div class="cell" style="background:#c8a99a"></div><div class="cell" style="background:#8f9a93"></div></div></div>
+    <div class="bnav"><ion-icon name="home-outline"></ion-icon><ion-icon name="flash-outline"></ion-icon><ion-icon name="add-circle-outline"></ion-icon><ion-icon name="chatbubble-outline"></ion-icon><ion-icon class="on" name="person"></ion-icon></div>
+  </div>
+  <div class="rect">⚠️ Compteurs tassés à gauche (gap:22, sans distribution) = le « mal ajusté ». Édition via engrenage→Settings ✅</div>
+</div>
+
+<!-- 2. OWNER CREATOR — Channel (STUB) -->
+<div class="col">
+  <div class="cap">2 · Owner créateur — onglet Channel</div>
+  <div class="phone">
+    <div class="cover"><div class="gear"><ion-icon name="settings-outline"></ion-icon></div><div class="av"></div></div>
+    <div class="meta"><div class="nm">Alena V. <ion-icon class="vb" name="checkmark-circle"></ion-icon></div></div>
+    <div class="groups" style="padding-top:10px"><span class="grp off"><ion-icon name="leaf-outline"></ion-icon>Lifestyle</span><span class="grp"><ion-icon name="sparkles-outline"></ion-icon>Channel</span></div>
+    <div class="tabs"><span class="tab on">Channel</span><span class="tab">1:1</span><span class="tab">Packs</span></div>
+    <div class="body">
+      <div class="card" style="position:relative"><span class="stub">STUB</span><span class="badge">TA CHAÎNE · LIVE</span>
+        <div style="font-weight:800;margin-top:8px">Sara's Channel</div>
+        <div style="font-size:12px;color:var(--sub)">9,99 €/mois · publié il y a 12 jours</div>
+        <div class="row3"><div class="tile"><b>48</b><br><span>Abonnés</span></div><div class="tile"><b>412 €</b><br><span>Revenus</span></div><div class="tile"><b>+12%</b><br><span>vs mois</span></div></div>
+        <div style="font-size:11px;font-weight:700;color:var(--sub)">CE QUE VOIENT TES FANS</div>
+        <div class="cta">Gérer ma chaîne</div>
+      </div>
+    </div>
+    <div class="bnav"><ion-icon name="home-outline"></ion-icon><ion-icon name="flash-outline"></ion-icon><ion-icon name="add-circle-outline"></ion-icon><ion-icon name="chatbubble-outline"></ion-icon><ion-icon class="on" name="person"></ion-icon></div>
+  </div>
+  <div class="rect">🔴 Données factices (« Sara's Channel », 48/412€/+12% codés en dur). À brancher KAN-2400.</div>
+</div>
+
+<!-- 3. OWNER CREATOR — 1:1 (STUB) -->
+<div class="col">
+  <div class="cap">3 · Owner créateur — onglet 1:1</div>
+  <div class="phone">
+    <div class="cover"><div class="gear"><ion-icon name="settings-outline"></ion-icon></div><div class="av"></div></div>
+    <div class="meta"><div class="nm">Alena V.</div></div>
+    <div class="tabs" style="margin-top:8px"><span class="tab">Channel</span><span class="tab on">1:1</span><span class="tab">Packs</span></div>
+    <div class="body">
+      <div class="card" style="position:relative"><span class="stub">STUB</span>
+        <div style="font-weight:800">Sessions 1:1 · actives</div>
+        <div style="font-size:12px;color:var(--sub)">Vidéo Agora · 4 durées proposées</div>
+        <div class="row3"><div class="tile"><b>11</b><br><span>Résa</span></div><div class="tile"><b>$328</b><br><span>Revenus</span></div><div class="tile"><b>4.9★</b><br><span>Note</span></div></div>
+        <div style="font-size:11px;font-weight:700;color:var(--sub)">2 DEMANDES EN ATTENTE</div>
+        <div class="card" style="margin-top:6px;font-size:12px">Marc D. · 30 min <div class="row3" style="margin:6px 0"><div class="cta fill" style="height:32px">Confirmer</div><div class="cta" style="height:32px">Décliner</div></div></div>
+        <div class="cta">Voir toutes les réservations</div>
+      </div>
+    </div>
+    <div class="bnav"><ion-icon name="home-outline"></ion-icon><ion-icon name="flash-outline"></ion-icon><ion-icon name="add-circle-outline"></ion-icon><ion-icon name="chatbubble-outline"></ion-icon><ion-icon class="on" name="person"></ion-icon></div>
+  </div>
+  <div class="rect">🔴 Fake Marc D./Sofia L., 11/$328/4.9★. Vue VISITEUR (réserver) pas surfacée. Champ objectif à ajouter.</div>
+</div>
+
+<!-- 4. OWNER BUSINESS -->
+<div class="col">
+  <div class="cap">4 · Owner business — Services/Réservation</div>
+  <div class="phone">
+    <div class="cover"><div class="gear"><ion-icon name="settings-outline"></ion-icon></div><div class="av" style="border-radius:14px"></div></div>
+    <div class="meta"><div class="nm">Vibe Fitness Studio</div><div class="subm">Salle de sport</div></div>
+    <div class="stats"><div class="stat"><span class="sv">1,2K</span><span class="sl">Fans</span></div><div class="stat"><span class="sv">86</span><span class="sl">Posts</span></div><div class="stat"><span class="sv">0</span><span class="sl">Peaks</span></div></div>
+    <div class="groups"><span class="grp off"><ion-icon name="leaf-outline"></ion-icon>Lifestyle</span><span class="grp"><ion-icon name="briefcase-outline"></ion-icon>Services</span></div>
+    <div class="tabs"><span class="tab on">Réservation</span></div>
+    <div class="body"><div class="muted"><ion-icon name="calendar-outline" style="font-size:36px"></ion-icon><div style="margin-top:8px">Aucun créneau</div><div class="cta" style="margin:10px 40px">Créer le programme</div></div></div>
+    <div class="bnav"><ion-icon name="home-outline"></ion-icon><ion-icon name="flash-outline"></ion-icon><ion-icon name="add-circle-outline"></ion-icon><ion-icon name="chatbubble-outline"></ion-icon><ion-icon class="on" name="person"></ion-icon></div>
+  </div>
+  <div class="rect">🔴 Réservation TOUJOURS vide (weeks jamais passé au pane) + stat « 0 Peaks » alors que business n'a pas de peaks.</div>
+</div>
+
+<!-- 5. VISITOR -->
+<div class="col">
+  <div class="cap">5 · Visiteur (tous types)</div>
+  <div class="phone">
+    <div class="cover"><div class="back"><ion-icon name="chevron-back"></ion-icon></div><div class="av"></div></div>
+    <div class="meta"><div class="nm">Sara Khan <ion-icon class="vb" name="checkmark-circle"></ion-icon></div><div class="subm">Yoga coach · Montreal</div></div>
+    <div class="stats"><div class="stat"><span class="sv">3,4K</span><span class="sl">Fans</span></div><div class="stat"><span class="sv">128</span><span class="sl">Posts</span></div><div class="stat"><span class="sv">42</span><span class="sl">Peaks</span></div></div>
+    <div style="padding:10px 16px 0"><div class="cta fill">Devenir fan</div></div>
+    <div class="tabs"><span class="tab on">Posts</span><span class="tab">Peaks</span><span class="tab">Activités</span></div>
+    <div class="body"><div class="grid"><div class="cell" style="background:#9aa89a"></div><div class="cell" style="background:#d9b3a3"></div><div class="cell" style="background:#2b2f3a"></div></div></div>
+    <div class="bnav"><ion-icon name="home-outline"></ion-icon><ion-icon name="flash-outline"></ion-icon><ion-icon name="add-circle-outline"></ion-icon><ion-icon name="chatbubble-outline"></ion-icon><ion-icon name="person-outline"></ion-icon></div>
+  </div>
+  <div class="rect">🔴 Visiteur ne voit QUE Posts/Peaks/Activités + « Devenir fan ». Pas de Channel/1:1/Packs (s'abonner/réserver/acheter) ni menu sécurité (signaler/bloquer/partager).</div>
+</div>
+
+<!-- 6. PRIVATE -->
+<div class="col">
+  <div class="cap">6 · Compte privé (locked)</div>
+  <div class="phone">
+    <div class="cover"><div class="back"><ion-icon name="chevron-back"></ion-icon></div><div class="av"></div></div>
+    <div class="meta"><div class="nm">Léa M.</div><div class="subm">Compte privé</div></div>
+    <div class="lock"><div class="lockchip"><ion-icon name="lock-closed"></ion-icon></div><div class="lt">Compte privé</div><div class="lst">Deviens fan pour voir ses publications.</div><div class="cta fill" style="margin-top:8px;padding:0 20px">Demander à suivre</div></div>
+    <div class="bnav"><ion-icon name="home-outline"></ion-icon><ion-icon name="flash-outline"></ion-icon><ion-icon name="add-circle-outline"></ion-icon><ion-icon name="chatbubble-outline"></ion-icon><ion-icon name="person-outline"></ion-icon></div>
+  </div>
+  <div class="rect">✅ Déjà implémenté (locked-gate). Conforme à « compte privé ».</div>
+</div>
+
+</body></html>

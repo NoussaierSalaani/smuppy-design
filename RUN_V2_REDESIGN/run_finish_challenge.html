@@ -1,0 +1,195 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  body{background:#0a0d12;font-family:-apple-system,"SF Pro Display",Segoe UI,Roboto,sans-serif;
+       padding:54px 46px;display:flex;flex-direction:column;align-items:center}
+  h1{color:#54D6A6;font-size:33px;font-weight:800;letter-spacing:-.5px;align-self:flex-start}
+  .sub{color:#8b97a3;font-size:16px;align-self:flex-start;margin-bottom:20px}
+  .grid{display:flex;gap:40px}
+  .cap{font-size:15px;text-align:center;margin-top:13px;font-weight:500;color:#c7d2da}
+  .cap b{color:#54D6A6}
+  .notch{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:104px;height:24px;border-radius:14px;z-index:40}
+  .phone{width:356px;height:772px;border-radius:46px;position:relative;overflow:hidden}
+
+  /* themes */
+  .dark{background:radial-gradient(120% 70% at 50% 0%,#0c2c24 0%,#06090d 58%);border:1px solid rgba(91,240,200,.14);box-shadow:0 22px 64px rgba(0,0,0,.6)}
+  .dark .notch{background:#000}
+  .light{background:radial-gradient(120% 70% at 50% 0%,#dcefe7 0%,#eef6f2 58%);border:1px solid rgba(23,106,90,.12);box-shadow:0 22px 56px rgba(40,80,70,.22)}
+  .light .notch{background:#10221d}
+
+  .pad{position:absolute;inset:0;padding:60px 22px 22px;display:flex;flex-direction:column}
+
+  /* route hero band */
+  .hero{position:relative;height:280px;border-radius:26px;overflow:hidden;margin-bottom:16px;
+    display:flex;flex-direction:column;justify-content:flex-end;padding:18px}
+  .dark .hero{background:radial-gradient(120% 100% at 50% 0%,#0e3a30,#071119)}
+  .light .hero{background:radial-gradient(120% 100% at 50% 0%,#cdeee3,#e7f3ee)}
+  .hero svg{position:absolute;inset:0}
+  .htop{position:absolute;top:16px;left:18px;right:18px;display:flex;justify-content:space-between;align-items:center;z-index:3}
+  .htag{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+  .dark .htag{color:#7fd9c2} .light .htag{color:#2c7a66}
+  .ribbon{font-size:11.5px;font-weight:800;padding:5px 11px;border-radius:999px;color:#04130f;
+    background:linear-gradient(180deg,#6FE3BC,#54D6A6);box-shadow:0 4px 14px rgba(84,214,166,.4)}
+  .light .ribbon{color:#fff;background:linear-gradient(180deg,#33C2A0,#2FC9A2)}
+  .hnum{position:relative;z-index:3}
+  .hd{font-size:56px;font-weight:800;letter-spacing:-2px;line-height:.9}
+  .dark .hd{color:#fff} .light .hd{color:#0c2620}
+  .hd small{font-size:22px;font-weight:700;color:#5BF0C8;margin-left:5px}
+  .light .hd small{color:#33A089}
+  .hm{font-size:15px;font-weight:600;margin-top:8px}
+  .dark .hm{color:#9fb3ac} .light .hm{color:#4d6b63}
+
+  /* challenge toggle row */
+  .chrow{display:flex;align-items:center;gap:13px;border-radius:20px;padding:14px 15px;margin-bottom:auto}
+  .dark .chrow{background:rgba(91,240,200,.07);border:1px solid rgba(91,240,200,.18)}
+  .light .chrow{background:rgba(47,201,162,.09);border:1px solid rgba(47,201,162,.2)}
+  .chic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex:0 0 auto}
+  .dark .chic{background:rgba(91,240,200,.14)} .light .chic{background:rgba(47,201,162,.16)}
+  .chtxt{flex:1}
+  .cht{font-size:15px;font-weight:700} .dark .cht{color:#eaf6f1} .light .cht{color:#0c2620}
+  .chs{font-size:12.5px;margin-top:2px} .dark .chs{color:#7E8B91} .light .chs{color:#5f7a72}
+  .sw{width:50px;height:30px;border-radius:999px;position:relative;flex:0 0 auto;background:linear-gradient(180deg,#6FE3BC,#54D6A6)}
+  .light .sw{background:linear-gradient(180deg,#33C2A0,#2FC9A2)}
+  .sw::after{content:"";position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+
+  /* buttons */
+  .btns{display:flex;flex-direction:column;gap:11px;margin-top:16px}
+  .btn{height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;font-weight:700}
+  .btn.primary{color:#04130f;background:linear-gradient(180deg,#6FE3BC,#54D6A6);box-shadow:0 8px 24px rgba(84,214,166,.4)}
+  .light .btn.primary{color:#fff;background:linear-gradient(180deg,#33C2A0,#2FC9A2)}
+  .btn.outline{background:transparent;border:1.5px solid}
+  .dark .btn.outline{border-color:rgba(91,240,200,.5);color:#5BF0C8}
+  .light .btn.outline{border-color:rgba(51,160,137,.5);color:#176A5A}
+  .btn.ghost{height:44px;font-size:15px;font-weight:600}
+  .dark .btn.ghost{color:#8a6} .light .btn.ghost{color:#a55}
+  .dark .btn.ghost{color:#d98a8a} .light .btn.ghost{color:#c25b5b}
+
+  /* ===== challenge poster (what others see) ===== */
+  .cposter{position:absolute;inset:0}
+  .dark .cposter{background:radial-gradient(120% 80% at 50% 16%,#0c2c24,#08161a 48%,#04070b 82%)}
+  .light .cposter{background:radial-gradient(120% 80% at 50% 16%,#e6f4ee,#eef6f2 52%,#f6faf8 84%)}
+  .cposter .stars{position:absolute;inset:0}
+  .dark .cposter .stars{background-image:radial-gradient(1px 1px at 22% 32%,rgba(201,255,241,.6),transparent),radial-gradient(1.5px 1.5px at 82% 58%,rgba(91,240,200,.5),transparent),radial-gradient(1px 1px at 40% 70%,rgba(201,255,241,.35),transparent)}
+  .cbadge{position:absolute;top:64px;left:50%;transform:translateX(-50%);z-index:6;display:flex;align-items:center;gap:7px;
+    background:linear-gradient(180deg,#6FE3BC,#54D6A6);color:#04130f;font-weight:800;font-size:14px;letter-spacing:.5px;
+    padding:9px 18px;border-radius:999px;box-shadow:0 6px 22px rgba(84,214,166,.5)}
+  .light .cbadge{color:#fff;background:linear-gradient(180deg,#33C2A0,#2FC9A2)}
+  .challenger{position:absolute;top:120px;width:100%;text-align:center;z-index:6}
+  .av{width:54px;height:54px;border-radius:50%;margin:0 auto 8px;background:linear-gradient(135deg,#54D6A6,#1f8e72);border:2px solid rgba(201,255,241,.5);display:flex;align-items:center;justify-content:center;font-size:22px}
+  .cwho{font-size:15px;font-weight:700} .dark .cwho{color:#eaf6f1} .light .cwho{color:#0c2620}
+  .cwho b{color:#5BF0C8} .light .cwho b{color:#0d6e58}
+  .cposter svg.route{position:absolute;inset:0;z-index:2}
+  .ctarget{position:absolute;top:494px;width:100%;text-align:center;z-index:6}
+  .ctlbl{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase} .dark .ctlbl{color:#7fd9c2} .light .ctlbl{color:#2c7a66}
+  .ctval{font-size:46px;font-weight:800;letter-spacing:-1px;margin-top:4px} .dark .ctval{color:#fff} .light .ctval{color:#0c2620}
+  .ctval small{font-size:18px;color:#5BF0C8} .light .ctval small{color:#33A089}
+  .ctsub{font-size:14px;font-weight:600;margin-top:6px} .dark .ctsub{color:#9fb3ac} .light .ctsub{color:#4d6b63}
+  .csocial{position:absolute;bottom:108px;width:100%;text-align:center;z-index:6;font-size:13px;font-weight:600}
+  .dark .csocial{color:#7E8B91} .light .csocial{color:#6f928a}
+  .crelve{position:absolute;bottom:34px;left:22px;right:22px;height:56px;border-radius:18px;z-index:8;
+    display:flex;align-items:center;justify-content:center;gap:9px;font-size:17px;font-weight:800;
+    color:#04130f;background:linear-gradient(180deg,#6FE3BC,#54D6A6);box-shadow:0 10px 28px rgba(84,214,166,.45)}
+  .light .crelve{color:#fff;background:linear-gradient(180deg,#33C2A0,#2FC9A2)}
+</style></head>
+<body>
+<h1>Run — fin de course + Challenge (set final)</h1>
+<div class="sub">Écran fin de run (3 actions + toggle défi) · le Peak vu en mode Challenge par les autres</div>
+
+<div class="grid">
+
+  <!-- A · FIN DE RUN — DARK -->
+  <div>
+  <div class="phone dark">
+    <div class="notch"></div>
+    <div class="pad">
+      <div class="hero">
+        <svg viewBox="0 0 312 280" fill="none"><defs><filter id="ga" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <path d="M60 250 C40 180 130 180 120 120 S70 70 150 60 S250 90 230 40" stroke="#5BF0C8" stroke-width="8" stroke-linecap="round" opacity=".5" filter="url(#ga)"/>
+          <path d="M60 250 C40 180 130 180 120 120 S70 70 150 60 S250 90 230 40" stroke="#C9FFF1" stroke-width="2.8" stroke-linecap="round"/></svg>
+        <div class="htop"><span class="htag">Course terminée</span><span class="ribbon">🏆 Record 5K</span></div>
+        <div class="hnum"><div class="hd">5.2<small> km</small></div><div class="hm">26:18&nbsp;·&nbsp;5'03 /km</div></div>
+      </div>
+      <div class="chrow">
+        <div class="chic">⚡</div>
+        <div class="chtxt"><div class="cht">Lancer un défi</div><div class="chs">D'autres runners pourront te défier</div></div>
+        <div class="sw"></div>
+      </div>
+      <div class="btns">
+        <div class="btn primary">＋ Publier en Peak</div>
+        <div class="btn outline">Enregistrer seulement</div>
+        <div class="btn ghost">Supprimer</div>
+      </div>
+    </div>
+  </div>
+  <div class="cap"><b>A · Fin de run</b> — auto-save, 3 actions + toggle défi (NightRun)</div>
+  </div>
+
+  <!-- A · FIN DE RUN — LIGHT -->
+  <div>
+  <div class="phone light">
+    <div class="notch"></div>
+    <div class="pad">
+      <div class="hero">
+        <svg viewBox="0 0 312 280" fill="none"><defs><filter id="gb" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <path d="M60 250 C40 180 130 180 120 120 S70 70 150 60 S250 90 230 40" stroke="#33A089" stroke-width="8" stroke-linecap="round" opacity=".65" filter="url(#gb)"/>
+          <path d="M60 250 C40 180 130 180 120 120 S70 70 150 60 S250 90 230 40" stroke="#176A5A" stroke-width="2.8" stroke-linecap="round"/></svg>
+        <div class="htop"><span class="htag">Course terminée</span><span class="ribbon">🏆 Record 5K</span></div>
+        <div class="hnum"><div class="hd">5.2<small> km</small></div><div class="hm">26:18&nbsp;·&nbsp;5'03 /km</div></div>
+      </div>
+      <div class="chrow">
+        <div class="chic">⚡</div>
+        <div class="chtxt"><div class="cht">Lancer un défi</div><div class="chs">D'autres runners pourront te défier</div></div>
+        <div class="sw"></div>
+      </div>
+      <div class="btns">
+        <div class="btn primary">＋ Publier en Peak</div>
+        <div class="btn outline">Enregistrer seulement</div>
+        <div class="btn ghost">Supprimer</div>
+      </div>
+    </div>
+  </div>
+  <div class="cap"><b>A · Fin de run</b> — même écran (DayRun)</div>
+  </div>
+
+</div>
+
+<div class="grid" style="margin-top:34px">
+
+  <!-- B · PEAK CHALLENGE — DARK -->
+  <div>
+  <div class="phone dark">
+    <div class="notch"></div>
+    <div class="cposter"><div class="stars"></div>
+      <svg class="route" viewBox="0 0 356 772" fill="none"><defs><filter id="gc" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+        <path d="M95 460 C60 380 180 360 150 290 S70 220 160 185 S280 190 250 130 S150 95 210 150 S300 250 250 320 S120 350 150 430" stroke="#5BF0C8" stroke-width="10" stroke-linecap="round" opacity=".45" filter="url(#gc)"/>
+        <path d="M95 460 C60 380 180 360 150 290 S70 220 160 185 S280 190 250 130 S150 95 210 150 S300 250 250 320 S120 350 150 430" stroke="#C9FFF1" stroke-width="3.2" stroke-linecap="round"/></svg>
+      <div class="cbadge">⚡ DÉFI · 5 KM</div>
+      <div class="challenger"><div class="av">🏃</div><div class="cwho"><b>Sarah</b> te défie</div></div>
+      <div class="ctarget"><div class="ctlbl">Objectif à battre</div><div class="ctval">26:18</div><div class="ctsub">5,2 km · 5'03 /km</div></div>
+      <div class="csocial">🔥 12 runners ont déjà relevé</div>
+      <div class="crelve">⚡ Relever le défi</div>
+    </div>
+  </div>
+  <div class="cap"><b>B · Peak en mode Challenge</b> — ce que voient les autres (NightRun)</div>
+  </div>
+
+  <!-- B · PEAK CHALLENGE — LIGHT -->
+  <div>
+  <div class="phone light">
+    <div class="notch"></div>
+    <div class="cposter"><div class="stars"></div>
+      <svg class="route" viewBox="0 0 356 772" fill="none"><defs><filter id="gd" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+        <path d="M95 460 C60 380 180 360 150 290 S70 220 160 185 S280 190 250 130 S150 95 210 150 S300 250 250 320 S120 350 150 430" stroke="#33A089" stroke-width="10" stroke-linecap="round" opacity=".6" filter="url(#gd)"/>
+        <path d="M95 460 C60 380 180 360 150 290 S70 220 160 185 S280 190 250 130 S150 95 210 150 S300 250 250 320 S120 350 150 430" stroke="#176A5A" stroke-width="3.2" stroke-linecap="round"/></svg>
+      <div class="cbadge">⚡ DÉFI · 5 KM</div>
+      <div class="challenger"><div class="av">🏃</div><div class="cwho"><b>Sarah</b> te défie</div></div>
+      <div class="ctarget"><div class="ctlbl">Objectif à battre</div><div class="ctval">26:18</div><div class="ctsub">5,2 km · 5'03 /km</div></div>
+      <div class="csocial">🔥 12 runners ont déjà relevé</div>
+      <div class="crelve">⚡ Relever le défi</div>
+    </div>
+  </div>
+  <div class="cap"><b>B · Peak en mode Challenge</b> — même écran (DayRun)</div>
+  </div>
+
+</div>
+</body></html>

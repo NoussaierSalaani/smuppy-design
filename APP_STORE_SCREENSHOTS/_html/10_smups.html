@@ -1,0 +1,54 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<link rel="stylesheet" href="_base.css">
+<style>
+.wallet{margin:8px 22px 0;border-radius:28px;padding:30px 26px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#0c2a22,#06140f);border:1px solid var(--line)}
+.wallet::after{content:"";position:absolute;top:-60px;right:-40px;width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,rgba(91,240,200,.28),transparent 70%)}
+.wallet .lab{color:#8fbfb0;font-size:16px;letter-spacing:.5px}
+.wallet .bal{color:#fff;font-size:60px;font-weight:800;letter-spacing:-2px;margin-top:6px;display:flex;align-items:center;gap:12px}
+.wallet .bal .coin{font-size:48px;line-height:1}
+.wallet .row{display:flex;gap:12px;margin-top:24px}
+.wallet .row .cta{flex:1}
+.send-h{color:#fff;font-size:21px;font-weight:800;margin:26px 22px 14px}
+.target{margin:0 22px 16px;display:flex;align-items:center;gap:16px;background:var(--card);
+  border:1px solid var(--line);border-radius:22px;padding:16px 18px}
+.target .avatar{width:60px;height:60px}
+.target .nm{color:#fff;font-size:20px;font-weight:800}
+.target .lo{color:var(--dim);font-size:15px;margin-top:2px}
+.amts{display:flex;gap:12px;padding:0 22px 18px}
+.amt{flex:1;text-align:center;border:1.4px solid var(--line);border-radius:18px;padding:18px 0;
+  color:#cfe9e0;font-size:22px;font-weight:800;background:rgba(84,214,166,.04)}
+.amt.on{border-color:var(--mint);color:var(--accent);background:rgba(84,214,166,.1)}
+.amt .c{font-size:14px;color:var(--dim);display:block;margin-top:4px;font-weight:600}
+</style></head><body>
+<div class="cap-band"><h2>Soutiens tes créateurs</h2><div class="sub">Envoie des Smups à celles et ceux que tu aimes.</div></div>
+<div class="device">
+  <div class="notch"></div>
+  <div class="statusbar"><span>9:41</span><span>5G ▪ 100%</span></div>
+  <div class="screen">
+    <div class="appbar"><div class="wordmark">Wallet Smups</div></div>
+    <div class="wallet">
+      <div class="bal"><div class="coin">👊</div>412</div>
+      <div class="lab" style="margin-top:10px">SMUPS DISPONIBLES</div>
+      <div class="row"><div class="cta solid">+ Acheter</div><div class="cta">↑ Envoyer</div></div>
+    </div>
+    <div class="send-h">Soutenir un créateur</div>
+    <div class="target">
+      <div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80')"></div>
+      <div><div class="nm">Léa Moreau <span class="verified">✦</span></div><div class="lo">Coach yoga · Lyon</div></div>
+    </div>
+    <div class="amts">
+      <div class="amt">50<span class="c">Smups</span></div>
+      <div class="amt on">200<span class="c">Smups</span></div>
+      <div class="amt">500<span class="c">Smups</span></div>
+    </div>
+    <div style="margin:0 22px"><div class="cta solid">Envoyer des Smups 💚</div></div>
+    <div class="bnav">
+    <div class="n ">⌂</div><div class="n ">▶</div>
+    <div class="fab">＋</div>
+    <div class="n ">✉</div>
+    <div class="av" style="background-image:url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&q=80');border-color:var(--mint)"></div>
+  </div></div>
+</div>
+</body></html>

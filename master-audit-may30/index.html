@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="utf-8">
+<title>Smuppy V2 — Master Design Index</title>
+<meta http-equiv="Cache-Control" content="no-cache">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100vh;background:radial-gradient(circle at 50% 0%, #1a1a25 0%, #050508 70%);font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#F1F4F6}
+  body{padding:60px 40px}
+  h1{font-size:36px;font-weight:900;letter-spacing:-.03em;margin-bottom:8px;
+    background:linear-gradient(90deg, #26C1A4, #00B3C7); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .subtitle{font-size:14px;color:#8B8B95;font-weight:600;margin-bottom:40px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;max-width:1400px;margin:0 auto}
+  .card{padding:24px;border-radius:24px;background:rgba(20,20,26,.55);backdrop-filter:blur(12px);border:1px solid rgba(38,193,164,.18);text-decoration:none;color:#F1F4F6;transition:.2s;display:flex;flex-direction:column;gap:10px}
+  .card:hover{border-color:rgba(38,193,164,.45);box-shadow:0 0 32px rgba(38,193,164,.20);transform:translateY(-4px)}
+  .card-tag{font-size:10px;font-weight:800;color:#26C1A4;letter-spacing:.12em;text-transform:uppercase}
+  .card-title{font-size:18px;font-weight:800;letter-spacing:-.01em}
+  .card-sub{font-size:13px;color:#8B8B95;font-weight:500}
+  .card-count{margin-top:auto;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);font-size:11px;color:#26C1A4;font-weight:700;letter-spacing:.04em}
+  .stats{display:flex;gap:32px;margin:32px auto;max-width:1400px;padding:24px;background:rgba(20,20,26,.55);backdrop-filter:blur(12px);border:1px solid rgba(38,193,164,.18);border-radius:24px}
+  .stat{flex:1;display:flex;flex-direction:column;gap:4px;text-align:center}
+  .stat-num{font-size:36px;font-weight:900;color:#26C1A4;letter-spacing:-.03em;line-height:1}
+  .stat-lbl{font-size:11px;font-weight:700;color:#8B8B95;letter-spacing:.06em;text-transform:uppercase}
+</style></head><body>
+<h1>Smuppy V2 · Master Design Index</h1>
+<p class="subtitle">Canonical V2 maquettes — 393×852 device format · prêts pour Figma + spec dev</p>
+
+<div class="stats">
+  <div class="stat"><div class="stat-num">190</div><div class="stat-lbl">PNGs device-format</div></div>
+  <div class="stat"><div class="stat-num">95</div><div class="stat-lbl">écrans uniques (dark + light)</div></div>
+  <div class="stat"><div class="stat-num">2</div><div class="stat-lbl">thèmes (dark + light)</div></div>
+  <div class="stat"><div class="stat-num">7</div><div class="stat-lbl">sprints livrés</div></div>
+</div>
+
+<div class="grid">
+  <a class="card" href="/external_screens/v2_canonical_home_feed_dark/code.html" style="border-color:rgba(38,193,164,.45);box-shadow:0 0 32px rgba(38,193,164,.20)">
+    <span class="card-tag" style="color:#11C6FF">★ CANONIC · Home Feed</span>
+    <span class="card-title">Home Feed (Fan / Vibes / Xplorer)</span>
+    <span class="card-sub">Source de vérité tabs canonical · pattern v5 actif mint glow + halo bar</span>
+    <span class="card-count">2 thèmes (dark + light)</span>
+  </a>
+
+  <a class="card" href="/maquettes/harmonized/creator_profile_visitor_v2_dark/code.html" style="border-color:rgba(38,193,164,.45);box-shadow:0 0 32px rgba(38,193,164,.20)">
+    <span class="card-tag" style="color:#11C6FF">★ CANONIC · Profile</span>
+    <span class="card-title">Profile Shell (Owner / Visitor)</span>
+    <span class="card-sub">Cover + avatar + stats + actions row + v5 tabs Lifestyle/Channel + Posts/Peaks/Activities + 3-col grid + canonical bottom nav</span>
+    <span class="card-count">2 perspectives × 2 thèmes</span>
+  </a>
+
+  <a class="card" href="/external_screens/v2_canonical_settings_definitive_dark/code.html" style="border-color:rgba(38,193,164,.45);box-shadow:0 0 32px rgba(38,193,164,.20)">
+    <span class="card-tag" style="color:#11C6FF">★ CANONIC · Settings</span>
+    <span class="card-title">Settings (entry validated)</span>
+    <span class="card-sub">16-item canonical Settings screen avec icon halo (founder validated yesterday)</span>
+    <span class="card-count">2 thèmes</span>
+  </a>
+
+  <a class="card" href="/maquettes/harmonized/creator_profile_visitor_v2_dark/code.html">
+    <span class="card-tag">SPRINT A-D · Creator</span>
+    <span class="card-title">Creator Monetization</span>
+    <span class="card-sub">Channel / 1:1 / Packages — setup + view + lifecycle + owner profile</span>
+    <span class="card-count">28 écrans · 2 thèmes</span>
+  </a>
+
+  <a class="card" href="/maquettes/harmonized/post_create_menu_v2_dark/code.html">
+    <span class="card-tag">SPRINT E · Post creation</span>
+    <span class="card-title">Post / Peak Creation Flow</span>
+    <span class="card-sub">Menu / Gallery / Details / Success / Peak camera</span>
+    <span class="card-count">5 écrans · 2 thèmes</span>
+  </a>
+
+  <a class="card" href="/prototype_auth.html">
+    <span class="card-tag">SPRINT P0 · Auth</span>
+    <span class="card-title">Authentication 🔐</span>
+    <span class="card-sub">Welcome / Login / Signup / Forgot / Verify / MFA enrollment</span>
+    <span class="card-count">13 écrans · 2 thèmes</span>
+  </a>
+
+  <a class="card" href="/prototype_onboarding.html">
+    <span class="card-tag">SPRINT P0 · Onboarding</span>
+    <span class="card-title">First-run flow 🚀</span>
+    <span class="card-sub">AccountType / Profile / Interests (cat) / Profession / Guidelines / Success</span>
+    <span class="card-count">12 écrans · 2 thèmes</span>
+  </a>
+
+  <a class="card" href="/prototype_p1.html">
+    <span class="card-tag">SPRINT P1 · Settings & Messages</span>
+    <span class="card-title">Settings / Messages / Notifs / Profile</span>
+    <span class="card-sub">8 settings + 4 messages + 2 notifs + 5 profile-subs</span>
+    <span class="card-count">19 écrans · 2 thèmes</span>
+  </a>
+
+  <a class="card" href="/maquettes/harmonized/p2_creator_wallet_v2_dark/code.html">
+    <span class="card-tag">SPRINT P2 · Monetization</span>
+    <span class="card-title">Payments / Sessions / Business / Live 💰</span>
+    <span class="card-sub">Wallets / Book session / Private call / Business / Go Live</span>
+    <span class="card-count">13 écrans · 2 thèmes</span>
+  </a>
+</div>
+
+<p style="text-align:center;color:#8B8B95;margin-top:60px;font-size:12px">
+  📦 Drag-drop : <code style="color:#26C1A4">docs/design/master-audit-may30/_figma-device-import/</code><br/>
+  🔄 Restore /tmp serveur : <code style="color:#26C1A4">bash docs/design/master-audit-may30/scripts/start-design-server.sh</code><br/>
+  📋 Audit complet : <code style="color:#26C1A4">docs/design/master-audit-may30/MASTER_INVENTORY.md</code> (142 écrans · 22 catégories)
+</p>
+</body></html>

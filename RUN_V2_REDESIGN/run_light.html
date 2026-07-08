@@ -1,0 +1,136 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<style>
+  :root{ --mint:#2FC9A2; --glow:#33A089; --core:#176A5A; --ink:#0c2620; --dim:#5f7a72; }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  body{background:#dfeae6;font-family:-apple-system,"SF Pro Display",Segoe UI,Roboto,sans-serif;
+       padding:56px 48px;display:flex;flex-direction:column;align-items:center}
+  h1{color:#0d6e58;font-size:34px;font-weight:800;letter-spacing:-.5px;align-self:flex-start}
+  .sub{color:#4d6b63;font-size:16px;align-self:flex-start;margin-bottom:18px}
+  .row{display:flex;gap:44px}
+  .cap{color:#365b52;font-size:15px;text-align:center;margin-top:14px;font-weight:500}
+  .cap b{color:#0d6e58}
+
+  .phone{width:360px;height:780px;border-radius:46px;position:relative;overflow:hidden;
+    background:#eef5f2;border:1px solid rgba(23,106,90,.12);
+    box-shadow:0 24px 60px rgba(40,80,70,.25)}
+  .notch{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:110px;height:26px;background:#10221d;border-radius:16px;z-index:40}
+  .status{position:absolute;top:20px;width:100%;display:flex;justify-content:space-between;padding:0 30px;color:#1d3a33;font-size:13px;font-weight:700;z-index:30;opacity:.9}
+
+  .map{position:absolute;inset:0;perspective:560px;overflow:hidden;
+    background:radial-gradient(130% 90% at 50% 88%,#cfeae0 0%,#e2efea 48%,#f1f7f4 78%)}
+  .floor{position:absolute;left:-60%;right:-60%;bottom:-26%;height:86%;transform:rotateX(70deg);transform-origin:bottom center;
+    background:
+      repeating-linear-gradient(90deg,transparent 0 46px,rgba(23,106,90,.16) 46px 47px),
+      repeating-linear-gradient(0deg,transparent 0 46px,rgba(23,106,90,.10) 46px 47px);
+    -webkit-mask:linear-gradient(to top,#000 6%,rgba(0,0,0,.35) 40%,transparent 82%)}
+  .horizon{position:absolute;left:0;right:0;top:30%;height:160px;background:radial-gradient(60% 100% at 50% 100%,rgba(51,160,137,.20),transparent 70%);filter:blur(6px)}
+  .vig{position:absolute;inset:0;background:radial-gradient(80% 65% at 50% 42%,transparent 58%,rgba(60,110,98,.18))}
+
+  .route{position:absolute;inset:0;z-index:10}
+  .dot{position:absolute;width:16px;height:16px;border-radius:50%;background:var(--core);box-shadow:0 0 0 6px rgba(51,160,137,.25),0 0 20px 5px rgba(51,160,137,.6);z-index:12}
+
+  .filter{position:absolute;top:58px;left:50%;transform:translateX(-50%);z-index:30;display:flex;gap:6px;
+    background:rgba(255,255,255,.65);border:1px solid rgba(23,106,90,.18);border-radius:999px;padding:5px;backdrop-filter:blur(14px)}
+  .filter span{font-size:12.5px;font-weight:700;color:var(--dim);padding:6px 13px;border-radius:999px}
+  .filter .on{color:#fff;background:linear-gradient(180deg,#33C2A0,var(--mint));box-shadow:0 4px 12px rgba(47,201,162,.35)}
+
+  .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20}
+  .orb{width:184px;height:184px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 50% 38%,#7BEAD0 0%,var(--mint) 46%,#0f8e72 100%);
+    box-shadow:0 0 0 1.5px rgba(255,255,255,.6),0 0 50px 6px rgba(51,160,137,.4),0 0 110px 26px rgba(47,201,162,.28),inset 0 -14px 36px rgba(0,60,46,.3)}
+  .orb::before{content:"";position:absolute;inset:-26px;border-radius:50%;border:1.5px solid rgba(47,201,162,.35)}
+  .orb b{color:#fff;font-size:30px;font-weight:800;letter-spacing:1px}
+  .startsub{color:#1d4a3f;font-size:14px;margin-top:30px;font-weight:700}
+  .startsub2{color:#6f928a;font-size:12.5px;margin-top:8px;letter-spacing:2px;text-transform:uppercase}
+
+  .live{position:absolute;left:0;right:0;bottom:150px;z-index:20;text-align:center}
+  .huge{color:#0c2620;font-size:96px;font-weight:800;letter-spacing:-3px;line-height:.9}
+  .huge small{font-size:30px;font-weight:700;color:var(--glow);margin-left:6px}
+  .secline{color:#48645c;font-size:16px;font-weight:600;margin-top:18px}
+  .secline b{color:#16322b}
+  .controls{position:absolute;bottom:46px;left:0;right:0;display:flex;gap:26px;justify-content:center;align-items:center;z-index:25}
+  .pbtn{width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.7);border:1.5px solid rgba(51,160,137,.45);backdrop-filter:blur(14px);color:var(--glow);font-size:30px;box-shadow:0 8px 22px rgba(40,80,70,.18)}
+  .pbtn.stop{width:62px;height:62px;border-color:rgba(214,69,69,.4);color:#d64545;font-size:24px}
+
+  /* poster (light) */
+  .poster{position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 18%,#e6f4ee 0%,#eef6f2 50%,#f6faf8 82%)}
+  .ptop{position:absolute;top:78px;width:100%;text-align:center;z-index:5;color:#2c7a66;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase}
+  .pbignum{position:absolute;top:560px;width:100%;text-align:center;z-index:5}
+  .pbignum .d{color:#0c2620;font-size:80px;font-weight:800;letter-spacing:-2px}
+  .pbignum .d small{font-size:28px;color:var(--glow)}
+  .pbignum .m{color:#4d6b63;font-size:17px;font-weight:600;margin-top:10px}
+  .ribbon{position:absolute;top:512px;left:50%;transform:translateX(-50%);z-index:6;background:linear-gradient(180deg,#33C2A0,var(--mint));color:#fff;font-weight:800;font-size:13.5px;padding:8px 18px;border-radius:999px;box-shadow:0 6px 18px rgba(47,201,162,.4)}
+  .brand{position:absolute;bottom:118px;width:100%;text-align:center;z-index:5;color:#16443a;font-size:18px;font-weight:800}
+  .brand span{color:var(--mint)}
+  .pdate{position:absolute;bottom:96px;width:100%;text-align:center;z-index:5;color:#7b968e;font-size:12px;letter-spacing:1px}
+  .sharebar{position:absolute;bottom:34px;left:24px;right:24px;z-index:8;display:flex;gap:12px}
+  .sharebtn{flex:1;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:700;color:#fff;background:linear-gradient(180deg,#33C2A0,var(--mint));box-shadow:0 8px 20px rgba(47,201,162,.35)}
+  .sharebtn.alt{background:rgba(255,255,255,.75);color:var(--glow);border:1.5px solid rgba(51,160,137,.45)}
+</style></head>
+<body>
+<h1>Run — Light mode (filtre DayRun)</h1>
+<div class="sub">Même direction immersive · terrain clair · tracé teal · 1 point focal par écran</div>
+<div class="row">
+
+  <div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>9:41</span><span>DayRun ◗</span></div>
+    <div class="map"><div class="horizon"></div><div class="floor"></div><div class="vig"></div></div>
+    <div class="filter"><span>🌙 NightRun</span><span class="on">☀︎ DayRun</span></div>
+    <div class="center">
+      <div class="orb"><b>DÉPART</b></div>
+      <div class="startsub">Prêt quand tu l'es</div>
+      <div class="startsub2">· course libre ·</div>
+    </div>
+  </div>
+  <div class="cap"><b>1 · Départ</b> — DayRun, terrain clair.</div>
+  </div>
+
+  <div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>9:48</span><span>● en course</span></div>
+    <div class="map"><div class="horizon"></div><div class="floor"></div>
+      <svg class="route" viewBox="0 0 360 780" fill="none">
+        <defs><filter id="g1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+        <path d="M70 690 C 50 560 170 560 150 450 S 70 360 150 290 S 300 280 250 170 S 170 110 240 70" stroke="#33A089" stroke-width="9" stroke-linecap="round" opacity=".7" filter="url(#g1)"/>
+        <path d="M70 690 C 50 560 170 560 150 450 S 70 360 150 290 S 300 280 250 170 S 170 110 240 70" stroke="#176A5A" stroke-width="3.2" stroke-linecap="round"/>
+      </svg>
+      <div class="dot" style="left:232px;top:62px"></div>
+      <div class="vig"></div>
+    </div>
+    <div class="live">
+      <div class="huge">2.41<small>km</small></div>
+      <div class="secline">12:30&nbsp;&nbsp;·&nbsp;&nbsp;<b>5'12</b> /km</div>
+    </div>
+    <div class="controls">
+      <div class="pbtn stop">■</div>
+      <div class="pbtn">❚❚</div>
+    </div>
+  </div>
+  <div class="cap"><b>2 · En course</b> — 1 chiffre héros + tracé teal.</div>
+  </div>
+
+  <div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="poster">
+      <svg class="route" viewBox="0 0 360 780" fill="none">
+        <defs><filter id="g2" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+        <path d="M95 470 C 60 380 180 360 150 280 S 70 210 160 170 S 280 175 250 110 S 150 70 210 130 S 300 250 250 330 S 120 360 150 440" stroke="#33A089" stroke-width="11" stroke-linecap="round" opacity=".65" filter="url(#g2)"/>
+        <path d="M95 470 C 60 380 180 360 150 280 S 70 210 160 170 S 280 175 250 110 S 150 70 210 130 S 300 250 250 330 S 120 360 150 440" stroke="#176A5A" stroke-width="3.6" stroke-linecap="round"/>
+      </svg>
+      <div class="ptop">Course du matin · 14 km/h max</div>
+      <div class="ribbon">🏆 Nouveau record · 5 KM</div>
+      <div class="pbignum"><div class="d">5.2<small> km</small></div><div class="m">26:18&nbsp;&nbsp;·&nbsp;&nbsp;5'03 /km</div></div>
+      <div class="brand">smup<span>py</span></div>
+      <div class="pdate">25 JUIN 2026 · PARIS</div>
+      <div class="sharebar"><div class="sharebtn">＋ Publier en Peak</div><div class="sharebtn alt">⤴ Story</div></div>
+    </div>
+  </div>
+  <div class="cap"><b>3 · Le run devient un Peak</b> — image, publiée direct.</div>
+  </div>
+
+</div>
+</body></html>

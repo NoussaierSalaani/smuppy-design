@@ -1,0 +1,48 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=393,initial-scale=1">
+<style>
+ body{margin:0;background:#05070D;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:#fff;display:flex;gap:0}
+ .col{width:393px;padding:22px 20px}
+ .col.light{background:#F4FBF7;color:#0B1A16}
+ h2{font-size:16px;font-weight:800;margin:0 0 4px}
+ .note{font-size:12px;opacity:.6;margin:0 0 18px}
+ .lbl{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.55;margin:18px 0 9px}
+ .row{display:flex;flex-wrap:wrap;gap:8px}
+ /* shared chip base */
+ .chip{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 14px;border-radius:18px;
+   font-size:13px;font-weight:600;border:1.5px solid;cursor:default}
+ .chip svg{flex-shrink:0}
+ /* V2 (hue per category) */
+ .v2 .chip{background:#161B2A;border-color:#2A3142;color:#94A3B8}
+ .light .v2 .chip{background:#fff;border-color:#dfeae6;color:#5b6b66}
+ .v2 .chip.on{background:rgba(96,165,250,.14);border-color:#60A5FA;color:#fff;font-weight:700}
+ .light .v2 .chip.on{background:rgba(96,165,250,.12);border-color:#60A5FA;color:#0B1A16}
+ /* V1 (mint selected, gradient-ish border) */
+ .v1 .chip{background:#161B2A;border-color:#2A3142;color:#94A3B8}
+ .light .v1 .chip{background:#fff;border-color:#dfeae6;color:#5b6b66}
+ .v1 .chip.on{background:rgba(84,214,166,.14);border-color:#54D6A6;color:#fff;font-weight:700;
+   box-shadow:0 0 0 .5px #46B6BC}
+ .light .v1 .chip.on{background:#E8FAF7;border-color:#2FC9A2;color:#0B1A16}
+</style></head>
+<body>
+<script>
+function ic(c){return `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>`}
+function chips(cls){return `
+ <div class="lbl">Sports</div>
+ <div class="row ${cls}">
+  <span class="chip">${ic('#FB923C')}Football</span>
+  <span class="chip on">${ic('#FB923C')}Running</span>
+  <span class="chip">${ic('#FB923C')}Tennis</span>
+  <span class="chip on">${ic('#FB923C')}Cycling</span>
+ </div>
+ <div class="lbl">Fitness</div>
+ <div class="row ${cls}">
+  <span class="chip on">${ic('#60A5FA')}Gym</span>
+  <span class="chip">${ic('#60A5FA')}CrossFit</span>
+  <span class="chip">${ic('#60A5FA')}HIIT</span>
+ </div>`}
+document.write(`
+ <div class="col dark"><h2>A · V2 actuel (couleur catégorie)</h2><p class="note">sélectionné = couleur de la catégorie (bleu/orange…)</p><div class="v2">${chips('v2')}</div></div>
+ <div class="col dark"><h2>B · V1 (mint)</h2><p class="note">sélectionné = mint, icône colorée gardée</p><div class="v1">${chips('v1')}</div></div>
+`);
+</script>
+</body></html>

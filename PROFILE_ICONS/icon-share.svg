@@ -1,0 +1,9 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon/share">
+<circle id="dot" cx="12.5" cy="3.5" r="1.25" stroke="var(--stroke-0, #182834)" stroke-width="1.5"/>
+<circle id="dot_2" cx="3.5" cy="8" r="1.25" stroke="var(--stroke-0, #182834)" stroke-width="1.5"/>
+<circle id="dot_3" cx="12.5" cy="12.5" r="1.25" stroke="var(--stroke-0, #182834)" stroke-width="1.5"/>
+<path id="line" d="M5.2 7L10.8 4.2" stroke="var(--stroke-0, #182834)" stroke-width="1.5"/>
+<path id="line_2" d="M5.2 9L10.8 11.8" stroke="var(--stroke-0, #182834)" stroke-width="1.5"/>
+</g>
+</svg>

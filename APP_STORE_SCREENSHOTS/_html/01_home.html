@@ -1,0 +1,111 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<link rel="stylesheet" href="_base.css">
+<style>
+/* ── Fan/Vibes/Xplorer pill row (canonical HomeFeedView TabBar — NOT a Fans/Vibes toggle) ── */
+.pills{margin:2px 22px 20px;background:rgba(14,22,20,.55);border:1px solid var(--line);
+  border-radius:999px;padding:6px;display:flex;gap:6px}
+.pill{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 0;border-radius:999px;font-size:18px;font-weight:800;color:var(--dim)}
+.pill .gl{font-size:18px}
+.pill.on{color:var(--mint);background:rgba(84,214,166,.14);border:1px solid rgba(91,240,200,.35)}
+/* ── section heading (mint #26C1A4-style, founder Figma 194:4) ── */
+.sec{color:var(--mint);font-size:23px;font-weight:800;margin:6px 24px 13px;letter-spacing:-.3px}
+/* ── Peaks & Live rail ── */
+.rail{padding:0 0 22px}
+.rail .row{display:flex;gap:13px;overflow:hidden;padding:0 22px}
+.rail .it{width:148px;height:200px;flex:none;border-radius:22px}
+.rail .it .meta .nm{color:#fff;font-size:16px;font-weight:800}
+.eye2{position:absolute;top:11px;left:11px;z-index:3;background:rgba(0,0,0,.55);color:#fff;
+  font-size:13px;font-weight:700;padding:5px 9px;border-radius:8px;display:flex;align-items:center;gap:5px}
+/* ── Suggestions rail (CreatorCard) ── */
+.sug{display:flex;gap:13px;overflow:hidden;padding:0 22px 22px}
+.scard{width:210px;flex:none;background:var(--card);border:1px solid var(--line);
+  border-radius:24px;padding:20px 16px;text-align:center}
+.scard .avatar{width:64px;height:64px;margin:0 auto;box-shadow:0 0 0 2px var(--mint)}
+.scard .nm{color:#fff;font-size:18px;font-weight:800;margin-top:11px;display:flex;align-items:center;justify-content:center;gap:6px}
+.scard .ro{color:var(--dim);font-size:14px;margin-top:3px}
+.scard .fanbtn{margin-top:14px;background:linear-gradient(180deg,var(--accent),var(--mint));
+  color:#04130f;font-size:16px;font-weight:800;border-radius:14px;padding:11px 0}
+/* ── Ta tribu post card ── */
+.post{margin:0 22px 16px;background:var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden}
+.post .head{display:flex;align-items:center;gap:12px;padding:15px 16px 12px}
+.post .head .avatar{width:46px;height:46px;box-shadow:0 0 0 2px var(--mint)}
+.post .head .nm{color:#fff;font-size:19px;font-weight:800;line-height:1.05;display:flex;align-items:center;gap:6px}
+.post .head .lo{color:var(--dim);font-size:14px;margin-top:2px}
+.post .head .more{margin-left:auto;color:var(--dim);font-size:26px;line-height:.4}
+.post .cap{padding:0 18px 14px;color:#d7e7e1;font-size:16px;line-height:1.42}
+.post .cap .tag{color:var(--mint);font-weight:800}
+.post .img{width:100%;height:330px;background-size:cover;background-position:center}
+.post .acts{display:flex;align-items:center;gap:24px;padding:14px 18px 16px;color:#cfe9e0;font-size:25px}
+.post .acts .sp{flex:1}
+.post .acts .ct{font-size:16px;font-weight:800;color:#e6f2ee;margin-left:-14px}
+</style></head><body>
+<div class="cap-band"><h2>Ton feed, tes fans</h2><div class="sub">Le contenu de tes créateurs, dans un seul flux.</div></div>
+<div class="device">
+  <div class="notch"></div>
+  <div class="statusbar"><span>9:41</span><span>5G ▪ 100%</span></div>
+  <div class="screen">
+    <div class="appbar">
+      <div class="ic">🔔<span class="badge">3</span></div>
+      <div class="wordmark">smu<span>ppy</span></div>
+      <div class="ic">🔍</div>
+    </div>
+    <div class="pills">
+      <div class="pill on"><span class="gl">♥</span>Fan</div>
+      <div class="pill"><span class="gl">☺</span>Vibes</div>
+      <div class="pill"><span class="gl">✦</span>Xplorer</div>
+    </div>
+
+    <div class="sec">Peaks &amp; Live</div>
+    <div class="rail"><div class="row">
+      <div class="tile it" style="background-image:url('https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&q=80')"><span class="live-tag"><span class="dot"></span>LIVE</span>
+        <div class="meta"><div class="nm">Sunrise Yoga</div></div></div>
+      <div class="tile it" style="background-image:url('https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=400&q=80')"><span class="eye2">▶ 12k</span>
+        <div class="meta"><div class="nm">Marc D.</div></div></div>
+      <div class="tile it" style="background-image:url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80')"><span class="eye2">▶ 8k</span>
+        <div class="meta"><div class="nm">Mile run</div></div></div>
+      <div class="tile it" style="background-image:url('https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=400&q=80')"><span class="eye2">▶ 5k</span>
+        <div class="meta"><div class="nm">Trail</div></div></div>
+    </div></div>
+
+    <div class="sec">Suggestions pour toi</div>
+    <div class="sug">
+      <div class="scard">
+        <div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80')"></div>
+        <div class="nm">Alex Rossi <span class="verified">✦</span></div>
+        <div class="ro">Pilates &amp; mobilité</div>
+        <div class="fanbtn">Devenir fan</div>
+      </div>
+      <div class="scard">
+        <div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80')"></div>
+        <div class="nm">Marc Bloom <span class="verified">✦</span></div>
+        <div class="ro">Trail &amp; outdoor</div>
+        <div class="fanbtn">Devenir fan</div>
+      </div>
+      <div class="scard">
+        <div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&q=80')"></div>
+        <div class="nm">Nora L.</div>
+        <div class="ro">Yoga flow</div>
+        <div class="fanbtn">Devenir fan</div>
+      </div>
+    </div>
+
+    <div class="sec">Ta tribu</div>
+    <div class="post">
+      <div class="head">
+        <div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80')"></div>
+        <div><div class="nm">Mia Wong <span class="verified">✦</span></div><div class="lo">Central Park · 2h</div></div>
+        <div class="more">⋯</div>
+      </div>
+      <div class="cap">Morning flow by the river 🌿 The light was unreal today. <span class="tag">#yogalife</span></div>
+      <div class="img" style="background-image:url('https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&q=80')"></div>
+      <div class="acts">♡ <span class="ct">1,2k</span> ↗ <span class="sp"></span>🔖</div>
+    </div>
+    <div class="bnav">
+    <div class="n on">⌂</div><div class="n ">▶</div>
+    <div class="fab">＋</div>
+    <div class="n ">✉</div>
+    <div class="av" style="background-image:url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&q=80');"></div>
+  </div></div>
+</div>
+</body></html>

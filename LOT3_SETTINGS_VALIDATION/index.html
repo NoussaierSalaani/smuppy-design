@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Lot 3 — Settings · Validation avant fidélité</title>
+<style>
+  :root{--mint:#54D6A6;--bg:#0b0f12;--card:#11171c;--line:#1f2a30;--ink:#e9eef0;--mut:#8b97a0}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font:14px/1.5 -apple-system,Segoe UI,Roboto,sans-serif}
+  header{position:sticky;top:0;z-index:5;background:#070a0c;border-bottom:1px solid var(--line);padding:16px 24px}
+  header h1{font-size:18px}header p{color:var(--mut);font-size:13px;margin-top:4px}
+  .tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600}
+  .t-wired{background:rgba(84,214,166,.15);color:var(--mint)}
+  main{padding:24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:20px;max-width:1500px;margin:0 auto}
+  .screen{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .head{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .head .n{color:var(--mut);font-size:12px}.head h2{font-size:15px}
+  .imgs{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px}
+  figure img{width:100%;border-radius:9px;border:1px solid var(--line);background:#000;display:block}
+  figcaption{font-size:10.5px;color:var(--mut);text-align:center;margin-top:5px;text-transform:uppercase;letter-spacing:.5px}
+  .meta{padding:0 16px 14px;font-size:12.5px;color:var(--mut)}
+  .meta code{background:#0a1014;padding:1px 5px;border-radius:5px;color:#bfe9d8}
+</style></head><body>
+<header>
+  <h1>Lot 3 — « Settings » · 12 écrans · à valider avant la passe fidélité</h1>
+  <p>Tous déjà câblés derrière <code>FEATURES.V2_UI</code> → reste la <b>passe fidélité maquette + complétude slots</b> (comme Lot 2). Logique V1 inchangée. Règle <b>jamais d'@username</b> appliquée.</p>
+</header>
+<main>
+  <section class="screen"><div class="head"><span class="n">01</span><h2>Réglages (liste)</h2><span class="tag t-wired">câblé</span></div><div class="imgs"><figure><img src="img/SettingsListView_light.png"/><figcaption>Light</figcaption></figure><figure><img src="img/SettingsListView_dark.png"/><figcaption>Dark</figcaption></figure></div><div class="meta"><code>SettingsScreen</code> → SettingsListView · sections + lignes nav, déconnexion, version</div></section>
+  <section class="screen"><div class="head"><span class="n">02</span><h2>Notifications (réglages)</h2><span class="tag t-wired">câblé</span></div><div class="imgs"><figure><img src="img/NotificationSettingsView_light.png"/><figcaption>Light</figcaption></figure><figure><img src="img/NotificationSettingsView_dark.png"/><figcaption>Dark</figcaption></figure></div><div class="meta"><code>NotificationSettingsScreen</code> → toggles par catégorie (≠ flux Notifications)</div></section>
+  <section class="screen"><div class="head"><span class="n">03</span><h2>Confidentialité</h2><span class="tag t-wired">câblé</span></div><div class="imgs"><figure><img src="img/PrivacySettingsView_light.png"/><figcaption>Light</figcaption></figure><figure><img src="img/PrivacySettingsView_dark.png"/><figcaption>Dark</figcaption></figure></div><div class="meta"><code>PrivacySettingsScreen</code> → compte privé, qui peut voir/DM, visibilité</div></section>
+  <section class="screen"><div class="head"><span class="n">04</span><h2>Sécurité</h2><span class="tag t-wired">câblé</span></div><div class="imgs"><figure><img src="img/SecuritySettingsView_light.png"/><figcaption>Light</figcaption></figure><figure><img src="img/SecuritySettingsView_dark.png"/><figcaption>Dark</figcaption></figure></div><div class="meta"><code>SecuritySettingsScreen</code> → MFA, sessions, mot de passe</div></section>
+  <section class="screen"><div class="head"><span class="n">05</span><h2>Aide</h2><span class="tag t-wired">câblé</span></div><div class="imgs"><figure><img src="img/HelpView_light.png"/><figcaption>Light</figcaption></figure><figure><img src="img/HelpView_dark.png"/><figcaption>Dark</figcaption></figure></div><div class="meta"><code>HelpScreen</code> → FAQ, contact, liens légaux</div></section>
+  <section class="screen"><div class="head"><span class="n">06</span><h2>Utilisateurs bloqués</h2><span class="tag t-wired">câblé</span></div><div class="imgs"><figure><img src="img/BlockedUsersView_light.png"/><figcaption>Light</figcaption></figure><figure><img src="img/BlockedUsersView_dark.png"/><figcaption>Dark</figcaption></figure></div><div class="meta"><code>BlockedUsersScreen</code> → liste + débloquer (nom seul, @ retiré ✓)</div></section>
+  <section class="screen"><div class="head"><span class="n">07</span><h2>Utilisateurs en sourdine</h2><span class="tag t-wired">câblé</span></div><div class="imgs"><figure><img src="img/MutedUsersView_light.png"/><figcaption>Light</figcaption></figure><figure><img src="img/MutedUsersView_dark.png"/><figcaption>Dark</figcaption></figure></div><div class="meta"><code>MutedUsersScreen</code> → liste + réactiver (nom seul, @ retiré ✓)</div></section>
+  <section class="screen"><div class="head"><span class="n">08</span><h2>Gérer l'abonnement</h2><span class="tag t-wired">câblé</span></div><div class="imgs"><figure><img src="img/ManageSubscriptionView_light.png"/><figcaption>Light</figcaption></figure><figure><img src="img/ManageSubscriptionView_dark.png"/><figcaption>Dark</figcaption></figure></div><div class="meta"><code>ManageSubscriptionScreen</code> → abos actifs, renouvellement, annuler</div></section>
+  <section class="screen"><div class="head"><span class="n">09</span><h2>Mes abonnements</h2><span class="tag t-wired">câblé</span></div><div class="imgs"><figure><img src="img/MySubscriptionsView_light.png"/><figcaption>Light</figcaption></figure><figure><img src="img/MySubscriptionsView_dark.png"/><figcaption>Dark</figcaption></figure></div><div class="meta"><code>MySubscriptionsScreen</code> → liste des abos créateurs</div></section>
+  <section class="screen"><div class="head"><span class="n">10</span><h2>Mes évaluations</h2><span class="tag t-wired">câblé</span></div><div class="imgs"><figure><img src="img/MyRatingsSettingsView_light.png"/><figcaption>Light</figcaption></figure><figure><img src="img/MyRatingsSettingsView_dark.png"/><figcaption>Dark</figcaption></figure></div><div class="meta"><code>MyRatingsSettingsScreen</code> → réglages notes/avis</div></section>
+  <section class="screen"><div class="head"><span class="n">11</span><h2>Sessions privées</h2><span class="tag t-wired">câblé</span></div><div class="imgs"><figure><img src="img/PrivateSessionsManageView_light.png"/><figcaption>Light</figcaption></figure><figure><img src="img/PrivateSessionsManageView_dark.png"/><figcaption>Dark</figcaption></figure></div><div class="meta">PrivateSessionsManageView → gérer ses sessions privées</div></section>
+  <section class="screen"><div class="head"><span class="n">12</span><h2>Région bloquée</h2><span class="tag t-wired">câblé</span></div><div class="imgs"><figure><img src="img/BlockedRegionView_light.png"/><figcaption>Light</figcaption></figure><figure><img src="img/BlockedRegionView_dark.png"/><figcaption>Dark</figcaption></figure></div><div class="meta">BlockedRegionView → écran d'état région non disponible</div></section>
+</main>
+</body></html>

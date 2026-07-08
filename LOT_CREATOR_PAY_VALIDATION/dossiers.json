@@ -1,0 +1,145 @@
+{
+ "BusinessSubscriptionSuccessView": {
+  "v1": "src/screens/business/BusinessSubscriptionSuccessScreen.tsx",
+  "comp": "src/components/v2/BusinessSubscriptionSuccessView/",
+  "props": "businessName/planName from route; periodLabel=period; trialInfoLabel from trialDays (formatted); benefits=t-derived list; onManage={()=>navigation.replace('MySubscriptions')}; onDone={handleDone}; copy from t('business.subscriptionSuccess.*')",
+  "deltas": [
+   "BusinessSubscriptionSuccessScreen.tsx: no import of BusinessSubscriptionSuccessView, no FEATURES.V2_UI gate (still V1 View/Text/StyleSheet, line 8) — V2 view referenced only in galleryRegistry + colocated test",
+   "Route params match fixture mirror: BusinessSubscriptionSuccessScreen.tsx:38 destructures { subscriptionId, businessName, planName, period, trialDays } — fixtures doc maps each to View prop (subscriptionId kept for analytics, not a displayed row)",
+   "V1 already has a manage-subscriptions action (:59 navigation.replace('MySubscriptions')) + handleDone (:53) that map to manageCta/onManage + done CTA — wiring is remap-light",
+   "benefits[] is server-fixed bounded list (fixture BENEFITS) — V1 must supply it (currently V1 may hardcode via t()); confirm benefit source at wire time",
+   "Place early-return after the actions useMemo (BusinessSubscriptionSuccessScreen.tsx:62) to keep hook order"
+  ],
+  "sa": true,
+  "eff": "M",
+  "i18n": true
+ },
+ "ChannelDetailView": {
+  "v1": "NONE",
+  "comp": "src/components/v2/ChannelDetailView/",
+  "props": "channelName/tagline/priceLabel/perks from channel API; subscribed from subscription-status query; onSubscribe→IAP/Stripe purchase (subscribeLoading=mutation.isPending); onManage→nav to manage; strings from t('v2ChannelDetailView.*'); coverSlot/premiumIcon/perkCheckIcon = caller nodes",
+  "deltas": [
+   "No V1 screen renders this view: grep ChannelDetail across src/screens, src/navigation/MainNavigator.tsx, src/types/index.ts = 0 hits; component referenced only by __gallery__/galleryRegistry.ts + __tests__/components/v2/ChannelDetailView.test.tsx",
+   "Component header doc (ChannelDetailView.tsx:1-8) states it is a FAN-FACING full-screen channel detail/purchase surface, explicitly NOT the in-profile ProfileChannelPane tab and NOT ChannelSubscriptionScreen (src/screens/payments/ChannelSubscriptionScreen.tsx) — that screen is a different (sheet/subscribe) surface, so it is not the host",
+   "Wiring requires a NEW route: add ChannelDetail to src/types/index.ts MainStackParamList + a host screen + MainNavigator.tsx registration (3-file rule), then early-return <ChannelDetailView .../> behind FEATURES.V2_UI",
+   "View is a pure presentational money surface (subscribe gradient CTA with subscribeLoading guard, ChannelDetailView.tsx:371-380; subscribed→manage flip at :360) — needs a container that owns IAP/Stripe subscribe + subscription-status read"
+  ],
+  "sa": true,
+  "eff": "L",
+  "i18n": true
+ },
+ "ChannelOwnerView": {
+  "v1": "src/screens/settings/ChannelSetupScreen.tsx",
+  "comp": "src/components/v2/ChannelOwnerView/",
+  "props": "channelName←channel.name; caption←`${price}/mois · publié ${publishedAgo}`; status←channel.published?'active':'draft'; stats←[activeSubs,monthRevenue,trend]; perks←channel.perks; onConfigure→nav ChannelSetup; coverSlot←<Image source={channel.cover}/>.",
+  "deltas": [
+   "Component exists + tested (src/__tests__/components/v2/ChannelOwnerView.test.tsx) but NO V1 screen imports it. ChannelSetupScreen.tsx:47 wires CreatorChannelSetupView (config/setup), NOT the owner profile-tab view ChannelOwnerView. ProfileChannelPane.tsx only references it in a doc-comment (line 5), no import.",
+   "Correct host is the creator's OWN profile Channel tab (owner view), distinct from setup. Likely belongs under the profile shell, not ChannelSetupScreen — confirm with founder which V1 surface renders the owner channel tab.",
+   "Pure View: no SafeAreaView/useSafeAreaInsets; scroll style has paddingBottom:40 (ChannelOwnerView.tsx:551) but no top inset — wiring container must supply insets.top.",
+   "i18n namespace v2ChannelOwnerView NOT registered in src/i18n/config.ts (only locale JSON exists) — wire via t('v2ChannelOwnerView:key',{defaultValue:'<FR>'}) like IdentityVerificationScreen.tsx:374."
+  ],
+  "sa": true,
+  "eff": "M",
+  "i18n": true
+ },
+ "KycCompanyView": {
+  "v1": "src/screens/payments/IdentityVerificationScreen.tsx",
+  "comp": "src/components/v2/KycCompanyView/",
+  "props": "steps←companyKycSteps (registration#/legal-rep/bank — from connect company controller); title/headline/lead/typePillLabel/switchNote←t(v2KycCompanyView:*); onVerify→openCompanyConnectLink; verifyLoading←ctaLoading; onBack→navigation.goBack.",
+  "deltas": [
+   "IdentityVerificationScreen.tsx:423 wires IdentityVerificationView (personal Stripe-Identity KYC), NOT KycCompanyView. KycCompanyView is the legal-entity/company Connect KYC for pro_business — no V1 screen renders it.",
+   "Blocked on backend: per memory + docs, company Connect onboarding (connect.ts:190) needs a company branch not yet built — onVerify CTA has no live endpoint for entreprise accounts. Confirm backend before wiring.",
+   "Host should be IdentityVerificationScreen branched by account type: isPremiumBusiness/isProBusiness → render KycCompanyView, else IdentityVerificationView. Currently no account-type branch exists in the V2_UI block (IdentityVerificationScreen.tsx:372).",
+   "Pure View: no SafeAreaView (KycCompanyView.tsx:120 ScrollView, paddingBottom:40 at :182, no top inset) — container must supply insets.top.",
+   "i18n namespace v2KycCompanyView NOT registered in src/i18n/config.ts — wire via t('v2KycCompanyView:key',{defaultValue}) pattern."
+  ],
+  "sa": true,
+  "eff": "L",
+  "i18n": true
+ },
+ "PackagesEditView": {
+  "v1": "NONE",
+  "comp": "src/components/v2/PackagesEditView/",
+  "props": "New owner screen: packs=usePacks(user.id).map(->{id,title,price:fmt(price)+' · '+sales}), onMovePackUp/Down=reorderMutation, onEditPack=nav('PackEdit',{id}), onAddPack=nav('PackCreate'), onRequestDelete=setPendingDeleteId, onCancelDelete=clear, onDeletePack=deleteMutation, pendingDeleteId=state, onSave=saveOrderMutation, saveLoading=isPending; strings via t('v2PackagesEditView.*').",
+  "deltas": [
+   "No src/screens/ file imports PackagesEditView (grep: only galleryRegistry.ts).",
+   "NO V1 screen exists for the OWNER catalogue manager: find src/screens -iname '*PackagesEdit*'/'*EditPack*' returns nothing.",
+   "The nearest screen CreatorPackagesSetupScreen.tsx renders CreatorPackagesSetupView (line 14) — the SINGLE-pack editor, explicitly distinct from this whole-catalogue reorder/delete manager per PackagesEditView.tsx:9-12. So there is no host today.",
+   "Wiring needed: create a new V1 screen (3-file rule: src/screens/sessions/index.ts + src/types MainStackParamList + MainNavigator) that loads the owner's pack list, owns the array reorder/delete mutation, and renders <PackagesEditView/> behind FEATURES.V2_UI; backend list+reorder+delete endpoints likely missing → Jira gap ticket per founder rule."
+  ],
+  "sa": true,
+  "eff": "L",
+  "i18n": true
+ },
+ "PayoutOnboardingView": {
+  "v1": "NONE",
+  "comp": "src/components/v2/PayoutOnboardingView/",
+  "props": "status=connectStatus.kycStatus ('not_started'|'pending'|'verified'); balanceLabel=formatCents(balance.available); onStart=()=>createAccountLink(); onRefresh=()=>refetchConnectStatus(); onWithdraw=()=>createPayout(); dashboard/bank/history rows from paymentsApi.getConnectStatus. Container injects v2PayoutOnboardingView.json strings.",
+  "deltas": [
+   "Component + 4 locales exist, but NO screen imports it. rg 'PayoutOnboardingView' src/ → only its own test + DOC-COMMENT mentions inside sibling views (CreatorWalletView.tsx:7, SmupWalletView.tsx:4/6/15, RunRecordsView.tsx:20). Never rendered.",
+   "The payout/earnings surface that IS wired is CreatorEarningsScreen.tsx:143 (if FEATURES.V2_UI) which renders CreatorEarningsView — a DIFFERENT component (KPIs + breakdown + withdraw Alert), not the Stripe Connect KYC onboarding View.",
+   "CreatorWalletScreen.tsx:469 wires CreatorWalletView (wallet/transactions), also not this KYC onboarding View. PayoutOnboardingView's 3 states (not_started/pending/verified KYC) have no host screen.",
+   "No SafeArea: PayoutOnboardingView.tsx:264 scroll paddingBottom:40 fixed, no useSafeAreaInsets — verified-state withdraw CTA / balance card bottom could clip if hosted without inset pad."
+  ],
+  "sa": true,
+  "eff": "L",
+  "i18n": true
+ },
+ "PlatformSubscriptionView": {
+  "v1": "src/screens/payments/PlatformSubscriptionScreen.tsx",
+  "comp": "src/components/v2/PlatformSubscriptionView/",
+  "props": "isSubscribed=(currentPlan===selectedPlan); planName/priceText from PLANS[accountType plan] + formatCentsDisplay(PLATFORM_SUBSCRIPTION_PRICES_CENTS[key]); subscribeLoading=loading; onSubscribe=handleSubscribe; onManage=()=>navigate('ManageSubscription'); accountBadgeText from user.accountType; unlocks from PLANS[plan].features mapped to {id,iconColor,title,subtitle}.",
+  "deltas": [
+   "PlatformSubscriptionScreen has NO V2_UI branch and does NOT import PlatformSubscriptionView (rg in screen = 0 matches). Only sibling views reference it (ManageSubscriptionView/BusinessSubscriptionView).",
+   "Architecture divergence to reconcile before wiring: V1 PlatformSubscriptionScreen is a side-by-side PICKER (PLANS array = pro_creator AND pro_business, selectedPlan state line 133, scaleAnim card selection). The View is a SINGLE-plan management/upsell variant (PlatformSubscriptionView.tsx:6 'never a side-by-side picker'). Wiring must collapse to the user's accountType plan (availablePlans logic already exists at PlatformSubscriptionScreen.tsx:125).",
+   "View enforces directive #18: when isSubscribed the charge CTA is physically removed (manage affordance only). V1 screen guards via currentPlan===selectedPlan early-return (line 277). Map isSubscribed=currentPlan===plan.",
+   "scroll paddingBottom:40 fixed (PlatformSubscriptionView.tsx:335), no useSafeAreaInsets — but the V1 host PlatformSubscriptionScreen DOES use useSafeAreaInsets (line 20); if View is early-returned inside it, ensure the View's own bottom subscribe CTA gets insets.bottom pad or it clips under the home indicator."
+  ],
+  "sa": true,
+  "eff": "M",
+  "i18n": true
+ },
+ "PremiumPlanView": {
+  "v1": "src/screens/payments/PlatformSubscriptionScreen.tsx",
+  "comp": "src/components/v2/PremiumPlanView/",
+  "props": "selectedPlan/availablePlans (PlatformSubscriptionScreen.tsx:125-135) → planName=plan.name, priceLabel=resolvePlanPriceLabel(planId,fallbackCents) (:156), periodLabel=t('/mo'), features=plan.features[], tag=CREATOR/BUSINESS; title/headline/footnote from v2PremiumPlanView ns; onSubscribe=handleIAPSubscribe(:186)/Stripe path, subscribeLoading=loading(:136), onBack=navigation.goBack.",
+  "deltas": [
+   "PlatformSubscriptionScreen.tsx imports FEATURES (:44) but ONLY for MFA gating (:288); it does NOT import PremiumPlanView and has NO `if (FEATURES.V2_UI) return <PremiumPlanView/>`. The View's own docstring cites this screen as its V1 parity source (PremiumPlanView.tsx:18-21).",
+   "Add early-return after all hooks (post line ~176, after useDataFetch currentPlan) : `if (FEATURES.V2_UI) return <PremiumPlanView .../>`.",
+   "V1 already does single-plan filtering by accountType (PlatformSubscriptionScreen.tsx:125-129) and IAP-live price resolution (resolvePlanPriceLabel :156-165) — these map cleanly onto the View's single-plan props (planName/priceLabel). The View intentionally shows ONE plan (no picker), matching :124 filter.",
+   "View's ScrollView contentContainer fixed paddingBottom:40 + header paddingTop:8 (PremiumPlanView.tsx:196,199) with NO useSafeAreaInsets — header can sit under the notch and footnote/CTA near the home indicator. V1 screen uses useSafeAreaInsets (:110); wiring must thread insets or accept the gap."
+  ],
+  "sa": true,
+  "eff": "M",
+  "i18n": true
+ },
+ "PremiumSuccessView": {
+  "v1": "src/screens/payments/PlatformSubscriptionSuccessScreen.tsx",
+  "comp": "src/components/v2/PremiumSuccessView/",
+  "props": "route.params.productType (PlatformSubscriptionSuccessScreen.tsx:32) → headline=t('v2PremiumSuccessView:headline',{role: productName}) (:38 PRODUCT_NAME_KEYS), lead=t(:lead), configureCtaLabel/laterLabel/payoutRowTitle from ns; onConfigure→navigate payout onboarding (NEW route needed), onLater→navigation.navigate('Tabs',{screen:'Home'}) per handleDone(:48).",
+  "deltas": [
+   "PlatformSubscriptionSuccessScreen.tsx has NO FEATURES/V2_UI import and NO PremiumSuccessView import ('no v2 refs'). It renders a legacy LinearGradient checkmark + info card (PlatformSubscriptionSuccessScreen.tsx:51-80) with a 'Done'→Home handler (:47-49) and 'Manage subscriptions' deep link (:40-45).",
+   "Add early-return after hooks (post line 38) : `if (FEATURES.V2_UI) return <PremiumSuccessView .../>`.",
+   "SEMANTIC DIVERGENCE: the V2 View is a payout hand-off (routes to PayoutOnboarding via onConfigure, PremiumSuccessView.tsx:4-6,37) whereas V1 SuccessScreen routes Done→Home and offers Manage-Subscriptions (:47-49,40). PayoutOnboarding is NOT a registered route in types/index.ts/MainNavigator (only PlatformSubscriptionSuccess:853 exists) — wiring requires either a payout route or remapping onConfigure to the existing payout-start flow. Backend/nav gap → ticket if route missing.",
+   "View is a plain View (no ScrollView) with content paddingTop:96 + footer paddingBottom:34 fixed (PremiumSuccessView.tsx:123,128) and NO useSafeAreaInsets — V1 uses insets.top/bottom (:52,:103). On tall-notch / home-indicator devices hero clips top and footer buttons clip bottom."
+  ],
+  "sa": true,
+  "eff": "M",
+  "i18n": true
+ },
+ "VerifiedBadgeView": {
+  "v1": "src/screens/payments/IdentityVerificationScreen.tsx",
+  "comp": "src/components/v2/VerifiedBadgeView/",
+  "props": "verified benefits->features:VerifiedBadgeFeature[], $14.99->priceLabel + t('/mo')->periodLabel, status==='verified'->alreadyVerified, handleIAPPayment->onSubscribe, isProcessing->subscribeLoading, navigation.goBack->onBack; title/headline/lead/priceTitle/ctaLabel from v2VerifiedBadgeView namespace.",
+  "deltas": [
+   "VerifiedBadgeView is referenced ONLY by its own dir + __tests__ + __gallery__ (grep across src = 0 production hits). No v2 barrel re-export.",
+   "V1 host is IdentityVerificationScreen.tsx — it owns the verified-badge subscription: useIAPCheckout + getSubscriptionProductId for the verified_account product (lines 30-31,147-148,240 handleIAPPayment), status machine 'not_started'|'verified'|'payment_required' (line 42), benefits.verifiedBadge feature (line 112). NO FEATURES.V2_UI early-return present.",
+   "WIRE: after the IAP/status hooks in IdentityVerificationScreen, add `if (FEATURES.V2_UI) return <VerifiedBadgeView ... />`; map status==='verified'->alreadyVerified, handleIAPPayment->onSubscribe, in-flight->subscribeLoading.",
+   "Fidelity vs maquette: VerifiedBadgeView hero uses t.colors.info (blue badge tone, VerifiedBadgeView.tsx:97,118) per build_payments_v2.py verified_badge maquette — conformant. priceLabel must be $14.99 (memory: founder-confirmed $14.99, not $14.90) — verify container passes $14.99 to avoid the prior false-ad bug.",
+   "SafeArea: VerifiedBadgeView root bare View + ScrollView paddingBottom:40 (VerifiedBadgeView.tsx:183), CTA in scroll content (not sticky), NO useSafeAreaInsets — relies on the host. IdentityVerificationScreen host must keep SafeArea around it or View must add insets."
+  ],
+  "sa": true,
+  "eff": "M",
+  "i18n": true
+ }
+}

@@ -1,0 +1,10 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="ShareButton">
+<rect width="44" height="44" rx="22" fill="var(--fill-0, white)"/>
+<circle id="Ellipse" cx="17.5" cy="22" r="3.5" fill="var(--fill-0, #182834)"/>
+<circle id="Ellipse_2" cx="28.5" cy="14.5" r="3.5" fill="var(--fill-0, #182834)"/>
+<circle id="Ellipse_3" cx="28.5" cy="29.5" r="3.5" fill="var(--fill-0, #182834)"/>
+<rect id="Rectangle" x="18" y="18" width="10" height="2" transform="rotate(30 18 18)" fill="var(--fill-0, #182834)"/>
+<rect id="Rectangle_2" x="18" y="24" width="10" height="2" transform="rotate(-30 18 24)" fill="var(--fill-0, #182834)"/>
+</g>
+</svg>

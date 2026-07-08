@@ -1,0 +1,191 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  body{background:#0a0d12;font-family:-apple-system,"SF Pro Display",Segoe UI,Roboto,sans-serif;
+       padding:54px 46px;display:flex;flex-direction:column;align-items:center}
+  h1{color:#54D6A6;font-size:33px;font-weight:800;letter-spacing:-.5px;align-self:flex-start}
+  .sub{color:#8b97a3;font-size:16px;align-self:flex-start;margin-bottom:20px}
+  .grid{display:flex;gap:40px}
+  .cap{font-size:15px;text-align:center;margin-top:13px;font-weight:500;color:#c7d2da}
+  .cap b{color:#54D6A6}
+  .notch{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:104px;height:24px;border-radius:14px;z-index:40}
+  .phone{width:356px;height:772px;border-radius:46px;position:relative;overflow:hidden}
+
+  .dark{background:radial-gradient(120% 85% at 50% 14%,#0c2c24,#08161a 50%,#04070b 84%);border:1px solid rgba(91,240,200,.14);box-shadow:0 22px 64px rgba(0,0,0,.6)}
+  .dark .notch{background:#000}
+  .light{background:radial-gradient(120% 85% at 50% 14%,#e6f4ee,#eef6f2 54%,#f6faf8 86%);border:1px solid rgba(23,106,90,.12);box-shadow:0 22px 56px rgba(40,80,70,.22)}
+  .light .notch{background:#10221d}
+
+  .stars{position:absolute;inset:0}
+  .dark .stars{background-image:radial-gradient(1px 1px at 22% 26%,rgba(201,255,241,.55),transparent),radial-gradient(1.5px 1.5px at 80% 30%,rgba(91,240,200,.45),transparent),radial-gradient(1px 1px at 40% 78%,rgba(201,255,241,.3),transparent),radial-gradient(1px 1px at 70% 82%,rgba(91,240,200,.35),transparent)}
+
+  .pad{position:absolute;inset:0;padding:66px 26px 30px;display:flex;flex-direction:column;align-items:center;z-index:3}
+
+  /* header */
+  .eyebrow{font-size:12px;font-weight:800;letter-spacing:3px;text-transform:uppercase;text-align:center}
+  .dark .eyebrow{color:#7fd9c2} .light .eyebrow{color:#2c7a66}
+  .date{font-size:11.5px;font-weight:600;letter-spacing:1px;margin-top:5px}
+  .dark .date{color:#5d736c} .light .date{color:#7b968e}
+  .ribbon{margin-top:12px;font-size:12px;font-weight:800;padding:6px 14px;border-radius:999px;color:#04130f;background:linear-gradient(180deg,#6FE3BC,#54D6A6);box-shadow:0 5px 16px rgba(84,214,166,.42)}
+  .light .ribbon{color:#fff;background:linear-gradient(180deg,#33C2A0,#2FC9A2)}
+
+  /* challenger */
+  .av{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#54D6A6,#1f8e72);border:2px solid rgba(201,255,241,.5);display:flex;align-items:center;justify-content:center;font-size:21px;margin-top:12px}
+  .who{font-size:14.5px;font-weight:700;margin-top:8px} .dark .who{color:#eaf6f1} .light .who{color:#0c2620}
+  .who b{color:#5BF0C8} .light .who b{color:#0d6e58}
+
+  /* centered route medallion */
+  .medal{margin:auto;width:212px;height:212px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center}
+  .dark .medal{background:radial-gradient(circle at 50% 45%,rgba(91,240,200,.14),transparent 68%)}
+  .light .medal{background:radial-gradient(circle at 50% 45%,rgba(47,201,162,.16),transparent 68%)}
+  .medal::before{content:"";position:absolute;inset:0;border-radius:50%}
+  .dark .medal::before{border:1px solid rgba(91,240,200,.18)}
+  .light .medal::before{border:1px solid rgba(47,201,162,.22)}
+  .medal svg{width:190px;height:190px}
+
+  /* 3 stats row */
+  .stats{display:flex;width:100%;justify-content:space-around;margin-top:6px}
+  .stat{text-align:center;flex:1}
+  .sv{font-size:30px;font-weight:800;letter-spacing:-1px;line-height:1}
+  .dark .sv{color:#fff} .light .sv{color:#0c2620}
+  .sv small{font-size:14px;font-weight:700;color:#5BF0C8;margin-left:2px} .light .sv small{color:#33A089}
+  .sl{font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-top:7px}
+  .dark .sl{color:#7E8B91} .light .sl{color:#6f928a}
+  .stat.target .sv{color:#5BF0C8} .light .stat.target .sv{color:#0d6e58}
+  .divider{width:1px;align-self:center;height:34px}
+  .dark .divider{background:rgba(255,255,255,.08)} .light .divider{background:rgba(23,106,90,.12)}
+
+  /* footer */
+  .foot{margin-top:auto;width:100%;display:flex;flex-direction:column;align-items:center}
+  .brand{font-size:17px;font-weight:800;margin-bottom:14px} .dark .brand{color:#cdeae0} .light .brand{color:#16443a}
+  .brand span{color:#54D6A6} .light .brand span{color:#2FC9A2}
+  .sharebar{width:100%;display:flex;gap:11px}
+  .btn{flex:1;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:700;color:#04130f;background:linear-gradient(180deg,#6FE3BC,#54D6A6);box-shadow:0 8px 22px rgba(84,214,166,.4)}
+  .light .btn{color:#fff;background:linear-gradient(180deg,#33C2A0,#2FC9A2)}
+  .btn.alt{background:transparent;border:1.5px solid} .dark .btn.alt{border-color:rgba(91,240,200,.5);color:#5BF0C8;box-shadow:none} .light .btn.alt{border-color:rgba(51,160,137,.5);color:#176A5A;box-shadow:none}
+  .cta{width:100%;height:56px;border-radius:18px;display:flex;align-items:center;justify-content:center;gap:9px;font-size:17px;font-weight:800;color:#04130f;background:linear-gradient(180deg,#6FE3BC,#54D6A6);box-shadow:0 10px 26px rgba(84,214,166,.45)}
+  .light .cta{color:#fff;background:linear-gradient(180deg,#33C2A0,#2FC9A2)}
+  .social{font-size:13px;font-weight:600;margin-bottom:14px} .dark .social{color:#7E8B91} .light .social{color:#6f928a}
+</style></head>
+<body>
+<h1>Run — Peak corrigé (tracé centré + 3 stats propres)</h1>
+<div class="sub">Médaillon centré · Distance · Durée · Allure en ligne · zéro chevauchement</div>
+
+<!-- ===== ROW 1 : PEAK PARTAGE ===== -->
+<div class="grid">
+  <div>
+  <div class="phone dark">
+    <div class="notch"></div><div class="stars"></div>
+    <div class="pad">
+      <div class="eyebrow">Course du matin</div>
+      <div class="date">25 JUIN 2026 · PARIS</div>
+      <div class="ribbon">🏆 Nouveau record · 5 KM</div>
+      <div class="medal">
+        <svg viewBox="0 0 190 190" fill="none"><defs><filter id="a" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <path d="M55 158 C28 120 70 104 60 78 S40 38 88 40 S150 60 138 92 S96 150 120 140" stroke="#5BF0C8" stroke-width="9" stroke-linecap="round" opacity=".5" filter="url(#a)"/>
+          <path d="M55 158 C28 120 70 104 60 78 S40 38 88 40 S150 60 138 92 S96 150 120 140" stroke="#C9FFF1" stroke-width="3" stroke-linecap="round"/></svg>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="sv">5.2<small>km</small></div><div class="sl">Distance</div></div>
+        <div class="divider"></div>
+        <div class="stat"><div class="sv">26:18</div><div class="sl">Durée</div></div>
+        <div class="divider"></div>
+        <div class="stat"><div class="sv">5'03</div><div class="sl">Allure</div></div>
+      </div>
+      <div class="foot">
+        <div class="brand">smup<span>py</span></div>
+        <div class="sharebar"><div class="btn">＋ Publier en Peak</div><div class="btn alt">⤴</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="cap"><b>Peak partage</b> — NightRun</div>
+  </div>
+
+  <div>
+  <div class="phone light">
+    <div class="notch"></div>
+    <div class="pad">
+      <div class="eyebrow">Course du matin</div>
+      <div class="date">25 JUIN 2026 · PARIS</div>
+      <div class="ribbon">🏆 Nouveau record · 5 KM</div>
+      <div class="medal">
+        <svg viewBox="0 0 190 190" fill="none"><defs><filter id="b2" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <path d="M55 158 C28 120 70 104 60 78 S40 38 88 40 S150 60 138 92 S96 150 120 140" stroke="#33A089" stroke-width="9" stroke-linecap="round" opacity=".6" filter="url(#b2)"/>
+          <path d="M55 158 C28 120 70 104 60 78 S40 38 88 40 S150 60 138 92 S96 150 120 140" stroke="#176A5A" stroke-width="3" stroke-linecap="round"/></svg>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="sv">5.2<small>km</small></div><div class="sl">Distance</div></div>
+        <div class="divider"></div>
+        <div class="stat"><div class="sv">26:18</div><div class="sl">Durée</div></div>
+        <div class="divider"></div>
+        <div class="stat"><div class="sv">5'03</div><div class="sl">Allure</div></div>
+      </div>
+      <div class="foot">
+        <div class="brand">smup<span>py</span></div>
+        <div class="sharebar"><div class="btn">＋ Publier en Peak</div><div class="btn alt">⤴</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="cap"><b>Peak partage</b> — DayRun</div>
+  </div>
+</div>
+
+<!-- ===== ROW 2 : PEAK CHALLENGE ===== -->
+<div class="grid" style="margin-top:34px">
+  <div>
+  <div class="phone dark">
+    <div class="notch"></div><div class="stars"></div>
+    <div class="pad">
+      <div class="ribbon">⚡ DÉFI · 5 KM</div>
+      <div class="av">🏃</div>
+      <div class="who"><b>Sarah</b> te défie</div>
+      <div class="medal">
+        <svg viewBox="0 0 190 190" fill="none"><defs><filter id="c" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <path d="M55 158 C28 120 70 104 60 78 S40 38 88 40 S150 60 138 92 S96 150 120 140" stroke="#5BF0C8" stroke-width="9" stroke-linecap="round" opacity=".5" filter="url(#c)"/>
+          <path d="M55 158 C28 120 70 104 60 78 S40 38 88 40 S150 60 138 92 S96 150 120 140" stroke="#C9FFF1" stroke-width="3" stroke-linecap="round"/></svg>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="sv">5.2<small>km</small></div><div class="sl">Distance</div></div>
+        <div class="divider"></div>
+        <div class="stat target"><div class="sv">26:18</div><div class="sl">À battre</div></div>
+        <div class="divider"></div>
+        <div class="stat"><div class="sv">5'03</div><div class="sl">Allure</div></div>
+      </div>
+      <div class="foot">
+        <div class="social">🔥 12 runners ont déjà relevé</div>
+        <div class="cta">⚡ Relever le défi</div>
+      </div>
+    </div>
+  </div>
+  <div class="cap"><b>Peak Challenge</b> — NightRun</div>
+  </div>
+
+  <div>
+  <div class="phone light">
+    <div class="notch"></div>
+    <div class="pad">
+      <div class="ribbon">⚡ DÉFI · 5 KM</div>
+      <div class="av">🏃</div>
+      <div class="who"><b>Sarah</b> te défie</div>
+      <div class="medal">
+        <svg viewBox="0 0 190 190" fill="none"><defs><filter id="d2" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <path d="M55 158 C28 120 70 104 60 78 S40 38 88 40 S150 60 138 92 S96 150 120 140" stroke="#33A089" stroke-width="9" stroke-linecap="round" opacity=".6" filter="url(#d2)"/>
+          <path d="M55 158 C28 120 70 104 60 78 S40 38 88 40 S150 60 138 92 S96 150 120 140" stroke="#176A5A" stroke-width="3" stroke-linecap="round"/></svg>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="sv">5.2<small>km</small></div><div class="sl">Distance</div></div>
+        <div class="divider"></div>
+        <div class="stat target"><div class="sv">26:18</div><div class="sl">À battre</div></div>
+        <div class="divider"></div>
+        <div class="stat"><div class="sv">5'03</div><div class="sl">Allure</div></div>
+      </div>
+      <div class="foot">
+        <div class="social">🔥 12 runners ont déjà relevé</div>
+        <div class="cta">⚡ Relever le défi</div>
+      </div>
+    </div>
+  </div>
+  <div class="cap"><b>Peak Challenge</b> — DayRun</div>
+  </div>
+</div>
+</body></html>

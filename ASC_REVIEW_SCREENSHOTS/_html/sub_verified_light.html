@@ -1,0 +1,71 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../APP_STORE_SCREENSHOTS/_html/_base.css">
+<style>
+/* ===== LIGHT MODE OVERRIDE ===== */
+:root{
+  --mint:#2FC9A2; --mint-light:#2FC9A2;
+  --accent:#0B7A62; --accent-light:#0B7A62;
+  --ink:#0B1F1A; --dim:#5C6B66; --bg:#FFFFFF;
+  --card:#F2F8F5; --card2:#F4FBF8; --line:rgba(11,122,98,.14);
+}
+body{display:block}
+.screen.full{position:relative;width:645px;height:1398px;padding:0;overflow:hidden;
+  background:radial-gradient(120% 60% at 50% -8%, #F4FBF8 0%, #FFFFFF 50%, #FFFFFF 82%)}
+.statusbar{position:absolute;top:26px;left:0;right:0;z-index:55;
+  display:flex;justify-content:space-between;padding:0 54px;
+  color:#0B1F1A;font-size:24px;font-weight:600;opacity:.92}
+.hdr{position:relative;z-index:10;display:flex;align-items:center;gap:18px;padding:84px 40px 10px}
+.hdr .back{width:52px;height:52px;border-radius:50%;background:#F2F8F5;
+  border:1px solid var(--line);display:flex;align-items:center;justify-content:center;
+  color:#0B1F1A;font-size:30px;flex:none}
+.hdr .ttl{color:#0B1F1A;font-size:34px;font-weight:800;letter-spacing:-.4px}
+.body{position:relative;z-index:5;padding:8px 40px 0}
+.hero{margin:18px 0 6px;border-radius:30px;padding:48px 34px 42px;text-align:center;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#EAF8F2,#F4FBF8);border:1px solid var(--line)}
+.hero::after{content:"";position:absolute;top:-70px;right:-50px;width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(47,201,162,.20),transparent 70%)}
+/* mint verified badge visual */
+.vbadge{width:128px;height:128px;margin:0 auto 22px;position:relative;z-index:2;
+  display:flex;align-items:center;justify-content:center}
+.vbadge .seal{width:118px;height:118px;border-radius:50%;
+  background:linear-gradient(180deg,#2FC9A2,#0B7A62);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 50px rgba(47,201,162,.4),0 0 0 8px rgba(47,201,162,.12)}
+.vbadge .seal .tick{color:#FFFFFF;font-size:62px;font-weight:900;line-height:1}
+.hero .plan{color:var(--accent);font-size:21px;font-weight:700;letter-spacing:.3px;position:relative;z-index:2}
+.hero .price{color:#0B1F1A;font-size:78px;font-weight:800;letter-spacing:-2.5px;margin-top:6px;line-height:1;position:relative;z-index:2}
+.hero .price .per{color:#5C6B66;font-size:30px;font-weight:600;letter-spacing:-.5px}
+.hero .sub{color:#0B7A62;font-size:18px;font-weight:500;margin-top:12px;position:relative;z-index:2}
+.flist{margin:38px 6px 0;display:flex;flex-direction:column;gap:24px}
+.frow{display:flex;align-items:center;gap:18px}
+.frow .ck{width:38px;height:38px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;
+  background:rgba(47,201,162,.14);border:1px solid rgba(47,201,162,.28);color:var(--accent);font-size:22px;font-weight:800}
+.frow .ft{color:#0B1F1A;font-size:23px;font-weight:600}
+.foot{position:absolute;left:0;right:0;bottom:0;z-index:20;padding:24px 40px 46px;
+  background:linear-gradient(0deg,#FFFFFF 30%,rgba(255,255,255,.86) 70%,transparent)}
+.foot .cta.solid{font-size:24px;padding:21px 0;border-radius:999px;
+  background:linear-gradient(180deg,#1A7D68 0%,#157082 100%);color:#FFFFFF;font-weight:700;border-color:transparent}
+.foot .fine{color:#5C6B66;font-size:17px;text-align:center;margin-top:16px;letter-spacing:.2px}
+</style></head><body>
+<div class="screen full">
+  <div class="statusbar"><span>9:41</span><span>5G ▪ 100%</span></div>
+  <div class="hdr"><div class="back">‹</div><div class="ttl">Compte vérifié</div></div>
+  <div class="body">
+    <div class="hero">
+      <div class="vbadge"><div class="seal"><div class="tick">✓</div></div></div>
+      <div class="plan">Compte vérifié</div>
+      <div class="price">$14.99<span class="per">/mois</span></div>
+      <div class="sub">Affiche ton badge vérifié</div>
+    </div>
+    <div class="flist">
+      <div class="frow"><div class="ck">✓</div><div class="ft">Badge vérifié sur le profil</div></div>
+      <div class="frow"><div class="ck">✓</div><div class="ft">Confiance renforcée</div></div>
+      <div class="frow"><div class="ck">✓</div><div class="ft">Priorité dans la recherche</div></div>
+    </div>
+  </div>
+  <div class="foot">
+    <div class="cta solid">S'abonner — $14.99/mois</div>
+    <div class="fine">Renouvellement auto · annulable à tout moment</div>
+  </div>
+</div>
+</body></html>

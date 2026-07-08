@@ -1,0 +1,139 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  body{background:#0a0d12;font-family:-apple-system,"SF Pro Display",Segoe UI,Roboto,sans-serif;padding:48px 40px;display:flex;flex-direction:column;align-items:center}
+  h1{color:#54D6A6;font-size:30px;font-weight:800;letter-spacing:-.5px;align-self:flex-start}
+  .sub{color:#8b97a3;font-size:15px;align-self:flex-start;margin-bottom:22px}
+  .grid{display:flex;gap:42px}
+  .cap{font-size:14px;text-align:center;margin-top:12px;font-weight:600;color:#c7d2da}
+  .notch{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:104px;height:24px;border-radius:14px;z-index:40}
+  .phone{width:360px;height:780px;border-radius:46px;position:relative;overflow:hidden;display:flex;flex-direction:column}
+  .dark{background:#000}.dark .notch{background:#0a0a0a}
+  .light{background:#f1f6f4}.light .notch{background:#10221d}
+
+  .hdr{display:flex;align-items:center;justify-content:space-between;padding:46px 18px 6px}
+  .hback{font-size:26px}.dark .hback{color:#eaf6f1}.light .hback{color:#0c2620}
+  .htitle{font-size:17px;font-weight:800}.dark .htitle{color:#eaf6f1}.light .htitle{color:#0c2620}
+  .hshare{font-size:20px}
+
+  .scroll{flex:1;overflow:hidden;padding:6px 18px 16px}
+  /* hero */
+  .hero{border-radius:22px;padding:20px;margin-top:8px;position:relative;overflow:hidden}
+  .dark .hero{background:linear-gradient(135deg,#0e2b24,#06120f);border:1px solid rgba(84,214,166,.18)}
+  .light .hero{background:linear-gradient(135deg,#dcefe8,#eef7f4);border:1px solid rgba(47,201,162,.22)}
+  .htype{font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase}
+  .dark .htype{color:#6FE3BC}.light .htype{color:#0B7A62}
+  .hname{font-size:23px;font-weight:800;margin-top:4px}.dark .hname{color:#fff}.light .hname{color:#0c2620}
+  .hdate{font-size:13px;margin-top:3px}.dark .hdate{color:#8b97a3}.light .hdate{color:#6f8a82}
+  /* rank pill */
+  .rank{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:7px 13px;border-radius:999px;font-size:13px;font-weight:700}
+  .dark .rank{background:rgba(245,158,11,.14);color:#F59E0B}.light .rank{background:rgba(245,158,11,.16);color:#b9770a}
+
+  /* stat grid */
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:14px}
+  .stat{border-radius:16px;padding:14px}
+  .dark .stat{background:#0c1116;border:1px solid rgba(255,255,255,.06)}
+  .light .stat{background:#fff;border:1px solid rgba(23,106,90,.09)}
+  .stile{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:9px}
+  .stile svg{width:18px;height:18px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .sval{font-size:24px;font-weight:800;letter-spacing:-.5px}.dark .sval{color:#fff}.light .sval{color:#0c2620}
+  .slab{font-size:12px;font-weight:600;margin-top:2px}.dark .slab{color:#7d8a91}.light .slab{color:#7f958e}
+
+  /* PR badge */
+  .prrow{display:flex;gap:8px;margin-top:14px}
+  .pr{flex:1;display:flex;align-items:center;gap:8px;border-radius:14px;padding:11px 12px}
+  .dark .pr{background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.28)}
+  .light .pr{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.26)}
+  .prT{font-size:12px;font-weight:800}.dark .prT{color:#b9a6f8}.light .prT{color:#6d3fce}
+  .prS{font-size:11px}.dark .prS{color:#8b97a3}.light .prS{color:#7f958e}
+
+  /* splits */
+  .sec{font-size:13px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;margin:18px 0 9px}
+  .dark .sec{color:#7d8a91}.light .sec{color:#7f958e}
+  .split{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid}
+  .dark .split{border-color:rgba(255,255,255,.06)}.light .split{border-color:rgba(23,106,90,.08)}
+  .skm{width:26px;font-size:13px;font-weight:700}.dark .skm{color:#cfe9e0}.light .skm{color:#1d3a33}
+  .sbar{flex:1;height:7px;border-radius:999px;overflow:hidden}.dark .sbar{background:rgba(255,255,255,.07)}.light .sbar{background:rgba(23,106,90,.08)}
+  .sfill{height:100%;border-radius:999px;background:linear-gradient(90deg,#54D6A6,#2FC9A2)}
+  .space{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}.dark .space{color:#eaf6f1}.light .space{color:#0c2620}
+
+  /* style-C share CTA: outline + glow + mint text, NO fill */
+  .ftr{padding:14px 18px 24px}
+  .cta{text-align:center;padding:15px;border-radius:16px;font-size:16px;font-weight:800;background:transparent;border:1.5px solid;display:flex;align-items:center;justify-content:center;gap:9px}
+  .cta svg{width:19px;height:19px;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .dark .cta{border-color:rgba(91,240,200,.85);color:#5BF0C8;box-shadow:0 0 22px rgba(84,214,166,.3);text-shadow:0 0 12px rgba(91,240,200,.7)}
+  .dark .cta svg{stroke:#5BF0C8}
+  .light .cta{border-color:rgba(47,201,162,.9);color:#1d8a70;box-shadow:0 0 18px rgba(47,201,162,.26)}
+  .light .cta svg{stroke:#1d8a70}
+</style></head>
+<body>
+<h1>Session Stats — récap V2 (vraies données du screen)</h1>
+<div class="sub">Récap fin de session · stat cards réelles (durée/distance/allure/dénivelé/vitesse max) + rang + splits + PR + partage style-C</div>
+<div class="grid">
+
+  <!-- DARK -->
+  <div>
+  <div class="phone dark">
+    <div class="notch"></div>
+    <div class="hdr"><span class="hback">‹</span><span class="htitle">Récap</span><span class="hshare">⤴</span></div>
+    <div class="scroll">
+      <div class="hero">
+        <div class="htype">Course · NightRun</div>
+        <div class="hname">Sortie du soir</div>
+        <div class="hdate">26 juin · 19:42</div>
+        <div class="rank"><span>🏅</span> 3e sur 12 participants</div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="stile" style="background:#3B82F61f"><svg style="stroke:#3B82F6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="sval">32:14</div><div class="slab">Durée</div></div>
+        <div class="stat"><div class="stile" style="background:#14B8A61f"><svg style="stroke:#14B8A6"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div><div class="sval">5,82 km</div><div class="slab">Distance</div></div>
+        <div class="stat"><div class="stile" style="background:#8B5CF61f"><svg style="stroke:#8B5CF6"><circle cx="12" cy="13" r="7"/><path d="M12 13l3-3M9 2h6"/></svg></div><div class="sval">5:32 /km</div><div class="slab">Allure moy.</div></div>
+        <div class="stat"><div class="stile" style="background:#10B9811f"><svg style="stroke:#10B981"><path d="M3 18l6-8 4 5 3-4 5 7"/></svg></div><div class="sval">↑ 86 m</div><div class="slab">Dénivelé</div></div>
+      </div>
+      <div class="prrow">
+        <div class="pr"><span>🏆</span><div><div class="prT">Nouveau record</div><div class="prS">Meilleur 5 km</div></div></div>
+      </div>
+      <div class="sec">Splits par km</div>
+      <div class="split"><span class="skm">1</span><span class="sbar"><span class="sfill" style="width:92%"></span></span><span class="space">5:18</span></div>
+      <div class="split"><span class="skm">2</span><span class="sbar"><span class="sfill" style="width:80%"></span></span><span class="space">5:40</span></div>
+      <div class="split"><span class="skm">3</span><span class="sbar"><span class="sfill" style="width:88%"></span></span><span class="space">5:25</span></div>
+      <div class="split"><span class="skm">4</span><span class="sbar"><span class="sfill" style="width:100%"></span></span><span class="space">5:48</span></div>
+    </div>
+    <div class="ftr"><div class="cta"><svg><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4M12 2v13"/></svg>Partager en Peak</div></div>
+  </div>
+  <div class="cap">Dark · NightRun</div>
+  </div>
+
+  <!-- LIGHT -->
+  <div>
+  <div class="phone light">
+    <div class="notch"></div>
+    <div class="hdr"><span class="hback">‹</span><span class="htitle">Récap</span><span class="hshare">⤴</span></div>
+    <div class="scroll">
+      <div class="hero">
+        <div class="htype">Course · DayRun</div>
+        <div class="hname">Sortie du matin</div>
+        <div class="hdate">26 juin · 07:18</div>
+        <div class="rank"><span>🏅</span> 1er sur 8 participants</div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="stile" style="background:#3B82F61f"><svg style="stroke:#3B82F6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="sval">41:06</div><div class="slab">Durée</div></div>
+        <div class="stat"><div class="stile" style="background:#14B8A61f"><svg style="stroke:#14B8A6"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div><div class="sval">7,40 km</div><div class="slab">Distance</div></div>
+        <div class="stat"><div class="stile" style="background:#8B5CF61f"><svg style="stroke:#8B5CF6"><circle cx="12" cy="13" r="7"/><path d="M12 13l3-3M9 2h6"/></svg></div><div class="sval">5:33 /km</div><div class="slab">Allure moy.</div></div>
+        <div class="stat"><div class="stile" style="background:#F59E0B1f"><svg style="stroke:#F59E0B"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></div><div class="sval">16,2 km/h</div><div class="slab">Vitesse max</div></div>
+      </div>
+      <div class="prrow">
+        <div class="pr"><span>🏆</span><div><div class="prT">2 nouveaux records</div><div class="prS">Distance · 10 km</div></div></div>
+      </div>
+      <div class="sec">Splits par km</div>
+      <div class="split"><span class="skm">1</span><span class="sbar"><span class="sfill" style="width:85%"></span></span><span class="space">5:30</span></div>
+      <div class="split"><span class="skm">2</span><span class="sbar"><span class="sfill" style="width:95%"></span></span><span class="space">5:20</span></div>
+      <div class="split"><span class="skm">3</span><span class="sbar"><span class="sfill" style="width:78%"></span></span><span class="space">5:44</span></div>
+      <div class="split"><span class="skm">4</span><span class="sbar"><span class="sfill" style="width:90%"></span></span><span class="space">5:28</span></div>
+    </div>
+    <div class="ftr"><div class="cta"><svg><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4M12 2v13"/></svg>Partager en Peak</div></div>
+  </div>
+  <div class="cap">Light · DayRun</div>
+  </div>
+
+</div>
+</body></html>

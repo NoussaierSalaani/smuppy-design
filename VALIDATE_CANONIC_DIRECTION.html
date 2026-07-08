@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Validation direction canonique Smuppy V2</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --page-bg: #0b0f15;
+      --page-ink: #f8fafc;
+      --page-muted: #aab4c1;
+      --panel: #111824;
+      --line: rgba(226, 232, 240, 0.14);
+      --phone-w: 393px;
+      --phone-h: 852px;
+      --scale: 0.48;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(180deg, rgba(51, 160, 137, 0.08), transparent 220px),
+        var(--page-bg);
+      color: var(--page-ink);
+    }
+
+    .banner {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 14px 20px;
+      background: #06130f;
+      border-bottom: 1px solid rgba(51, 160, 137, 0.45);
+      color: #d8fff5;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    main {
+      width: min(1480px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 26px 0 40px;
+    }
+
+    .intro {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: flex-end;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .intro p {
+      margin: 8px 0 0;
+      color: var(--page-muted);
+      max-width: 760px;
+      font-size: 15px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .legend span {
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      color: #d8e2ec;
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .option {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(17, 24, 36, 0.82);
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .option-head {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+      min-height: 142px;
+    }
+
+    .option-kicker {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 6px 0 6px;
+      font-size: 20px;
+      letter-spacing: 0;
+    }
+
+    .option-head p {
+      margin: 0;
+      color: var(--page-muted);
+      line-height: 1.45;
+      font-size: 13px;
+    }
+
+    .phones {
+      display: grid;
+      grid-template-columns: repeat(2, calc(var(--phone-w) * var(--scale)));
+      gap: 10px;
+      justify-content: center;
+      padding: 14px 10px 16px;
+    }
+
+    .phone-wrap {
+      width: calc(var(--phone-w) * var(--scale));
+      height: calc(var(--phone-h) * var(--scale));
+      position: relative;
+    }
+
+    .phone {
+      width: var(--phone-w);
+      height: var(--phone-h);
+      transform: scale(var(--scale));
+      transform-origin: top left;
+      border-radius: 32px;
+      overflow: hidden;
+      border: 1px solid var(--phone-line);
+      background: var(--bg);
+      color: var(--ink);
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.32);
+      position: relative;
+    }
+
+    .screen {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 18px 18px 0;
+      background:
+        radial-gradient(circle at 50% 0%, var(--top-glow), transparent 260px),
+        var(--bg);
+    }
+
+    .theme-label {
+      position: absolute;
+      top: 10px;
+      left: 16px;
+      z-index: 2;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .status {
+      height: 28px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 42px 1fr 42px;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .icon-button {
+      width: 42px;
+      height: 42px;
+      border-radius: 21px;
+      border: 1px solid var(--control-line);
+      background: var(--control);
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+    }
+
+    .wordmark {
+      text-align: center;
+      color: var(--brand-word);
+      font-size: 23px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .dot {
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      margin-left: 16px;
+      margin-top: -18px;
+      border-radius: 99px;
+      background: #ff4d5d;
+      box-shadow: 0 0 0 2px var(--control);
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      padding: 6px;
+      border-radius: 25px;
+      border: 1px solid var(--control-line);
+      background: var(--seg-bg);
+      margin-bottom: 18px;
+    }
+
+    .segment {
+      height: 39px;
+      display: grid;
+      place-items: center;
+      border-radius: 20px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .segment.active {
+      color: var(--active-ink);
+      background: var(--segment-active-bg);
+      border: 1px solid var(--segment-active-line);
+      box-shadow: var(--segment-shadow);
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .chip {
+      flex: 0 0 auto;
+      padding: 8px 13px;
+      border-radius: 999px;
+      border: 1.5px solid var(--mint);
+      color: var(--mint);
+      background: transparent;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .card {
+      border-radius: 8px;
+      border: 1px solid var(--card-line);
+      background: var(--card);
+      padding: 14px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 16px;
+    }
+
+    .card-media {
+      height: 148px;
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(51, 160, 137, 0.18), transparent 58%),
+        linear-gradient(160deg, var(--media-a), var(--media-b));
+      border: 1px solid var(--card-line);
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-media:before,
+    .card-media:after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+    }
+
+    .card-media:before {
+      width: 150px;
+      height: 150px;
+      left: -44px;
+      bottom: -62px;
+    }
+
+    .card-media:after {
+      width: 86px;
+      height: 86px;
+      right: 28px;
+      top: 28px;
+    }
+
+    .card-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--ink);
+      font-size: 17px;
+      font-weight: 900;
+      margin-bottom: 5px;
+    }
+
+    .card-title span:last-child {
+      color: var(--mint);
+      font-size: 13px;
+      padding-top: 3px;
+      white-space: nowrap;
+    }
+
+    .card-copy {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.42;
+      margin: 0;
+    }
+
+    .cta-stack {
+      display: grid;
+      gap: 10px;
+      margin-top: auto;
+      padding-bottom: 20px;
+    }
+
+    .primary {
+      height: 54px;
+      border: 0;
+      border-radius: 27px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 900;
+      background: var(--cta-gradient);
+      box-shadow: var(--cta-glow);
+    }
+
+    .secondary {
+      height: 50px;
+      border-radius: 25px;
+      color: var(--mint);
+      font-size: 15px;
+      font-weight: 850;
+      background: transparent;
+      border: 1.5px solid var(--mint);
+    }
+
+    .bottom-nav {
+      height: 76px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      gap: 4px;
+      border-radius: 30px 30px 0 0;
+      background: var(--nav-bg);
+      border: 1px solid var(--nav-line);
+      border-bottom: 0;
+      box-shadow: var(--nav-shadow);
+      padding: 8px 11px 14px;
+      margin: 0 -8px;
+    }
+
+    .nav-item {
+      height: 54px;
+      display: grid;
+      place-items: center;
+      color: var(--nav-muted);
+      position: relative;
+    }
+
+    .nav-item.active {
+      color: var(--mint);
+    }
+
+    .nav-item.active:after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      width: 24px;
+      height: 3px;
+      border-radius: 3px;
+      background: var(--mint);
+      box-shadow: 0 0 10px color-mix(in srgb, var(--mint), transparent 42%);
+    }
+
+    .create {
+      width: 49px;
+      height: 49px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--create-bg);
+      border: 1.5px solid var(--create-line);
+      color: var(--mint);
+      box-shadow: var(--create-shadow);
+    }
+
+    svg {
+      width: 21px;
+      height: 21px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .create svg {
+      width: 23px;
+      height: 23px;
+      stroke-width: 2.5;
+    }
+
+    .notes {
+      display: grid;
+      gap: 8px;
+      padding: 0 16px 18px;
+      color: var(--page-muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .note {
+      padding: 9px 10px;
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
+    }
+
+    .option-a {
+      --accent: #33A089;
+    }
+
+    .option-b {
+      --accent: #5BB8A6;
+    }
+
+    .option-c {
+      --accent: #33A089;
+    }
+
+    .option-a .phone {
+      --mint: #33A089;
+      --cta-gradient: linear-gradient(90deg, #1A7D68, #157082);
+      --cta-glow: 0 8px 18px rgba(51, 160, 137, 0.28), 0 2px 6px rgba(0, 0, 0, 0.28);
+    }
+
+    .option-b .phone {
+      --mint: #5BB8A6;
+      --cta-gradient: linear-gradient(90deg, #5BB8A6 0%, #2E9E8A 55%, #1F8E86 100%);
+      --cta-glow: 0 10px 30px rgba(80, 200, 170, 0.48), 0 2px 7px rgba(0, 0, 0, 0.36);
+    }
+
+    .option-c .phone {
+      --mint: #33A089;
+      --cta-gradient: linear-gradient(90deg, #1A7D68, #157082);
+      --cta-glow: 0 11px 32px rgba(51, 160, 137, 0.45), 0 2px 7px rgba(0, 0, 0, 0.36);
+    }
+
+    .phone.dark {
+      --bg: #0A0E1A;
+      --ink: #FFFFFF;
+      --muted: #94A3B8;
+      --brand-word: #FFFFFF;
+      --phone-line: #20283a;
+      --control: #141b2b;
+      --control-line: #2A3142;
+      --seg-bg: #111827;
+      --segment-active-bg: #243044;
+      --segment-active-line: color-mix(in srgb, var(--mint), transparent 42%);
+      --segment-shadow: 0 4px 14px color-mix(in srgb, var(--mint), transparent 68%);
+      --active-ink: #FFFFFF;
+      --card: #161B2A;
+      --card-line: #2A3142;
+      --card-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
+      --media-a: #142337;
+      --media-b: #1d3c3a;
+      --nav-bg: #0c1018;
+      --nav-line: #1F2538;
+      --nav-muted: #94A3B8;
+      --nav-shadow: 0 -8px 28px rgba(0, 0, 0, 0.25);
+      --create-bg: #16201E;
+      --create-line: var(--mint);
+      --create-shadow: 0 0 18px color-mix(in srgb, var(--mint), transparent 52%);
+      --top-glow: color-mix(in srgb, var(--mint), transparent 88%);
+    }
+
+    .phone.light {
+      --bg: #FFFFFF;
+      --ink: #0F172A;
+      --muted: #475569;
+      --brand-word: #0F172A;
+      --phone-line: #E2E8F0;
+      --control: #FFFFFF;
+      --control-line: #E2E8F0;
+      --seg-bg: #F1F5F9;
+      --segment-active-bg: #FFFFFF;
+      --segment-active-line: rgba(51, 160, 137, 0.18);
+      --segment-shadow: 0 5px 16px rgba(51, 160, 137, 0.16);
+      --active-ink: #0F172A;
+      --card: #FFFFFF;
+      --card-line: #E2E8F0;
+      --card-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+      --media-a: #E9F8F5;
+      --media-b: #DDEAF5;
+      --nav-bg: #FFFFFF;
+      --nav-line: rgba(226, 232, 240, 0.85);
+      --nav-muted: #64748B;
+      --nav-shadow: 0 -8px 26px rgba(15, 23, 42, 0.10);
+      --create-bg: #FFFFFF;
+      --create-line: transparent;
+      --create-shadow: 0 8px 22px rgba(11, 42, 34, 0.18), 0 0 18px color-mix(in srgb, var(--mint), transparent 78%);
+      --top-glow: color-mix(in srgb, var(--mint), transparent 92%);
+    }
+
+    @media (max-width: 1180px) {
+      :root {
+        --scale: 0.42;
+      }
+
+      .options {
+        grid-template-columns: 1fr;
+      }
+
+      .phones {
+        grid-template-columns: repeat(2, calc(var(--phone-w) * var(--scale)));
+      }
+    }
+
+    @media (max-width: 520px) {
+      :root {
+        --scale: 0.38;
+      }
+
+      main {
+        width: min(100vw - 18px, 420px);
+        padding-top: 18px;
+      }
+
+      .intro {
+        display: block;
+      }
+
+      .legend {
+        margin-top: 14px;
+        justify-content: flex-start;
+      }
+
+      .phones {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+
+      .option-head {
+        min-height: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="banner">VALIDATION UNIQUEMENT - aucune application globale avant validation founder</div>
+  <main>
+    <section class="intro">
+      <div>
+        <h1>Direction canonique Smuppy V2</h1>
+        <p>Comparaison visuelle des trois directions CTA/glow sans modifier l'application. Chaque option montre le meme ecran type en dark et light.</p>
+      </div>
+      <div class="legend" aria-label="Contraintes">
+        <span>Header: search · Smuppy · notif</span>
+        <span>Chips outline mint</span>
+        <span>Bottom nav canonique</span>
+      </div>
+    </section>
+
+    <section class="options">
+      <article class="option option-a">
+        <header class="option-head">
+          <div class="option-kicker">Option A - RN strict</div>
+          <h2>Tokens RN actuels</h2>
+          <p>Mint #33A089, CTA #1A7D68 vers #157082, glow modere. Direction la plus alignee avec `src/theme/v2/tokens.ts`.</p>
+        </header>
+        <div class="phones">
+          <div class="phone-wrap">
+            <div class="phone dark">
+              <div class="theme-label">Dark 393 x 852</div>
+              <div class="screen">
+                <div class="status"></div>
+                <div class="topbar">
+                  <div class="icon-button" aria-label="Recherche">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg>
+                  </div>
+                  <div class="wordmark">Smuppy</div>
+                  <div class="icon-button" aria-label="Notifications">
+                    <svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>
+                    <span class="dot"></span>
+                  </div>
+                </div>
+                <div class="segmented">
+                  <div class="segment active">Fan</div>
+                  <div class="segment">Vibes</div>
+                  <div class="segment">Xplorer</div>
+                </div>
+                <div class="chips">
+                  <div class="chip">Tous</div>
+                  <div class="chip">Live</div>
+                  <div class="chip">Peaks</div>
+                </div>
+                <div class="card">
+                  <div class="card-media"></div>
+                  <div class="card-title"><span>LA TRIBU</span><span>En direct</span></div>
+                  <p class="card-copy">Session running avec ta communaute. Cartes sobres, contour clair, accent mint uniquement sur l'action.</p>
+                </div>
+                <div class="cta-stack">
+                  <button class="primary">Vérifier le code</button>
+                  <button class="secondary">Plus tard</button>
+                </div>
+                <div class="bottom-nav">
+                  <div class="nav-item active"><svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5v8a1.5 1.5 0 0 1-1.5 1.5H5.5A1.5 1.5 0 0 1 4 18.5z"></path></svg></div>
+                  <div class="nav-item"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="4"></rect><path d="m10 9 5 3-5 3z"></path></svg></div>
+                  <div class="nav-item"><div class="create"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></div></div>
+                  <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M5 6.5h14v10H8l-3 3z"></path></svg></div>
+                  <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4.5 20c1.5-4 13.5-4 15 0"></path></svg></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="phone-wrap">
+            <div class="phone light">
+              <div class="theme-label">Light 393 x 852</div>
+              <div class="screen">
+                <div class="status"></div>
+                <div class="topbar">
+                  <div class="icon-button" aria-label="Recherche"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg></div>
+                  <div class="wordmark">Smuppy</div>
+                  <div class="icon-button" aria-label="Notifications"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg><span class="dot"></span></div>
+                </div>
+                <div class="segmented"><div class="segment active">Fan</div><div class="segment">Vibes</div><div class="segment">Xplorer</div></div>
+                <div class="chips"><div class="chip">Tous</div><div class="chip">Live</div><div class="chip">Peaks</div></div>
+                <div class="card"><div class="card-media"></div><div class="card-title"><span>LA TRIBU</span><span>En direct</span></div><p class="card-copy">Session running avec ta communaute. Cartes sobres, contour clair, accent mint uniquement sur l'action.</p></div>
+                <div class="cta-stack"><button class="primary">Vérifier le code</button><button class="secondary">Plus tard</button></div>
+                <div class="bottom-nav">
+                  <div class="nav-item active"><svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5v8a1.5 1.5 0 0 1-1.5 1.5H5.5A1.5 1.5 0 0 1 4 18.5z"></path></svg></div>
+                  <div class="nav-item"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="4"></rect><path d="m10 9 5 3-5 3z"></path></svg></div>
+                  <div class="nav-item"><div class="create"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></div></div>
+                  <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M5 6.5h14v10H8l-3 3z"></path></svg></div>
+                  <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4.5 20c1.5-4 13.5-4 15 0"></path></svg></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="notes">
+          <div class="note">Design notes: safer contrast, less showy glow, closest to current RN token comments.</div>
+          <div class="note">Risk: may feel slightly too flat compared with founder HTML glow references.</div>
+        </div>
+      </article>
+
+      <article class="option option-b">
+        <header class="option-head">
+          <div class="option-kicker">Option B - Prototype lumineux</div>
+          <h2>Glow canonic.css</h2>
+          <p>CTA #5BB8A6 vers #2E9E8A vers #1F8E86 avec glow plus visible. Plus proche du kit HTML existant.</p>
+        </header>
+        <div class="phones">
+          <div class="phone-wrap"><div class="phone dark"><div class="theme-label">Dark 393 x 852</div><div class="screen">
+            <div class="status"></div><div class="topbar"><div class="icon-button"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg></div><div class="wordmark">Smuppy</div><div class="icon-button"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg><span class="dot"></span></div></div>
+            <div class="segmented"><div class="segment active">Fan</div><div class="segment">Vibes</div><div class="segment">Xplorer</div></div>
+            <div class="chips"><div class="chip">Tous</div><div class="chip">Live</div><div class="chip">Peaks</div></div>
+            <div class="card"><div class="card-media"></div><div class="card-title"><span>LA TRIBU</span><span>En direct</span></div><p class="card-copy">Accent plus lumineux, plus proche des maquettes HTML, avec une presence CTA plus premium.</p></div>
+            <div class="cta-stack"><button class="primary">Vérifier le code</button><button class="secondary">Plus tard</button></div>
+            <div class="bottom-nav"><div class="nav-item active"><svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5v8a1.5 1.5 0 0 1-1.5 1.5H5.5A1.5 1.5 0 0 1 4 18.5z"></path></svg></div><div class="nav-item"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="4"></rect><path d="m10 9 5 3-5 3z"></path></svg></div><div class="nav-item"><div class="create"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></div></div><div class="nav-item"><svg viewBox="0 0 24 24"><path d="M5 6.5h14v10H8l-3 3z"></path></svg></div><div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4.5 20c1.5-4 13.5-4 15 0"></path></svg></div></div>
+          </div></div></div>
+          <div class="phone-wrap"><div class="phone light"><div class="theme-label">Light 393 x 852</div><div class="screen">
+            <div class="status"></div><div class="topbar"><div class="icon-button"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg></div><div class="wordmark">Smuppy</div><div class="icon-button"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg><span class="dot"></span></div></div>
+            <div class="segmented"><div class="segment active">Fan</div><div class="segment">Vibes</div><div class="segment">Xplorer</div></div>
+            <div class="chips"><div class="chip">Tous</div><div class="chip">Live</div><div class="chip">Peaks</div></div>
+            <div class="card"><div class="card-media"></div><div class="card-title"><span>LA TRIBU</span><span>En direct</span></div><p class="card-copy">Accent plus lumineux, plus proche des maquettes HTML, avec une presence CTA plus premium.</p></div>
+            <div class="cta-stack"><button class="primary">Vérifier le code</button><button class="secondary">Plus tard</button></div>
+            <div class="bottom-nav"><div class="nav-item active"><svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5v8a1.5 1.5 0 0 1-1.5 1.5H5.5A1.5 1.5 0 0 1 4 18.5z"></path></svg></div><div class="nav-item"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="4"></rect><path d="m10 9 5 3-5 3z"></path></svg></div><div class="nav-item"><div class="create"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></div></div><div class="nav-item"><svg viewBox="0 0 24 24"><path d="M5 6.5h14v10H8l-3 3z"></path></svg></div><div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4.5 20c1.5-4 13.5-4 15 0"></path></svg></div></div>
+          </div></div></div>
+        </div>
+        <div class="notes">
+          <div class="note">Design notes: strongest visual energy and closest to prototype glow.</div>
+          <div class="note">Risk: less aligned with current RN token contrast notes; should not be applied without token review.</div>
+        </div>
+      </article>
+
+      <article class="option option-c">
+        <header class="option-head">
+          <div class="option-kicker">Option C - Hybride founder</div>
+          <h2>RN gradient, premium glow</h2>
+          <p>Gradient RN #1A7D68 vers #157082 avec glow plus visible. Probable meilleure direction si l'effet visuel est valide.</p>
+        </header>
+        <div class="phones">
+          <div class="phone-wrap"><div class="phone dark"><div class="theme-label">Dark 393 x 852</div><div class="screen">
+            <div class="status"></div><div class="topbar"><div class="icon-button"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg></div><div class="wordmark">Smuppy</div><div class="icon-button"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg><span class="dot"></span></div></div>
+            <div class="segmented"><div class="segment active">Fan</div><div class="segment">Vibes</div><div class="segment">Xplorer</div></div>
+            <div class="chips"><div class="chip">Tous</div><div class="chip">Live</div><div class="chip">Peaks</div></div>
+            <div class="card"><div class="card-media"></div><div class="card-title"><span>LA TRIBU</span><span>En direct</span></div><p class="card-copy">Base RN conservee, mais le bouton retrouve la presence attendue dans les remarques founder.</p></div>
+            <div class="cta-stack"><button class="primary">Vérifier le code</button><button class="secondary">Plus tard</button></div>
+            <div class="bottom-nav"><div class="nav-item active"><svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5v8a1.5 1.5 0 0 1-1.5 1.5H5.5A1.5 1.5 0 0 1 4 18.5z"></path></svg></div><div class="nav-item"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="4"></rect><path d="m10 9 5 3-5 3z"></path></svg></div><div class="nav-item"><div class="create"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></div></div><div class="nav-item"><svg viewBox="0 0 24 24"><path d="M5 6.5h14v10H8l-3 3z"></path></svg></div><div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4.5 20c1.5-4 13.5-4 15 0"></path></svg></div></div>
+          </div></div></div>
+          <div class="phone-wrap"><div class="phone light"><div class="theme-label">Light 393 x 852</div><div class="screen">
+            <div class="status"></div><div class="topbar"><div class="icon-button"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg></div><div class="wordmark">Smuppy</div><div class="icon-button"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg><span class="dot"></span></div></div>
+            <div class="segmented"><div class="segment active">Fan</div><div class="segment">Vibes</div><div class="segment">Xplorer</div></div>
+            <div class="chips"><div class="chip">Tous</div><div class="chip">Live</div><div class="chip">Peaks</div></div>
+            <div class="card"><div class="card-media"></div><div class="card-title"><span>LA TRIBU</span><span>En direct</span></div><p class="card-copy">Base RN conservee, mais le bouton retrouve la presence attendue dans les remarques founder.</p></div>
+            <div class="cta-stack"><button class="primary">Vérifier le code</button><button class="secondary">Plus tard</button></div>
+            <div class="bottom-nav"><div class="nav-item active"><svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5v8a1.5 1.5 0 0 1-1.5 1.5H5.5A1.5 1.5 0 0 1 4 18.5z"></path></svg></div><div class="nav-item"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="4"></rect><path d="m10 9 5 3-5 3z"></path></svg></div><div class="nav-item"><div class="create"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></div></div><div class="nav-item"><svg viewBox="0 0 24 24"><path d="M5 6.5h14v10H8l-3 3z"></path></svg></div><div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4.5 20c1.5-4 13.5-4 15 0"></path></svg></div></div>
+          </div></div></div>
+        </div>
+        <div class="notes">
+          <div class="note">Design notes: keeps RN contrast-safe gradient while restoring a premium glow.</div>
+          <div class="note">Risk: requires founder confirmation before changing global RN shadow/glow tokens.</div>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

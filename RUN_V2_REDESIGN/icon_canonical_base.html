@@ -1,0 +1,76 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  body{background:#0a0d12;font-family:-apple-system,"SF Pro Display",Segoe UI,Roboto,sans-serif;padding:48px 44px}
+  h1{color:#54D6A6;font-size:30px;font-weight:800;letter-spacing:-.5px}
+  .sub{color:#8b97a3;font-size:15px;margin:6px 0 26px}
+  .board{display:flex;gap:40px}
+  .panel{flex:1;border-radius:24px;padding:24px}
+  .dark{background:#0c1116;border:1px solid rgba(255,255,255,.06)}
+  .light{background:#f2f7f5;border:1px solid rgba(23,106,90,.1)}
+  .ph{font-size:13px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin:6px 0 16px}
+  .dark .ph{color:#7E8B91}.light .ph{color:#6f928a}
+  .dark .pt{color:#eaf6f1}.light .pt{color:#0c2620}
+
+  /* canonical tile: filled tint@13%, full-tint glyph, FLAT */
+  .tile{width:36px;height:36px;border-radius:11px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .tile svg{width:20px;height:20px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  .palette{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:24px}
+  .sw{display:flex;flex-direction:column;align-items:center;gap:6px;width:64px}
+  .sw .nm{font-size:10px;font-weight:700}.dark .sw .nm{color:#9aa4b2}.light .sw .nm{color:#5f7a72}
+
+  .row{display:flex;align-items:center;gap:13px;padding:11px 0;border-top:1px solid}
+  .dark .row{border-color:rgba(255,255,255,.06)}.light .row{border-color:rgba(23,106,90,.09)}
+  .row:first-of-type{border-top:none}
+  .rt{flex:1;font-size:15px;font-weight:600}.dark .rt{color:#e6f1ec}.light .rt{color:#16322b}
+  .rs{font-size:12px}.dark .rs{color:#6c7a80}.light .rs{color:#82958e}
+  .chev{opacity:.4;font-size:18px}.dark .chev{color:#cfe9e0}.light .chev{color:#1d3a33}
+  .rmeta{display:flex;flex-direction:column}
+</style></head>
+<body>
+<h1>Base canonique d'icône — tile rempli plat, multi-couleur, SANS glow</h1>
+<div class="sub">Fond = couleur @13% · glyphe = couleur pleine · Ionicons outline · pas de contour/glow/shadow</div>
+
+<div class="board">
+
+  <!-- DARK -->
+  <div class="panel dark">
+    <div class="ph">9 teintes canoniques (V2_ICON_TINTS)</div>
+    <div class="palette">
+      <div class="sw"><div class="tile" style="background:#6366F11f"><svg style="stroke:#6366F1"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/></svg></div><span class="nm">indigo</span></div>
+      <div class="sw"><div class="tile" style="background:#8B5CF61f"><svg style="stroke:#8B5CF6"><path d="M12 3 3 8v8l9 5 9-5V8z"/></svg></div><span class="nm">violet</span></div>
+      <div class="sw"><div class="tile" style="background:#14B8A61f"><svg style="stroke:#14B8A6"><path d="M10 3 8 21M16 3l-2 18M4 9h16M3 15h16"/></svg></div><span class="nm">teal</span></div>
+      <div class="sw"><div class="tile" style="background:#F59E0B1f"><svg style="stroke:#F59E0B"><path d="M12 21s7-6 7-12a7 7 0 1 0-14 0c0 6 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg></div><span class="nm">amber</span></div>
+      <div class="sw"><div class="tile" style="background:#3B82F61f"><svg style="stroke:#3B82F6"><path d="M21 11.5a8.4 8.4 0 0 1-1 4 8.5 8.5 0 0 1-7.5 4.5 8.4 8.4 0 0 1-4-1L3 21l1.9-5.5a8.4 8.4 0 0 1-1-4A8.5 8.5 0 0 1 21 11.5Z"/></svg></div><span class="nm">bleu</span></div>
+      <div class="sw"><div class="tile" style="background:#10B9811f"><svg style="stroke:#10B981"><path d="M20 6 9 17l-5-5"/></svg></div><span class="nm">vert</span></div>
+      <div class="sw"><div class="tile" style="background:#EF44441f"><svg style="stroke:#EF4444"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg></div><span class="nm">rouge</span></div>
+      <div class="sw"><div class="tile" style="background:#64748B1f"><svg style="stroke:#64748B"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div><span class="nm">slate</span></div>
+      <div class="sw"><div class="tile" style="background:#26C1A41f"><svg style="stroke:#26C1A4"><path d="M5 3v18l7-5 7 5V3z"/></svg></div><span class="nm">mint</span></div>
+    </div>
+
+    <div class="ph">Settings (vraies teintes par ligne)</div>
+    <div class="row"><div class="tile" style="background:#6366F11f"><svg style="stroke:#6366F1"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/></svg></div><span class="rt">Profil</span><span class="chev">›</span></div>
+    <div class="row"><div class="tile" style="background:#8B5CF61f"><svg style="stroke:#8B5CF6"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div><span class="rt">Apparence</span><span class="chev">›</span></div>
+    <div class="row"><div class="tile" style="background:#F59E0B1f"><svg style="stroke:#F59E0B"><path d="M4 5h10M9 3v2M11 5c0 5-3 9-7 11M7 9c2 3 5 5 8 6M14 19l4-9 4 9M15.5 16h5"/></svg></div><span class="rt">Langue</span><span class="chev">›</span></div>
+    <div class="row"><div class="tile" style="background:#14B8A61f"><svg style="stroke:#14B8A6"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><span class="rt">Mot de passe</span><span class="chev">›</span></div>
+    <div class="row"><div class="tile" style="background:#3B82F61f"><svg style="stroke:#3B82F6"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg></div><span class="rt">Aide</span><span class="chev">›</span></div>
+    <div class="row"><div class="tile" style="background:#10B9811f"><svg style="stroke:#10B981"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg></div><span class="rt">Confidentialité</span><span class="chev">›</span></div>
+    <div class="row"><div class="tile" style="background:#EF44441f"><svg style="stroke:#EF4444"><circle cx="12" cy="12" r="9"/><path d="M5.5 5.5l13 13"/></svg></div><span class="rt">Comptes bloqués</span><span class="chev">›</span></div>
+  </div>
+
+  <!-- LIGHT -->
+  <div class="panel light">
+    <div class="ph">Menu de création (mêmes tiles plats)</div>
+    <div class="row"><div class="tile" style="background:#3B82F61f"><svg style="stroke:#3B82F6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M3 17l5-4 4 3 3-2 6 5"/></svg></div><div class="rmeta"><span class="rt">Post</span><span class="rs">Photo, carrousel, légende</span></div><span class="chev">›</span></div>
+    <div class="row"><div class="tile" style="background:#8B5CF61f"><svg style="stroke:#8B5CF6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M7 5v14M17 5v14"/></svg></div><div class="rmeta"><span class="rt">Peak</span><span class="rs">Vidéo verticale 15–60s</span></div><span class="chev">›</span></div>
+    <div class="row"><div class="tile" style="background:#EF44441f"><svg style="stroke:#EF4444"><rect x="3" y="7" width="13" height="10" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg></div><div class="rmeta"><span class="rt">Go Live</span><span class="rs">Stream en direct avec ta tribu</span></div><span class="chev">›</span></div>
+
+    <div class="ph" style="margin-top:26px">La règle</div>
+    <div class="row" style="border:none"><div class="tile" style="background:#10B9811f"><svg style="stroke:#10B981"><path d="M20 6 9 17l-5-5"/></svg></div><div class="rmeta"><span class="rt" style="color:#0c2620">Tile rempli plat</span><span class="rs">fond couleur @13% · glyphe couleur pleine</span></div></div>
+    <div class="row" style="border:none"><div class="tile" style="background:#EF44441f"><svg style="stroke:#EF4444"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg></div><div class="rmeta"><span class="rt" style="color:#0c2620">PAS de glow / contour / shadow</span><span class="rs">décision founder 12 juin (« flat tile »)</span></div></div>
+    <div class="row" style="border:none"><div class="tile" style="background:#EF44441f"><svg style="stroke:#EF4444"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg></div><div class="rmeta"><span class="rt" style="color:#0c2620">PAS d'emoji comme icône</span><span class="rs">Ionicons outline uniquement</span></div></div>
+  </div>
+
+</div>
+</body></html>

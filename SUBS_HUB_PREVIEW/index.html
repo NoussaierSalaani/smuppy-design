@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="fr"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Mes abonnements & achats — maquette fidèle</title>
+<style>
+  /* ===== Tokens V2 (light) — exacts ===== */
+  :root{
+    --bg:#E9EEF0; --screen:#F5F6F8; --surface:#FFFFFF; --surfaceContainer:#F0F3F5;
+    --line:#E6EAEE; --outline:#E2E8EC;
+    --onSurface:#182834; --onSurfaceVariant:#6B7682; --muted:#8B97A0;
+    --mint:#54D6A6; --mintDeep:#0B7A62; --mintAccent:#33A089; --mintSoft:#E8F7F1;
+    --grad1:#36B596; --grad2:#2999A6;
+    --amber:#F59E0B; --amberInk:#9A6207; --green:#10B981; --blue:#3B82F6; --violet:#8B5CF6; --teal:#14B8A6; --slate:#64748B; --red:#EF4444;
+    --rCtrl:14px; --rCard:20px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;-webkit-font-smoothing:antialiased}
+  body{background:var(--bg);display:flex;flex-direction:column;align-items:center;padding:28px;gap:10px}
+  .note{color:#5b6770;font-size:13px;max-width:430px;text-align:center}
+  .phone{width:393px;border-radius:44px;background:#0d1214;padding:11px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+  .scr{background:var(--screen);border-radius:34px;overflow:hidden;height:852px;display:flex;flex-direction:column}
+  .scroll{overflow:auto;flex:1}
+  .scroll::-webkit-scrollbar{display:none}
+
+  /* header */
+  .topbar{display:flex;align-items:center;gap:12px;padding:16px 18px 10px}
+  .back{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--onSurface)}
+  .topbar .ttl{font-size:17px;font-weight:800;color:var(--onSurface)}
+
+  .pad{padding:4px 18px 28px}
+  .sectionTitle{font-size:12px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--muted);margin:18px 4px 9px}
+  .groupSep{margin:26px 4px 4px;padding-top:18px;border-top:1px solid var(--line)}
+  .groupSep .g{font-size:19px;font-weight:800;color:var(--onSurface)}
+  .groupSep .gs{font-size:13px;color:var(--onSurfaceVariant);margin-top:2px}
+
+  /* contour card = glow mint subtil (validé founder) */
+  .card{background:var(--surface);border:1px solid rgba(84,214,166,.20);border-radius:var(--rCard);padding:16px;margin-bottom:12px;
+        box-shadow:0 0 0 1px rgba(84,214,166,.04), 0 3px 14px rgba(51,160,137,.07)}
+
+  /* platform card */
+  .plat .row1{display:flex;align-items:flex-start;justify-content:space-between}
+  .plan{font-size:16.5px;font-weight:800;color:var(--onSurface)}
+  .badge{font-size:11px;font-weight:700;color:var(--mintDeep);background:var(--mintSoft);border-radius:999px;padding:4px 10px}
+  .price{font-size:22px;font-weight:800;color:var(--onSurface);margin-top:8px}
+  .price small{font-size:13px;font-weight:600;color:var(--onSurfaceVariant)}
+  .renew{font-size:12.5px;color:var(--onSurfaceVariant);margin-top:6px;display:flex;align-items:center;gap:5px}
+  /* CTA contour style C + glow mint SUBTIL (contour + texte mint) */
+  .ctaGhost{margin-top:13px;height:47px;border-radius:var(--rCtrl);border:1.25px solid var(--mintAccent);
+    display:flex;align-items:center;justify-content:center;color:var(--mintDeep);font-weight:700;font-size:14px;
+    box-shadow:0 0 10px rgba(84,214,166,.16)}
+
+  /* list row card (channel / business / session / ppv) */
+  .lrow{display:flex;align-items:center;gap:13px}
+  .av{width:46px;height:46px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#5b6770;background:var(--surfaceContainer);overflow:hidden}
+  .logo{border-radius:13px}
+  .lmeta{flex:1;min-width:0}
+  .lname{font-size:14.5px;font-weight:700;color:var(--onSurface)}
+  .lsub{font-size:12.5px;color:var(--onSurfaceVariant);margin-top:2px}
+  .lprice{font-size:13.5px;font-weight:700;color:var(--onSurface);text-align:right;white-space:nowrap}
+  .status{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;margin-top:3px}
+  .dot{width:7px;height:7px;border-radius:50%}
+  .actions{display:flex;gap:8px;margin-top:12px;border-top:1px solid var(--line);padding-top:11px}
+  /* boutons d'action = contour + glow de la COULEUR DU TEXTE (subtil) */
+  .act{flex:1;height:38px;border-radius:var(--rCtrl);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;
+    color:var(--mintDeep);border:1.25px solid var(--mintAccent);box-shadow:0 0 9px rgba(84,214,166,.15)}
+  .act.danger{color:var(--red);border-color:rgba(239,68,68,.55);box-shadow:0 0 9px rgba(239,68,68,.18)}
+
+  /* pack progress */
+  .pack .ptop{display:flex;align-items:center;gap:13px}
+  .packIcon{width:44px;height:44px;border-radius:13px;background:#EEF3FF;color:var(--blue);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .remain{font-size:13px;font-weight:700;color:var(--onSurface);margin-top:12px}
+  .bar{height:8px;border-radius:6px;background:var(--surfaceContainer);margin-top:7px;overflow:hidden}
+  .bar > i{display:block;height:100%;border-radius:6px;background:var(--mint)}
+  .exp{font-size:12px;color:var(--onSurfaceVariant);margin-top:8px}
+  svg{display:block}
+</style></head>
+<body>
+  <div class="note">Maquette fidèle (tokens V2 exacts) du hub <b>« Mes abonnements & achats »</b> — Groupe 1 récurrent (Premium · Vérifié · Chaînes&Live · Salles) + Groupe 2 ponctuel (Sessions · Packages · PPV). Sections jamais mélangées.</div>
+  <div class="phone"><div class="scr">
+    <div class="topbar">
+      <div class="back"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 5l-7 7 7 7"/></svg></div>
+      <div class="ttl">Mes abonnements</div>
+    </div>
+    <div class="scroll"><div class="pad">
+
+      <!-- ===== GROUPE 1 — ABONNEMENTS ===== -->
+      <div class="sectionTitle">Premium</div>
+      <div class="card plat">
+        <div class="row1"><div class="plan">Pro Creator Premium</div><div class="badge">Actif</div></div>
+        <div class="price">$99.99<small> /mo</small></div>
+        <div class="renew"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7682" stroke-width="2"><path d="M4 4v6h6M20 20v-6h-6"/><path d="M20 10a8 8 0 00-15-2M4 14a8 8 0 0015 2"/></svg>Renouvelle le 12 mars 2026</div>
+        <div class="ctaGhost">Gérer dans l'App Store</div>
+      </div>
+      <div class="card plat">
+        <div class="row1"><div class="plan">Vérifié</div><div class="badge">Actif</div></div>
+        <div class="price">$14.99<small> /mo</small></div>
+        <div class="renew"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7682" stroke-width="2"><path d="M4 4v6h6M20 20v-6h-6"/><path d="M20 10a8 8 0 00-15-2M4 14a8 8 0 0015 2"/></svg>Renouvelle le 12 mars 2026</div>
+        <div class="ctaGhost">Gérer dans l'App Store</div>
+      </div>
+
+      <div class="sectionTitle">Chaînes & Live</div>
+      <div class="card">
+        <div class="lrow">
+          <div class="av">SK</div>
+          <div class="lmeta"><div class="lname">Sara Khan</div><div class="status" style="color:var(--green)"><span class="dot" style="background:var(--green)"></span>Actif</div></div>
+          <div class="lprice">$9.99/mois</div>
+        </div>
+        <div class="lsub" style="margin-top:9px">Renouvelle le 5 juin 2026</div>
+        <div class="actions"><div class="act">Voir la chaîne</div><div class="act danger">Annuler</div></div>
+      </div>
+      <div class="card">
+        <div class="lrow">
+          <div class="av">MY</div>
+          <div class="lmeta"><div class="lname">Marc Yoga</div><div class="status" style="color:var(--amberInk)"><span class="dot" style="background:var(--amber)"></span>Annulation en cours</div></div>
+          <div class="lprice">$6.99/mois</div>
+        </div>
+        <div class="lsub" style="margin-top:9px">Se termine le 18 juin 2026</div>
+        <div class="actions"><div class="act">Réactiver</div></div>
+      </div>
+
+      <div class="sectionTitle">Salles</div>
+      <div class="card">
+        <div class="lrow">
+          <div class="av logo" style="background:#F0EAFE;color:var(--violet)">SY</div>
+          <div class="lmeta"><div class="lname">Studio Yoga Premium</div><div class="status" style="color:var(--green)"><span class="dot" style="background:var(--green)"></span>Actif · 6/12 séances</div></div>
+          <div class="lprice">$49,00/mois</div>
+        </div>
+        <div class="lsub" style="margin-top:9px">Renouvelle le 1 juillet 2026 · pass QR dispo</div>
+        <div class="actions"><div class="act">Voir</div><div class="act danger">Annuler</div></div>
+      </div>
+
+      <!-- ===== GROUPE 2 — ACHATS ===== -->
+      <div class="groupSep"><div class="g">Achats</div><div class="gs">Séances, packs et accès ponctuels</div></div>
+
+      <div class="sectionTitle">Sessions 1:1</div>
+      <div class="card">
+        <div class="lrow">
+          <div class="av">CM</div>
+          <div class="lmeta"><div class="lname">Coach Mike</div><div class="lsub">Lun 24 juin · 14:00 · 45 min</div><div class="status" style="color:var(--mintDeep)"><span class="dot" style="background:var(--mint)"></span>Confirmée</div></div>
+          <div class="lprice">$35,00</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="lrow">
+          <div class="av">LT</div>
+          <div class="lmeta"><div class="lname">Léa Tremblay</div><div class="lsub">Mer 26 juin · 18:30 · 30 min</div><div class="status" style="color:var(--amberInk)"><span class="dot" style="background:var(--amber)"></span>En attente</div></div>
+          <div class="lprice">$25,00</div>
+        </div>
+      </div>
+
+      <div class="sectionTitle">Packages</div>
+      <div class="card pack">
+        <div class="ptop">
+          <div class="packIcon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg></div>
+          <div class="lmeta"><div class="lname">Pack Coaching — Coach Mike</div><div class="lsub">4 prestations · séances 1:1, cours, événements…</div></div>
+        </div>
+        <div class="remain">2 / 4 prestations restantes</div>
+        <div class="bar"><i style="width:50%"></i></div>
+        <div class="exp">Expire le 15 juillet 2026</div>
+      </div>
+
+      <div class="sectionTitle">Pay-Per-View</div>
+      <div class="card">
+        <div class="lrow">
+          <div class="av">SK</div>
+          <div class="lmeta"><div class="lname">Live HIIT spécial — Sara Khan</div><div class="lsub">Acheté le 20 juin 2026</div></div>
+          <div class="lprice">$4,99</div>
+        </div>
+      </div>
+
+    </div></div>
+  </div></div>
+</body></html>

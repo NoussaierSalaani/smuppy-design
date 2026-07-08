@@ -1,0 +1,107 @@
+/* Smuppy App Store screenshot base — 645x1398 page (=1290x2796 @2x) */
+:root{
+  --mint:#54D6A6; --mint-light:#2FC9A2;
+  --accent:#6FE3BC; --accent-light:#0B7A62;
+  --glow:#5BF0C8; --core:#C9FFF1;
+  --ink:#EAF6F1; --dim:#7E8B91; --bg:#000;
+  --card:#0E1316; --card2:#11181B; --line:rgba(91,240,200,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{width:645px;height:1398px}
+body{
+  font-family:-apple-system,"SF Pro Display","SF Pro Text",Segoe UI,Roboto,sans-serif;
+  background:
+    radial-gradient(120% 70% at 50% -10%, #07221b 0%, #04090c 46%, #000 78%);
+  display:flex;flex-direction:column;align-items:center;overflow:hidden}
+
+/* ---------- marketing caption band ---------- */
+.cap-band{width:100%;padding:78px 56px 30px;text-align:center}
+.cap-band h2{
+  color:var(--mint);font-size:64px;font-weight:800;line-height:1.04;
+  letter-spacing:-1.2px;text-shadow:0 2px 30px rgba(84,214,166,.25)}
+.cap-band .sub{color:#8fa39c;font-size:25px;font-weight:500;margin-top:16px;letter-spacing:.2px}
+
+/* ---------- device frame ---------- */
+.device{
+  width:480px;flex:1;margin-bottom:0;position:relative;
+  border-radius:62px 62px 0 0;overflow:hidden;
+  background:var(--bg);
+  border:2px solid rgba(91,240,200,.16);border-bottom:none;
+  box-shadow:0 -2px 0 rgba(255,255,255,.03) inset,
+    0 40px 120px rgba(0,0,0,.7),0 0 80px rgba(84,214,166,.10)}
+.notch{position:absolute;top:18px;left:50%;transform:translateX(-50%);
+  width:150px;height:34px;background:#000;border-radius:20px;z-index:60}
+.statusbar{position:absolute;top:24px;left:0;right:0;z-index:55;
+  display:flex;justify-content:space-between;padding:0 40px;
+  color:#dff5ee;font-size:18px;font-weight:600;opacity:.9}
+.screen{position:absolute;inset:0;padding-top:78px}
+.screen.full{padding-top:0}
+
+/* ---------- common app chrome ---------- */
+.appbar{display:flex;align-items:center;justify-content:space-between;
+  padding:6px 26px 14px}
+.wordmark{font-size:30px;font-weight:800;letter-spacing:-.5px;color:#fff}
+.wordmark span{color:var(--mint)}
+.ic{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;color:#cfe9e0;font-size:22px;position:relative}
+.ic .badge{position:absolute;top:-3px;right:-3px;background:#FF4D5E;color:#fff;
+  font-size:12px;font-weight:700;width:20px;height:20px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center}
+
+/* segmented tabs */
+.segwrap{margin:4px 24px 18px;background:rgba(14,22,20,.7);
+  border:1px solid var(--line);border-radius:999px;padding:5px;display:flex;gap:4px}
+.seg{flex:1;text-align:center;padding:11px 0;border-radius:999px;font-size:18px;
+  font-weight:700;color:var(--dim)}
+.seg.on{color:#04130f;background:linear-gradient(180deg,var(--accent),var(--mint));
+  box-shadow:0 4px 14px rgba(84,214,166,.35)}
+
+.h3{color:#fff;font-size:24px;font-weight:800;margin:8px 24px 14px;letter-spacing:-.3px}
+
+/* bottom nav */
+.bnav{position:absolute;bottom:0;left:0;right:0;height:92px;z-index:50;
+  background:linear-gradient(0deg,rgba(0,0,0,.96),rgba(0,0,0,.78) 70%,transparent);
+  display:flex;align-items:flex-start;justify-content:space-around;padding-top:18px}
+.bnav .n{width:34px;height:34px;color:#5f6f6b;display:flex;align-items:center;justify-content:center;font-size:26px}
+.bnav .n.on{color:var(--mint)}
+.bnav .fab{width:56px;height:56px;border-radius:50%;margin-top:-4px;
+  display:flex;align-items:center;justify-content:center;font-size:30px;color:var(--mint);
+  border:2px solid rgba(91,240,200,.5);background:rgba(8,18,16,.7);
+  box-shadow:0 0 28px rgba(84,214,166,.4)}
+.bnav .av{width:34px;height:34px;border-radius:50%;border:2px solid var(--mint);
+  background-size:cover;background-position:center}
+
+.verified{color:var(--mint);font-size:.85em;vertical-align:1px}
+img.ph{object-fit:cover;display:block}
+
+/* ---------- reusable photo helpers ---------- */
+.avatar{border-radius:50%;background-size:cover;background-position:center;flex:none}
+.tile{position:relative;border-radius:20px;overflow:hidden;background-size:cover;background-position:center}
+.tile::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,0) 38%,rgba(0,0,0,.62) 100%)}
+.tile>*{position:relative;z-index:2}
+.live-tag{position:absolute;top:12px;left:12px;z-index:3;background:#FF3B5C;color:#fff;
+  font-size:14px;font-weight:800;padding:5px 11px;border-radius:8px;letter-spacing:.4px;
+  display:flex;align-items:center;gap:6px}
+.live-tag .dot{width:8px;height:8px;border-radius:50%;background:#fff}
+.eye{position:absolute;top:12px;right:12px;z-index:3;background:rgba(0,0,0,.55);color:#fff;
+  font-size:14px;font-weight:700;padding:5px 10px;border-radius:8px}
+.tile .meta{position:absolute;bottom:12px;left:14px;right:14px;z-index:3;
+  display:flex;align-items:center;gap:9px}
+.tile .meta .avatar{width:34px;height:34px;border:2px solid rgba(255,255,255,.85)}
+.tile .meta .nm{color:#fff;font-size:16px;font-weight:700;line-height:1.1}
+.tile .meta .sub{color:#cfe9e0;font-size:13px;opacity:.85}
+
+/* tinted Ionicon-style square icon tiles */
+.itile{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;
+  justify-content:center;font-size:24px;flex:none;
+  background:rgba(84,214,166,.12);color:var(--mint);border:1px solid rgba(91,240,200,.18)}
+
+.chip{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;
+  font-size:15px;font-weight:700;background:rgba(84,214,166,.12);color:var(--accent);
+  border:1px solid rgba(91,240,200,.22)}
+
+.cta{display:flex;align-items:center;justify-content:center;gap:9px;
+  border:1.6px solid var(--mint);color:var(--accent);background:rgba(84,214,166,.06);
+  border-radius:16px;font-size:19px;font-weight:800;padding:15px 0;letter-spacing:.2px}
+.cta.solid{background:linear-gradient(180deg,var(--accent),var(--mint));color:#04130f;border-color:transparent}

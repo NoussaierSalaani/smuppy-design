@@ -1,0 +1,192 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<style>
+  :root{
+    --mint:#54D6A6; --glow:#5BF0C8; --core:#C9FFF1; --ink:#EAF6F1;
+    --dim:#7E8B91; --bg:#05070A;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  body{background:#0a0d12;font-family:-apple-system,"SF Pro Display",Segoe UI,Roboto,sans-serif;
+       padding:56px 48px;display:flex;flex-direction:column;align-items:center;gap:14px}
+  h1{color:var(--mint);font-size:34px;font-weight:800;letter-spacing:-.5px;align-self:flex-start}
+  .sub{color:#8b97a3;font-size:16px;align-self:flex-start;margin-bottom:18px}
+  .row{display:flex;gap:44px}
+  .cap{color:#c7d2da;font-size:15px;text-align:center;margin-top:14px;font-weight:500}
+  .cap b{color:var(--mint)}
+
+  /* ---------- phone ---------- */
+  .phone{width:360px;height:780px;border-radius:46px;position:relative;overflow:hidden;
+    background:var(--bg);border:1px solid rgba(91,240,200,.14);
+    box-shadow:0 24px 70px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.03)}
+  .notch{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:110px;height:26px;
+    background:#000;border-radius:16px;z-index:40}
+  .status{position:absolute;top:20px;width:100%;display:flex;justify-content:space-between;
+    padding:0 30px;color:#cfe9e0;font-size:13px;font-weight:600;z-index:30;opacity:.85}
+
+  /* ---------- night map (3D neon floor) ---------- */
+  .map{position:absolute;inset:0;perspective:560px;overflow:hidden;
+    background:radial-gradient(130% 90% at 50% 88%, #06241d 0%, #061018 48%, var(--bg) 78%)}
+  .floor{position:absolute;left:-60%;right:-60%;bottom:-26%;height:86%;transform:rotateX(70deg);
+    transform-origin:bottom center;
+    background:
+      repeating-linear-gradient(90deg,transparent 0 46px,rgba(91,240,200,.16) 46px 47px),
+      repeating-linear-gradient(0deg,transparent 0 46px,rgba(91,240,200,.10) 46px 47px);
+    -webkit-mask:linear-gradient(to top,#000 6%,rgba(0,0,0,.35) 40%,transparent 82%)}
+  .horizon{position:absolute;left:0;right:0;top:30%;height:160px;
+    background:radial-gradient(60% 100% at 50% 100%,rgba(91,240,200,.22),transparent 70%);filter:blur(6px)}
+  .vig{position:absolute;inset:0;background:radial-gradient(75% 60% at 50% 42%,transparent 55%,rgba(0,0,0,.72))}
+
+  /* ---------- route ---------- */
+  .route{position:absolute;inset:0;z-index:10}
+  .dot{position:absolute;width:16px;height:16px;border-radius:50%;background:var(--core);
+    box-shadow:0 0 0 6px rgba(91,240,200,.30),0 0 22px 6px var(--glow);z-index:12}
+
+  /* ---------- filter pill ---------- */
+  .filter{position:absolute;top:58px;left:50%;transform:translateX(-50%);z-index:30;display:flex;gap:6px;
+    background:rgba(8,18,16,.55);border:1px solid rgba(91,240,200,.22);border-radius:999px;padding:5px;
+    backdrop-filter:blur(14px)}
+  .filter span{font-size:12.5px;font-weight:700;color:var(--dim);padding:6px 13px;border-radius:999px}
+  .filter .on{color:#04130f;background:linear-gradient(180deg,#6FE3BC,var(--mint));
+    box-shadow:0 4px 14px rgba(84,214,166,.4)}
+
+  /* ---------- start orb ---------- */
+  .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20}
+  .orb{width:184px;height:184px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 50% 38%,#A9FBE2 0%,var(--mint) 44%,#149274 100%);
+    box-shadow:0 0 0 1.5px rgba(201,255,241,.55),0 0 60px 8px rgba(91,240,200,.55),
+      0 0 130px 30px rgba(84,214,166,.32),inset 0 -14px 40px rgba(0,40,30,.45)}
+  .orb::before{content:"";position:absolute;inset:-26px;border-radius:50%;
+    border:1.5px solid rgba(91,240,200,.30)}
+  .orb b{color:#042018;font-size:30px;font-weight:800;letter-spacing:1px}
+  .startsub{color:#bfeede;font-size:14px;margin-top:30px;font-weight:600;letter-spacing:.3px}
+  .startsub2{color:#5f7a72;font-size:12.5px;margin-top:8px;letter-spacing:2px;text-transform:uppercase}
+
+  /* ---------- live hero metric ---------- */
+  .live{position:absolute;left:0;right:0;bottom:150px;z-index:20;text-align:center}
+  .huge{color:#fff;font-size:96px;font-weight:800;letter-spacing:-3px;line-height:.9;
+    text-shadow:0 0 40px rgba(91,240,200,.35)}
+  .huge small{font-size:30px;font-weight:700;color:var(--glow);letter-spacing:0;margin-left:6px}
+  .secline{color:#9fb3ac;font-size:16px;font-weight:600;margin-top:18px;letter-spacing:.4px}
+  .secline b{color:#dff5ee}
+  .controls{position:absolute;bottom:46px;left:0;right:0;display:flex;gap:26px;justify-content:center;align-items:center;z-index:25}
+  .pbtn{width:74px;height:74px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:rgba(12,24,21,.6);border:1.5px solid rgba(91,240,200,.4);backdrop-filter:blur(14px);
+    color:var(--glow);font-size:26px;box-shadow:0 8px 26px rgba(0,0,0,.4)}
+  .pbtn.stop{width:62px;height:62px;border-color:rgba(255,107,107,.5);color:#ff7b7b}
+
+  /* ---------- share poster ---------- */
+  .poster{position:absolute;inset:0;background:
+     radial-gradient(120% 80% at 50% 18%,#0c2c24 0%,#08161a 46%,#04070b 80%)}
+  .pstars{position:absolute;inset:0;background-image:
+    radial-gradient(1px 1px at 20% 30%,rgba(201,255,241,.6),transparent),
+    radial-gradient(1px 1px at 70% 22%,rgba(201,255,241,.4),transparent),
+    radial-gradient(1.5px 1.5px at 84% 60%,rgba(91,240,200,.5),transparent),
+    radial-gradient(1px 1px at 38% 72%,rgba(201,255,241,.35),transparent)}
+  .ptop{position:absolute;top:78px;width:100%;text-align:center;z-index:5;color:#7fd9c2;
+    font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase}
+  .pbignum{position:absolute;top:560px;width:100%;text-align:center;z-index:5}
+  .pbignum .d{color:#fff;font-size:80px;font-weight:800;letter-spacing:-2px;text-shadow:0 0 50px rgba(91,240,200,.4)}
+  .pbignum .d small{font-size:28px;color:var(--glow)}
+  .pbignum .m{color:#a7bcb4;font-size:17px;font-weight:600;margin-top:10px;letter-spacing:.5px}
+  .ribbon{position:absolute;top:512px;left:50%;transform:translateX(-50%);z-index:6;
+    background:linear-gradient(180deg,#6FE3BC,var(--mint));color:#04130f;font-weight:800;font-size:13.5px;
+    padding:8px 18px;border-radius:999px;letter-spacing:.3px;box-shadow:0 6px 22px rgba(84,214,166,.45)}
+  .brand{position:absolute;bottom:118px;width:100%;text-align:center;z-index:5;color:#cdeae0;
+    font-size:18px;font-weight:800;letter-spacing:.5px}
+  .brand span{color:var(--mint)}
+  .pdate{position:absolute;bottom:96px;width:100%;text-align:center;z-index:5;color:#5d736c;font-size:12px;letter-spacing:1px}
+  .sharebar{position:absolute;bottom:34px;left:24px;right:24px;z-index:8;display:flex;gap:12px}
+  .sharebtn{flex:1;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;gap:8px;
+    font-size:15px;font-weight:700;color:#04130f;background:linear-gradient(180deg,#6FE3BC,var(--mint));
+    box-shadow:0 8px 24px rgba(84,214,166,.4)}
+  .sharebtn.alt{background:rgba(12,24,21,.6);color:var(--glow);border:1.5px solid rgba(91,240,200,.4)}
+</style></head>
+<body>
+<h1>Run — redesign premium (immersif, zéro « analytics »)</h1>
+<div class="sub">Le tracé est l'œuvre d'art · 1 point focal par écran · filtre map NightRun</div>
+
+<div class="row">
+
+  <!-- ============ 1. DÉPART ============ -->
+  <div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>9:41</span><span>NightRun ◗</span></div>
+    <div class="map"><div class="horizon"></div><div class="floor"></div><div class="vig"></div></div>
+    <div class="filter"><span class="on">🌙 NightRun</span><span>☀︎ DayRun</span></div>
+    <div class="center">
+      <div class="orb"><b>DÉPART</b></div>
+      <div class="startsub">Prêt quand tu l'es</div>
+      <div class="startsub2">· course libre ·</div>
+    </div>
+  </div>
+  <div class="cap"><b>1 · Départ</b> — une orbe, rien d'autre. On ouvre, on tape, on court.</div>
+  </div>
+
+  <!-- ============ 2. EN COURSE ============ -->
+  <div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>9:48</span><span>● en course</span></div>
+    <div class="map"><div class="horizon"></div><div class="floor"></div>
+      <svg class="route" viewBox="0 0 360 780" fill="none">
+        <defs>
+          <filter id="g1" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="7" result="b"/><feMerge>
+            <feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <path d="M70 690 C 50 560 170 560 150 450 S 70 360 150 290 S 300 280 250 170 S 170 110 240 70"
+          stroke="#5BF0C8" stroke-width="9" stroke-linecap="round" opacity=".55" filter="url(#g1)"/>
+        <path d="M70 690 C 50 560 170 560 150 450 S 70 360 150 290 S 300 280 250 170 S 170 110 240 70"
+          stroke="#C9FFF1" stroke-width="3.2" stroke-linecap="round"/>
+      </svg>
+      <div class="dot" style="left:232px;top:62px"></div>
+      <div class="vig"></div>
+    </div>
+    <div class="live">
+      <div class="huge">2.41<small>km</small></div>
+      <div class="secline">12:30&nbsp;&nbsp;·&nbsp;&nbsp;<b>5'12</b> /km</div>
+    </div>
+    <div class="controls">
+      <div class="pbtn stop">■</div>
+      <div class="pbtn" style="width:84px;height:84px;font-size:30px">❚❚</div>
+    </div>
+  </div>
+  <div class="cap"><b>2 · En course</b> — 1 chiffre héros + route néon. Temps & allure en discret.</div>
+  </div>
+
+  <!-- ============ 3. CARTE DE PARTAGE ============ -->
+  <div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="poster">
+      <div class="pstars"></div>
+      <svg class="route" viewBox="0 0 360 780" fill="none" style="opacity:.96">
+        <defs>
+          <filter id="g2" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="9" result="b"/><feMerge>
+            <feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <path d="M95 470 C 60 380 180 360 150 280 S 70 210 160 170 S 280 175 250 110 S 150 70 210 130 S 300 250 250 330 S 120 360 150 440"
+          stroke="#5BF0C8" stroke-width="11" stroke-linecap="round" opacity=".5" filter="url(#g2)"/>
+        <path d="M95 470 C 60 380 180 360 150 280 S 70 210 160 170 S 280 175 250 110 S 150 70 210 130 S 300 250 250 330 S 120 360 150 440"
+          stroke="#C9FFF1" stroke-width="3.6" stroke-linecap="round"/>
+      </svg>
+      <div class="ptop">Course du matin · 14 km/h max</div>
+      <div class="ribbon">🏆 Nouveau record · 5 KM</div>
+      <div class="pbignum">
+        <div class="d">5.2<small> km</small></div>
+        <div class="m">26:18&nbsp;&nbsp;·&nbsp;&nbsp;5'03 /km</div>
+      </div>
+      <div class="brand">smup<span>py</span></div>
+      <div class="pdate">25 JUIN 2026 · PARIS</div>
+      <div class="sharebar">
+        <div class="sharebtn">＋ Publier en Peak</div>
+        <div class="sharebtn alt">⤴ Story</div>
+      </div>
+    </div>
+  </div>
+  <div class="cap"><b>3 · Le run devient un Peak</b> — publié direct dans Smuppy en 1 tap. <b>Le gros waouh.</b></div>
+  </div>
+
+</div>
+</body></html>

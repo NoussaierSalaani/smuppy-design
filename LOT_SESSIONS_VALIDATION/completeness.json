@@ -1,0 +1,897 @@
+{
+ "count": 10,
+ "screens": [
+  {
+   "screen": "SessionDetailView",
+   "v1Screen": "src/screens/sessions/SessionDetailScreen.tsx",
+   "wired": false,
+   "componentExists": true,
+   "consolidationFlag": "NONE",
+   "effort": "M",
+   "subScreens": [
+    "WaitingRoom (join the call → src/screens/sessions/WaitingRoomScreen.tsx)",
+    "Chat (message creator)",
+    "UserProfile (open creator, via ProfileStack)",
+    "BookSession (rebook / book again)",
+    "add-to-calendar (native expo-calendar, no screen)"
+   ],
+   "ctas": [
+    {
+     "label": "Back (header)",
+     "target": "navigation.goBack()",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Creator card → profile",
+     "target": "ProfileStack→UserProfile (params.userId=creatorId)",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Add to calendar (action row)",
+     "target": "expo-calendar createEventAsync (native, no nav)",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Send message (action row)",
+     "target": "Chat (params.userId=creatorId)",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Cancel session (destructive row)",
+     "target": "sessionsApi.declineSession + confirm modal",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Book again (completed)",
+     "target": "BookSession (params.creatorId)",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Join the call (sticky gradient CTA)",
+     "target": "WaitingRoom (sessionId+creatorId+creatorName+creatorAvatar)",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Reschedule (V2 actionRows grammar mentions it; V1 has NO reschedule handler/route)",
+     "target": "NONE — no reschedule screen/endpoint exists",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "Cancel-session confirm modal (warning icon + refund note + Yes/No)",
+     "present": true,
+     "note": "V1 has a full RN Modal (SessionDetailScreen:368-405). V2 view does NOT render it — V2 only exposes onCancel + cancelLoading and expects the CONTAINER to own the confirm modal + refund mutation (documented in props). Wiring layer must port the V1 Modal (or a V2 BottomSheet/Dialog) and only fire onCancel after confirm."
+    },
+    {
+     "name": "Refund note inside cancel modal (shown when price>0)",
+     "present": true,
+     "note": "Lives in the V1 modal; preserve in the container confirm."
+    }
+   ],
+   "feGaps": [
+    "NOT WIRED: SessionDetailScreen.tsx never imports SessionDetailView nor early-returns behind FEATURES.V2_UI — pure V1 still renders (SessionDetailScreen.tsx:188-407).",
+    "ROUTE PARAM MISMATCH (pre-existing P0): types/index.ts:879 declares SessionDetail params as { sessionId: string }, and ALL callers pass { sessionId } (MySessionsScreen.tsx:131, ManageSubscriptionScreen.tsx:403, useNotificationsActions.ts:137). But SessionDetailScreen.tsx:54 reads route.params.session (full Session object) → session is undefined at runtime → screen crashes on first field access. The V2 wiring container MUST fetch the session by sessionId (sessionsApi) instead of reading params.session; do not propagate the broken shape.",
+    "SAFE-AREA: SessionDetailView.tsx has no useSafeAreaInsets — header (line 346) sits at y=0 under the notch and the sticky bottomBar (line 690-705) ignores the home indicator. V1 host handles this via insets (SessionDetailScreen.tsx:51,189,352). Container must pass top/bottom padding or wrap.",
+    "RESCHEDULE action row: V2 doc/grammar lists reschedule as an action but neither V1 nor backend has a reschedule path → either drop the row or ticket the backend.",
+    "STATUS ENUM PARITY: V2 SessionDetailStatus uses 'confirmed' for joinable; container must map V1 status verbatim (already 1:1) — verify pending vs confirmed gating when wiring canJoin."
+   ],
+   "beGaps": [
+    {
+     "desc": "GET session-by-id endpoint to hydrate SessionDetail from { sessionId } param (callers pass only sessionId; no full-object source). Needed to fix the route-param mismatch canonically.",
+     "endpoint": "GET /v2/sessions/{sessionId}",
+     "ticketNeeded": true
+    },
+    {
+     "desc": "Reschedule a booked 1:1 session (move slot) — no endpoint exists; required only if the reschedule action row is kept.",
+     "endpoint": "PATCH /v2/sessions/{sessionId}/reschedule",
+     "ticketNeeded": true
+    }
+   ],
+   "simplifyCandidates": [
+    "Reschedule action row (no backend, no screen — vanity action; drop unless KAN ticket created).",
+    "V2 'empty / Session introuvable' card (emptyTitle) — defensive only; once the container fetches by id, prefer a real error/notFound state over an inline empty card."
+   ],
+   "wiringPlan": "Create a SessionDetail container (keep file SessionDetailScreen.tsx): fetch session by route.params.sessionId via sessionsApi (fixes the params.session crash). At top, `if (FEATURES.V2_UI) return <SessionDetailView ... />` AFTER all hooks (early-return-after-hooks pattern used across V2). Map V1 state → props: creatorName/creatorVerified, avatarSlot=<OptimizedImage>, status, statusLabel via getStatusLabel, infoRows=[date,time,duration,(pack),(price)] pre-formatted with formatFullDate/formatTime/useCurrency, actionRows=[calendar,message], onAction switch, canCancel→showCancel, onCancel opens the ported confirm modal then declineSession, canJoin/onJoin→WaitingRoom, onRebook→BookSession. Resolve all strings from v2SessionDetailView namespace (exists). Keep V1 body for the false branch.",
+   "safeAreaPlan": "Container reads useSafeAreaInsets; pass top inset as header paddingTop and bottom inset into the sticky Join bar. SessionDetailView should accept (or the container should wrap with) top/bottom padding — currently the View hard-pads bottomBar paddingBottom:20 (line 809) which ignores the home indicator on notched devices."
+  },
+  {
+   "screen": "SessionEndedView",
+   "v1Screen": "src/screens/sessions/SessionEndedScreen.tsx",
+   "wired": false,
+   "componentExists": true,
+   "consolidationFlag": "Partial overlap with LiveEndedView (src/components/v2/LiveEndedView) — both are 'X ended' recap+rating surfaces. SessionEnded = 1:1 private call recap; LiveEnded = public live recap. Distinct entry points (PrivateCallScreen vs live host), so NOT a true duplicate, but keep their grammars harmonized (hero+stats+rating+CTAs) and do not let a future refactor fork the rating logic.",
+   "effort": "M",
+   "subScreens": [
+    "BookSession (book again → handleRebook navigation.replace)",
+    "Tabs (Done → navigation.reset to Tabs)",
+    "SmupModal (Send Smups — NEW, only if onSendSmups kept)"
+   ],
+   "ctas": [
+    {
+     "label": "Rate stars (1-5)",
+     "target": "local setRating state (V1) → container onRate; persistence is a beGap",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Send Smups (gradient money CTA)",
+     "target": "onSendSmups → SmupModal (src/components/smups/SmupModal.tsx exists)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Book again",
+     "target": "BookSession (navigation.replace, params.creator)",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Done (dismiss link)",
+     "target": "navigation.reset → Tabs",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Preset rating chips (multi-select)",
+     "target": "local toggle → container onTogglePreset; persistence is a beGap",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "Send-Smups sheet/modal (SmupModal or SmupBuyModal)",
+     "present": true,
+     "note": "SmupModal exists in src/components/smups/ — the container opens it from onSendSmups. Not part of the View; wire in container."
+    }
+   ],
+   "feGaps": [
+    "NOT WIRED: SessionEndedScreen.tsx never imports SessionEndedView / FEATURES.V2_UI — V1 still renders. Source nav exists (PrivateCallScreen.tsx:220,234 → navigation.replace('SessionEnded', { duration, creator })).",
+    "NO RATING SUBMIT (pre-existing): V1 setRating is local-only and never POSTed (SessionEndedScreen.tsx:29-30) — the star rating is cosmetic. V2 adds onRate + preset chips but still no backend → wiring without a submit endpoint ships a fake rating.",
+    "onSendSmups + sendSmupsLabel ('Envoyer des Smups à Sara') has NO V1 equivalent on this screen — it is a NEW money CTA the V2 view introduces. SmupModal exists but session-context Smups send is unproven. Either wire SmupModal (creator-scoped) or drop the CTA (simplifyCandidate).",
+    "SAFE-AREA: SessionEndedView.tsx uses a plain ScrollView with no SafeAreaView/insets (paddingTop:48 hard-coded, scroll line 475). V1 host wraps in SafeAreaView (SessionEndedScreen.tsx:56). Container must wrap in SafeAreaView or pass insets.",
+    "subtitle interpolation: V2 expects subtitle PRE-interpolated with duration; V1 builds it via t('sessions.ended.greatSession', {name}) and formatDuration(seconds). Container must format duration→'60 min' and interpolate before passing (placeholder {{duration}} resolved upstream).",
+    "STAT 'HD' quality tile is a hardcoded vanity value in V1 (SessionEndedScreen.tsx:98) — carried into V2 STATS fixture; no real video-quality signal exists."
+   ],
+   "beGaps": [
+    {
+     "desc": "Persist a 1:1 session star rating (+ optional bounded preset reasons). No endpoint today; V1 rating is discarded. Required to make onRate/onTogglePreset real, not cosmetic.",
+     "endpoint": "POST /v2/sessions/{sessionId}/rating",
+     "ticketNeeded": true
+    },
+    {
+     "desc": "Send Smups to a creator from a session-ended context (creator-scoped tip). Only needed if the Send-Smups CTA is kept; verify SmupModal supports session/creator scope.",
+     "endpoint": "POST /v2/smups/send (creatorId, sessionId)",
+     "ticketNeeded": true
+    }
+   ],
+   "simplifyCandidates": [
+    "Send-Smups gradient CTA (onSendSmups) — NEW money CTA with no V1 precedent and no confirmed session-scoped Smups send path; propose dropping unless founder wants tipping post-session.",
+    "Preset rating chips (presets) — extra rating dimension with no backend; star rating alone may suffice. Founder validates.",
+    "'HD' quality StatTile — hardcoded vanity (no real quality metric); drop or replace with a real signal.",
+    "Confetti backdrop (decorative) — keep (cheap, on-brand) but it is pure vanity."
+   ],
+   "wiringPlan": "In SessionEndedScreen.tsx add `if (FEATURES.V2_UI) return <SessionEndedView ... />` after hooks. Map: heroSlot=avatar OptimizedImage (or default ✓), title/subtitle from v2SessionEndedView namespace with duration pre-formatted, stats=[duration,(quality?)], rating + onRate (wire to POST rating endpoint once it exists; until then keep local + ticket), presets+onTogglePreset (gate behind same endpoint), onBookAgain→replace('BookSession',{creator}), onDone→reset to Tabs. DECIDE on onSendSmups: either wire SmupModal or omit the prop. Keep V1 for the false branch.",
+   "safeAreaPlan": "Container wraps SessionEndedView in SafeAreaView (edges top+bottom) like V1, OR pass insets; the View's hard paddingTop:48 / paddingBottom:40 must be supplemented by the home-indicator inset so the Done link + Book-again button clear the bottom bar on notched devices."
+  },
+  {
+   "screen": "SessionPaymentView",
+   "v1Screen": "src/screens/sessions/SessionPaymentScreen.tsx",
+   "wired": false,
+   "componentExists": true,
+   "consolidationFlag": "Distinct from PaymentGateSheet/PaymentLoadingSheet (those are gate/loading sheets, not a full checkout) and from BookSessionView (slot picker). SessionPaymentView is the dedicated 1:1 checkout. NOT a duplicate, but it overlaps conceptually with the generic payment surfaces (premium_plans / PackPurchase checkout) — keep one checkout grammar; do not fork fee/total rendering.",
+   "effort": "M",
+   "subScreens": [
+    "SessionBooked (success → navigation.replace after booking)",
+    "change payment method (onChangePaymentMethod — NO screen exists today)",
+    "Stripe PaymentSheet (native sheet via usePaymentSheetCheckout — not a RN screen)"
+   ],
+   "ctas": [
+    {
+     "label": "Back (header)",
+     "target": "navigation.goBack()",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Pay {{total}} (gradient CTA)",
+     "target": "paymentsApi.createPaymentIntent → presentPaymentSheet/openCheckout → bookSession → replace('SessionBooked')",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Cancel (ghost link)",
+     "target": "V2 adds onCancel; V1 has NO explicit cancel button (only back) → container maps onCancel→goBack",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Change payment method (ghost link)",
+     "target": "onChangePaymentMethod → NO method-picker screen/sheet exists",
+     "status": "TARGET_MISSING"
+    }
+   ],
+   "popups": [
+    {
+     "name": "Stripe native PaymentSheet",
+     "present": true,
+     "note": "V1 uses usePaymentSheetCheckout.presentPaymentSheet (SessionPaymentScreen.tsx:33,117) — this is the real payment UI. V2 Pay CTA must trigger the same hook in the container."
+    },
+    {
+     "name": "Payment-method picker sheet",
+     "present": false,
+     "note": "V2 exposes onChangePaymentMethod + changeMethodLabel but no picker exists. Drop the change affordance OR build a method-selection sheet (Stripe customer payment methods). beGap."
+    },
+    {
+     "name": "Payment failure toast / error Banner",
+     "present": true,
+     "note": "V1 uses toastError on failure (SessionPaymentScreen.tsx:145). V2 supports an inline error Banner (status='error', errorMessage). Container should map the failure to status='error' instead of (or in addition to) the toast for parity with the V2 design."
+    }
+   ],
+   "feGaps": [
+    "NOT WIRED: SessionPaymentScreen.tsx never imports SessionPaymentView / FEATURES.V2_UI — V1 still renders. Source nav exists (BookSessionScreen.tsx:180 → navigate('SessionPayment', {...})).",
+    "NO 'paid' TERMINAL IN V1 FLOW: V2 has a terminal status='paid' that REPLACES the Pay CTA with a success Banner, but V1 navigates AWAY to SessionBooked on success (SessionPaymentScreen.tsx:83) and never stays to show 'paid'. Wiring must choose: keep navigate-to-SessionBooked (then status='paid' is dead/unused) OR show the paid Banner then auto-advance. Document the decision; an unused status branch is dead UI.",
+    "FEE/TOTAL SHAPE DIVERGENCE: V1 computes only sessionFee + serviceFee(0) + total (SessionPaymentScreen.tsx:174-187) — NO tax line. V2 lines fixture includes a TVA(20%) tax row. Container must build `lines` from REAL amounts (no fabricated tax) — do not ship the fixture's tax row unless backend returns tax.",
+    "onChangePaymentMethod has no target (no method-picker) → unwired CTA; drop or ticket.",
+    "onCancel: V1 has no dedicated cancel button (only header back). Mapping onCancel→goBack is fine but verify it does not double with the back button (two dismiss affordances).",
+    "SAFE-AREA: SessionPaymentView.tsx uses a plain header View (paddingTop:8, line 415) with no insets; V1 wraps in SafeAreaView (SessionPaymentScreen.tsx:199). The bottom Pay CTA in V2 is inside the ScrollView (not a sticky safe-area bar like V1's bottomContainer at line 216) — verify the CTA is reachable above the home indicator; container should add bottom inset.",
+    "payLoading/isProcessing parity: map V1 isProcessing → V2 isLoading (status='loading' or payLoading) so double-submit guard matches."
+   ],
+   "beGaps": [
+    {
+     "desc": "Return a tax/VAT line and service-fee breakdown for a session PaymentIntent so the V2 multi-line breakdown (subtotal/fee/tax/total) shows real values instead of fabricated ones. Today createPaymentIntent returns no itemized breakdown.",
+     "endpoint": "createPaymentIntent (type='session') → include { lines: [{label,amount}], tax, serviceFee }",
+     "ticketNeeded": true
+    },
+    {
+     "desc": "List saved Stripe payment methods for the customer to power a change-method picker. Only needed if the Change-method CTA is kept.",
+     "endpoint": "GET /v2/payments/methods",
+     "ticketNeeded": true
+    }
+   ],
+   "simplifyCandidates": [
+    "Change-payment-method affordance (onChangePaymentMethod/changeMethodLabel) — no picker screen and Stripe PaymentSheet already lets the user pick a method at pay time; drop to avoid a dead CTA.",
+    "Tax (TVA 20%) line in the breakdown — fixture-only; do not render unless backend returns tax (false financial display = compliance risk).",
+    "status='paid' inline success Banner — redundant with the existing navigate→SessionBooked success screen; pick one success surface."
+   ],
+   "wiringPlan": "In SessionPaymentScreen.tsx add `if (FEATURES.V2_UI) return <SessionPaymentView ... />` after hooks. Map: creatorName/whenLabel (formatFullDateShort+time+duration), avatarSlot=<OptimizedImage>, paymentMethodLabel from Stripe default method (or static 'Carte'), lines built from REAL createPaymentIntent breakdown (sessionFee + serviceFee + total; tax only if backend returns it), totalLabel=formatCurrencyAmount(total), payCta/secure/footnote from v2SessionPaymentView namespace, onPay=handlePayment, onBack/onCancel=goBack, status driven by isProcessing→'loading' and catch→'error'(errorMessage). Decide paid-vs-navigate (recommend keep navigate→SessionBooked, omit status='paid'). Omit onChangePaymentMethod unless picker built. Keep V1 for the false branch.",
+   "safeAreaPlan": "Container wraps in SafeAreaView (top+bottom) as V1 does; ensure the Pay CTA clears the home indicator. Because V2 puts the Pay CTA inside the ScrollView (not a sticky bottom bar), confirm content+inset bottom padding so the CTA is not hidden; alternatively keep V1's sticky bottomContainer pattern by passing bottom inset."
+  },
+  {
+   "screen": "BookingHistoryView",
+   "v1Screen": "src/screens/business/BookingHistoryScreen.tsx",
+   "wired": false,
+   "componentExists": true,
+   "consolidationFlag": "NONE — distinct from MySessionsView (1:1 creator sessions) and SessionDetailView. This is the business/Mindbody booking history (member↔business services). No other wired view serves it.",
+   "ctas": [
+    {
+     "label": "Back (header)",
+     "target": "navigation.goBack()",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Cancel booking (per upcoming+confirmed card)",
+     "target": "businessApi.cancelBusinessBooking(id) via onCancel + destructive confirm",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Open booking row (onOpen)",
+     "target": "V2 prop exists but V1 has NO row-open nav (no BookingDetail route). onOpen would be unwired.",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Empty-state action (onEmptyAction / 'Explorer')",
+     "target": "V2 prop exists; V1 empty state has NO CTA (just icon+text). Container must decide target (e.g. BusinessDiscovery) or omit.",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "Cancel-booking destructive confirm",
+     "present": true,
+     "note": "V1 uses showDestructiveConfirm (SmuppyAlert) with title/message/cancelLabel. V2 view itself renders NO confirm — wiring container MUST keep showDestructiveConfirm before calling onCancel, else cancel becomes one-tap (double-charge/regret risk)."
+    },
+    {
+     "name": "Cancel success / failure toast",
+     "present": true,
+     "note": "V1 toastSuccess/toastError. V2 view has no toast slot — container keeps useSmuppyToast. Fine (presentational view)."
+    }
+   ],
+   "subScreens": [
+    "(none — leaf screen; no BookingDetail sub-screen exists in V1)"
+   ],
+   "feGaps": [
+    "NOT WIRED: BookingHistoryScreen.tsx:204-240 still renders the V1 FlatList; no `if (FEATURES.V2_UI) return <BookingHistoryView .../>` early-return. Component is built+exported+i18n'd but dead-imported nowhere.",
+    "SAFE-AREA: BookingHistoryView.tsx:554-560 root is a bare View with paddingTop:8 only (styles.header line 664). It relies on the HOST SafeAreaView. V1 host wraps in SafeAreaView (line 206) but V2 early-return must preserve that wrapper or add edges=['top'] — otherwise header collides with the notch.",
+    "onOpen prop (BookingHistoryView.tsx:164) has no V1 target — leave unset in wiring (no BookingDetail route in src/types/index.ts).",
+    "emptyAction (line 202-204) has no V1 equivalent — leave unset or point to BusinessDiscovery; do not ship a dead CTA.",
+    "Pull-to-refresh: V2 exposes refreshing/onRefresh (lines 187-190) — wire to useDataFetch isRefreshing/refresh (V1 lines 70-76) or refresh silently breaks.",
+    "onEndReached (line 191): V1 getMyBusinessBookings is non-paginated (single fetch) — leave unset; do not fake infinite scroll."
+   ],
+   "beGaps": [
+    {
+     "desc": "BusinessBookingData (internal-types.ts:250-261) is missing businessName, serviceName, access_instructions. V1 reads them via `as EnrichedBooking & { businessName?: string }` casts (BookingHistoryScreen.tsx:125,135,144) so they may arrive untyped from the API but are NOT in the typed contract. V2 BookingHistoryItem REQUIRES businessName+serviceName (non-optional, lines 92-94). Confirm the GET /business/bookings/mine payload actually returns these joined fields; if not, add them server-side + to the type.",
+     "endpoint": "GET (businessApi.getMyBusinessBookings) — confirm businessName/serviceName/access_instructions in response join",
+     "ticketNeeded": true
+    }
+   ],
+   "simplifyCandidates": [
+    "onOpen row-press affordance — drop unless a BookingDetail screen is planned (no V1 target). A pressable card that navigates nowhere is a worse UX than a static card.",
+    "Empty-state CTA — drop (V1 has none); avoids a dead 'Explorer' button.",
+    "skeletonCount knob is fine but the loading state could just reuse a fixed 3 — minor."
+   ],
+   "wiringPlan": "In BookingHistoryScreen.tsx: keep all hooks (useDataFetch, cancel flow, toasts, destructive confirm) and add an early-return BEFORE the V1 JSX: `if (FEATURES.V2_UI) return <BookingHistoryView ... />`. Map EnrichedBooking→BookingHistoryItem (id, businessName, serviceName, dateText=formatDateShort(date), timeText=formatTime(date), status, priceText from amount/currency, accessInstructions, section=isUpcoming?'upcoming':'past', canCancel=isUpcoming&&status==='confirmed'). Feed strings from a new t('monetization:business.bookingHistory.*') or a v2BookingHistoryView namespace. onCancel(id)=>find booking=>existing handleCancel(booking) (keeps destructive confirm). onBack=goBack. loading=isLoading, refreshing=isRefreshing, onRefresh=refresh, cancellingId. Leave onOpen/onEmptyAction/onEndReached unset.",
+   "safeAreaPlan": "Wrap the V2 early-return in the host's SafeAreaView (react-native-safe-area-context) edges={['top']} OR add a top inset inside the container, mirroring V1 line 206. The V2 view itself adds no inset (header paddingTop:8 only). Bottom list already pads 40 (styles.list).",
+   "effort": "S"
+  },
+  {
+   "screen": "WaitingRoomView",
+   "v1Screen": "src/screens/sessions/WaitingRoomScreen.tsx",
+   "wired": false,
+   "componentExists": true,
+   "consolidationFlag": "NONE — unique pre-call green-room. Reached from MySessionsScreen.tsx:122 navigate('WaitingRoom') (the wired MySessionsView 'Rejoindre' CTA). Distinct from PrivateCallView (in-call).",
+   "ctas": [
+    {
+     "label": "Cancel / back (onCancel)",
+     "target": "V1 handleCancel => stop poll + navigation.goBack()",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Join when ready (onJoin)",
+     "target": "V1 has NO manual join — poll auto-navigation.replace('PrivateCall') on status==='confirmed'. PrivateCall route EXISTS (types/index.ts:884).",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Retry (onRetry, error state)",
+     "target": "V2 prop; V1 has no retry (errors just goBack via alert). Container must supply a retry or omit.",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "Session declined alert",
+     "present": true,
+     "note": "V1 shows SmuppyAlert on status==='cancelled' (WaitingRoomScreen.tsx:116-122). V2 instead has a DECLINED terminal state (status='declined', lines 294-317) rendered IN-VIEW. Wiring should map poll 'cancelled'→status='declined' and drop the alert (or keep alert; pick one — don't double-notify)."
+    },
+    {
+     "name": "No-response (2-min timeout) alert",
+     "present": true,
+     "note": "V1 MAX_WAIT_TIME=120000 shows alert then goBack (lines 159-166). V2 has no timeout copy slot beyond status='error'. Map timeout→status='error' with errorTitle/errorDescription, or keep the V1 alert in the controller."
+    },
+    {
+     "name": "Invalid sessionId error alert",
+     "present": true,
+     "note": "V1 lines 38-44 validate UUID→showError→goBack. Keep in controller (pre-render guard)."
+    }
+   ],
+   "subScreens": [
+    "PrivateCall (next step, status==='ready'→onJoin / poll auto-advance)"
+   ],
+   "feGaps": [
+    "NOT WIRED: WaitingRoomScreen.tsx renders only V1 (avatar pulse + dots + cancel). No `if (FEATURES.V2_UI) return <WaitingRoomView .../>`. Component built+exported+i18n'd, imported nowhere.",
+    "STATE MISMATCH: V1 has NO 'ready' user-actionable state — it auto-replaces to PrivateCall on poll 'confirmed' (line 113). V2's whole value-add (deviceChecks panel + manual Join-when-ready gate) has no backing logic. Wiring must either (a) introduce a 'ready' hold + manual Join, or (b) keep auto-advance and the V2 'ready' state is never shown. Founder decision — flag it.",
+    "DEVICE-CHECKS: V2 deviceChecks[] (camera/mic/connection) has NO V1 data source — V1 does zero pre-call device checks. Either build a real check (expo-camera/permissions probe) or omit the panel (don't ship fake green checks → false-ready).",
+    "previewSlot (self-camera) has no V1 source — V1 shows a static avatar, not a live camera. Supplying a live preview here needs an Agora/expo-camera local view BEFORE the call channel (new wiring).",
+    "SAFE-AREA: WaitingRoomView.tsx:535 scroll paddingTop:56 is a hardcoded status-bar guess; actions paddingBottom:28 (line 574). It uses NO useSafeAreaInsets, unlike V1 (host SafeAreaView line 186). On notched/home-indicator devices the title/controls may clip — host must wrap or pass insets.",
+    "COUNTDOWN: V2 countdownLabel has no V1 source (V1 shows no countdown). Needs slot-start time from session — currently absent."
+   ],
+   "beGaps": [
+    {
+     "desc": "Pre-call device-check + countdown require fields V1 doesn't fetch: getSession returns {status} only (used at WaitingRoomScreen.tsx:108). For the V2 countdown, the session slot start-time must be in getSession payload. Confirm or add scheduledStartAt to the session response.",
+     "endpoint": "GET session (sessionsApi.getSession) — add scheduledStartAt for countdown",
+     "ticketNeeded": true
+    },
+    {
+     "desc": "'ready' manual-join gate (vs current auto-advance): if founder wants the V2 green-room hold, backend must expose a host-ready signal distinct from 'confirmed' OR confirm 'confirmed' == host-ready. Currently 'confirmed'→immediate auto-join, so a manual Join CTA would be redundant.",
+     "endpoint": "GET session status — clarify confirmed vs host-ready semantics",
+     "ticketNeeded": true
+    }
+   ],
+   "simplifyCandidates": [
+    "deviceChecks panel — drop for V1 launch unless a real camera/mic permission probe is wired; a hardcoded 3x green check is misleading.",
+    "previewSlot live self-camera — drop for v1 (keep static avatar) unless Agora pre-join local view is wired; reduces battery + permission friction in the waiting room.",
+    "Manual Join CTA — likely superfluous given V1 auto-advances on 'confirmed'; keep the auto-advance and hide onJoin to avoid a second tap.",
+    "countdownLabel — drop unless scheduledStartAt ships."
+   ],
+   "wiringPlan": "In WaitingRoomScreen.tsx add `if (FEATURES.V2_UI) return <WaitingRoomView ... />` after the hooks/poll effects. Map poll status→WaitingRoomStatus: pending→'waiting', confirmed→ either keep auto-replace('PrivateCall') (then never render 'ready') OR set 'ready' + onJoin=navigation.replace('PrivateCall',{sessionId,creator}); cancelled→'declined'; timeout/network→'error'. hostName=creator.name, avatarSlot=<OptimizedImage source={creator.avatar}/>. onCancel=handleCancel. Omit deviceChecks/previewSlot/countdown for v1 (no data). Feed strings from v2WaitingRoomView namespace. Keep invalid-UUID + no-response guards in the controller.",
+   "safeAreaPlan": "Wrap V2 return in SafeAreaView edges={['top','bottom']} (host already imports react-native-safe-area-context) OR pass useSafeAreaInsets into WaitingRoomView and replace the hardcoded scroll paddingTop:56 / actions paddingBottom:28 with insets.top+X / insets.bottom+X. Currently the view assumes a fixed status-bar height — unsafe on Dynamic Island / Android.",
+   "effort": "M"
+  },
+  {
+   "screen": "PrivateCallView",
+   "v1Screen": "src/screens/sessions/PrivateCallScreen.tsx",
+   "wired": false,
+   "componentExists": true,
+   "consolidationFlag": "NONE — unique in-call chrome. Reached via WaitingRoom poll replace('PrivateCall') and incoming-call. No other wired view renders the Agora 1:1 call.",
+   "ctas": [
+    {
+     "label": "End call (onEndCall)",
+     "target": "V1 handleEndCall => showEndConfirm modal => confirmEndCall => leaveChannel+destroy => navigation.replace('SessionEnded')",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Toggle mute (onToggleMute)",
+     "target": "V1 toggleMute (useAgora)",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Toggle camera (onToggleCamera)",
+     "target": "V1 toggleVideo (useAgora)",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Flip camera (onFlipCamera)",
+     "target": "V1 switchCamera (useAgora)",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Speaker toggle",
+     "target": "V1 HAS a speaker control (PrivateCallScreen.tsx:441-454) — V2 PrivateCallView has NO speaker control. Missing in V2.",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "In-call chat",
+     "target": "V1 HAS a chat control button (line 457-459) — V2 has none. (Likely intentional drop; smuppy has no post comments but in-call chat differs.)",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Swap PiP/main video (tap)",
+     "target": "V1 swapVideos (line 354). V2 PiP localVideoSlot is not pressable — swap missing.",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "End-call confirm modal",
+     "present": false,
+     "note": "V1 renders an IN-SCREEN BlurView confirm modal (PrivateCallScreen.tsx:464-489: endSessionTitle/Confirm + Continue/End buttons). V2 PrivateCallView has NO confirm modal — onEndCall is one-tap. Wiring container MUST host the confirm (SmuppyAlert.showDestructiveConfirm or a separate sheet) before calling leaveChannel — else accidental end-call mid-paid-session."
+    },
+    {
+     "name": "Failed-to-start / failed-to-join error alert",
+     "present": false,
+     "note": "V1 showAlert on join failure (lines 179-185, 203-209). V2 surfaces connectionState='failed' overlay in-view (lines 362-380) but has no retry. Keep the controller alert OR map to 'failed' + provide a retry path; don't lose the failure UX."
+    },
+    {
+     "name": "Incoming-call accept/decline UI",
+     "present": false,
+     "note": "V1 has a full incoming-call screen (isIncoming, lines 245-283: accept/decline). V2 PrivateCallView covers ONLY the connected in-call chrome — no incoming/ringing/connecting variants. Wiring must keep V1's pre-connected screens and only swap the CONNECTED branch to V2, OR build incoming/connecting V2 variants."
+    }
+   ],
+   "subScreens": [
+    "SessionEnded (route exists types/index.ts:885) — navigation.replace target after end/peer-left"
+   ],
+   "feGaps": [
+    "NOT WIRED: PrivateCallScreen.tsx renders V1 for all states. No `if (FEATURES.V2_UI)` early-return. PrivateCallView built+exported+i18n'd, imported nowhere.",
+    "PARTIAL COVERAGE: V2 PrivateCallView is CONNECTED-state-only. V1 has 4 states (incoming/ringing, connecting, ringing-outgoing, connected). Swapping the whole screen to V2 would DROP incoming + connecting flows. Wiring must scope the early-return to the connected branch only (around PrivateCallScreen.tsx:326).",
+    "MISSING CONTROL — Speaker: V1 line 441 toggles engine.setEnableSpeakerphone. V2 has no speaker prop/button. Add or accept feature regression.",
+    "MISSING CONTROL — Swap video: V1 tap-to-swap (line 354). V2 PiP is static. Add onPress to PiP or accept regression.",
+    "MISSING — In-call chat: V1 line 457. V2 drops it (verify founder intent — may be acceptable simplification).",
+    "MISSING — End-call confirm: V1 modal (line 464). V2 needs an external confirm before onEndCall fires.",
+    "SAFE-AREA: PrivateCallView.tsx uses NO useSafeAreaInsets — top:18 (line 458), controls bottom:36 (line 503), pip top:72 (line 479) are hardcoded. V1 correctly uses insets.top/insets.bottom (lines 355,386,409). On notched devices the V2 name row + control bar will clip. Host must pass insets or wrap.",
+    "CONNECTING/RECONNECTING: V2 shows a pill overlay for connecting/reconnecting/failed (good, directive #19) — better than V1's separate connecting screen, but only if the connected-branch swap also feeds connectionState from useAgora reconnection events (useAgora must expose 'reconnecting')."
+   ],
+   "beGaps": [
+    {
+     "desc": "connectionState='reconnecting' (directive #19 reconnection-first) requires useAgora/usePrivateCall to expose a reconnecting signal (Agora onConnectionStateChanged). V1 has no reconnecting state — it only has isJoined/remoteUsers. To use V2's reconnecting overlay, surface Agora connection-state events through the hook.",
+     "endpoint": "N/A client-only (useAgora hook) — expose reconnecting state from Agora SDK events",
+     "ticketNeeded": true
+    },
+    {
+     "desc": "qualityLabel ('HD · 720p') has no V1 source — V1 shows no quality pill. Optional: derive from Agora network-quality callback if the pill is kept.",
+     "endpoint": "N/A client-only — Agora onNetworkQuality for quality pill",
+     "ticketNeeded": false
+    }
+   ],
+   "simplifyCandidates": [
+    "qualityLabel pill — drop unless wired to a real Agora network-quality stat; a static 'HD · 720p' is vanity.",
+    "In-call chat — V1 had it but smuppy's contract minimizes chat; confirm with founder whether to keep the drop (V2 already omits it).",
+    "Speaker control — do NOT drop (real feature); must be added back to V2 or the swap is a regression."
+   ],
+   "wiringPlan": "Scope the swap to the CONNECTED branch only. In PrivateCallScreen.tsx, keep incoming/connecting/ringing V1 JSX, and replace the connected return (~line 326) with `if (FEATURES.V2_UI) return <PrivateCallView remoteVideoSlot={<RemoteVideoView ...>} localVideoSlot={<LocalVideoView ...>} avatarSlot={<OptimizedImage source={creator.avatar}/>} participantName={creator.name} elapsed={formatTimerMMSS(duration)} connectionState={mapAgora(isJoined,remoteUsers,error)} muted={isMuted} onToggleMute={toggleMute} cameraOff={isVideoOff} onToggleCamera={toggleVideo} onFlipCamera={switchCamera} onEndCall={handleEndCall} ... />`. CRITICAL: keep handleEndCall→showEndConfirm modal (or move to SmuppyAlert) so end-call stays confirmed. Re-add speaker + swap (or accept regression, founder call). Feed strings from v2PrivateCallView namespace.",
+   "safeAreaPlan": "Pass useSafeAreaInsets into PrivateCallView and replace hardcoded top:18 / controls bottom:36 / pip top:72 with insets-aware values, OR wrap the V2 return so the host applies insets. Without this the name row clips the Dynamic Island and the control bar overlaps the home indicator — V1 already handles this (insets.top/bottom), so the V2 swap must not regress it.",
+   "effort": "L"
+  },
+  {
+   "screen": "PrivateSessionsManageView",
+   "v1Screen": "src/screens/sessions/PrivateSessionsManageScreen.tsx (the 'packs' tab → renderPacksTab, L798-876)",
+   "wired": false,
+   "componentExists": true,
+   "consolidationFlag": "NONE",
+   "ctas": [
+    {
+     "label": "Owner banner inline 'Nouveau pack'",
+     "target": "onAdd → navigation.navigate('CreatorPackagesSetup') OR open add-pack modal (V1 handleShowAddPackModal)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Bottom 'Nouveau pack' gradient CTA",
+     "target": "onAdd (same as above)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Per-row active/inactive toggle",
+     "target": "onToggleActive → sessionsApi.updatePack(id,{isActive}) (V1 handleTogglePackActive L493)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Per-row 'Modifier'",
+     "target": "onEdit → navigation.navigate('PackagesEdit') OR CreatorPackagesSetup (V1 edit btn is a no-op TouchableOpacity, L862)",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Per-row 'Supprimer'",
+     "target": "onDelete → sessionsApi.deletePack(id) (V1 handleDeletePack)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Retry (error state)",
+     "target": "onRetry → re-run fetchData()",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Back",
+     "target": "onBack → navigation.goBack()",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    }
+   ],
+   "popups": [
+    {
+     "name": "Delete confirmation (Alert/confirm sheet before deletePack)",
+     "present": false,
+     "note": "View fires onDelete immediately; V1 also lacks a confirm. Destructive action MUST get a confirm popup (canonical: Calendly/Mindbody). Add a confirm BottomSheet/Alert in the container."
+    },
+    {
+     "name": "Add-pack modal",
+     "present": false,
+     "note": "V1 uses handleShowAddPackModal inline modal; V2 path should navigate to CreatorPackagesSetup OR surface an add-pack sheet. Container decision needed."
+    },
+    {
+     "name": "Edit-pack target",
+     "present": false,
+     "note": "No real per-pack edit route — PackagesEdit takes no params (route is `undefined`), CreatorPackagesSetup is a global form. Per-pack edit deep-link is a navigation gap."
+    }
+   ],
+   "subScreens": [
+    "Add pack → CreatorPackagesSetup (CreatorPackagesSetupView)",
+    "Edit pack → PackagesEdit (PackagesEditView) — but route carries no packId param"
+   ],
+   "feGaps": [
+    "Orphaned: zero imports in src/ — needs a host. The natural host PrivateSessionsManageScreen.tsx already consumes its V2_UI branch (L890) for CreatorOneOnOneSetupView (availability), so the Packs tab has NO V2 rendering. Need either a new route (PrivateSessionsPacksManage) OR a tabbed V2 host that renders CreatorOneOnOneSetupView + PrivateSessionsManageView + a requests view.",
+    "No SafeArea/topInset: component has no insets handling and accepts no topInset prop (PrivateSessionsManageView.tsx:578 root View) — header will collide with the notch unless host wraps in SafeAreaView. Sibling wired views (CreatorOneOnOneSetupView) take a topInset prop; this one does not.",
+    "No delete-confirm popup before destructive onDelete (PrivateSessionsManageView.tsx:296 handleDelete fires immediately).",
+    "Per-row 'Modifier' has no real param-carrying target (PackagesEdit route is `undefined` in types/index.ts:899) — edit deep-link gap.",
+    "Requests tab (V1 activeTab==='requests', session-request approval) has NO V2 view at all — if this host is consolidated, that surface is lost."
+   ],
+   "beGaps": [
+    {
+     "desc": "Pack toggle/edit/delete/list/create ALL exist: sessionsApi.updatePack({isActive}), deletePack, createPack, creatorApi.listCreatorPacks. No new endpoint needed.",
+     "ticketNeeded": false
+    },
+    {
+     "desc": "Per-pack edit prefill: PackagesEdit route carries no packId; to deep-link edit a specific pack the route param + a GET single-pack (or reuse listCreatorPacks filter) is needed.",
+     "endpoint": "GET /packs/{id} (or reuse list)",
+     "ticketNeeded": true
+    }
+   ],
+   "simplifyCandidates": [
+    "isNew / isPopular per-row chips (newText/popularText) — vanity badges not modeled by the createPack/updatePack API (CreatorPackagesSetupScreen.tsx:114 notes badge is a backend GAP); drop until backend models them.",
+    "publishedCount owner-banner sub-line + 'commission 20 %' template — marketing copy; verify commission is real per account type before showing."
+   ],
+   "wiringPlan": "Convert PrivateSessionsManageScreen V2_UI branch into a tabbed host (calendar/requests/packs like V1) OR add route PrivateSessionsPacksManage. Map V1 creatorPacks→PrivateSessionItem (field names already mirror SessionPack). Wire onToggleActive→updatePack, onDelete→deletePack (add confirm sheet), onEdit→navigate PackagesEdit w/ new {packId} param, onAdd→CreatorPackagesSetup. Register v2PrivateSessionsManageView.json (fr/en/es/pt-BR) in i18n/config.ts. Pass insets.top.",
+   "safeAreaPlan": "Add a `topInset?: number` prop (mirror CreatorOneOnOneSetupView) applied as paddingTop on the header View (PrivateSessionsManageView.tsx:584), fed by useSafeAreaInsets().top in the container; bottom is covered by list contentContainer paddingBottom:40.",
+   "effort": "M"
+  },
+  {
+   "screen": "PackageDetailView",
+   "v1Screen": "src/screens/sessions/PackPurchaseScreen.tsx (PackPurchase route) — but host renders PackPurchaseView, NOT this",
+   "wired": false,
+   "componentExists": true,
+   "consolidationFlag": "DUPLICATE of PackPurchaseView (already WIRED in PackPurchaseScreen.tsx:185-271 behind FEATURES.V2_UI). Both are fan-facing 'buy a creator pack' full screens with header+hero+price(+old/savings)+included-items+gradient buy CTA+purchased-state flip. PackPurchaseView is the SUPERSET (adds summary rows, secure-payment strip, terms note, restore-purchases, view-pack outline). PackageDetailView is the leaner orphan → CONSOLIDATE: drop PackageDetailView, keep PackPurchaseView.",
+   "ctas": [
+    {
+     "label": "Buy 'Acheter le pack · $X' (gradient)",
+     "target": "onCta → PackPurchaseScreen.handlePurchase (Stripe/IAP) — already implemented in the wired PackPurchaseView",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Purchased-state 'Réserver une session' (access)",
+     "target": "onCta(flipped) → navigate BookSession / MySessions",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Back",
+     "target": "onBack → navigation.goBack()",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    }
+   ],
+   "popups": [
+    {
+     "name": "Restore purchases (IAP)",
+     "present": false,
+     "note": "PackPurchaseView HAS this; PackageDetailView omits it → another reason it is the inferior duplicate."
+    },
+    {
+     "name": "Payment-secure info strip",
+     "present": false,
+     "note": "Present in PackPurchaseView, absent here."
+    },
+    {
+     "name": "Order summary / total breakdown",
+     "present": false,
+     "note": "Present in PackPurchaseView (summaryRows/totalLabel), absent here."
+    }
+   ],
+   "subScreens": [
+    "Purchased → PackPurchaseSuccess (PackPurchaseSuccessView)",
+    "Access → BookSession / MySessions"
+   ],
+   "feGaps": [
+    "Orphaned: zero imports in src/. The only valid fan pack-detail host (PackPurchaseScreen) already serves the richer PackPurchaseView, so this view has no place to live.",
+    "No SafeArea/topInset prop (PackageDetailView.tsx:181 root View) — header notch collision if ever hosted.",
+    "Missing payment-required affordances vs the wired sibling: no order summary, no secure-payment strip, no terms note, no restore-purchases → cannot replace PackPurchaseView for a money flow (directive #18)."
+   ],
+   "beGaps": [
+    {
+     "desc": "All pack-purchase backend exists (creatorApi.purchasePack, IAP/Stripe verify) and is already wired via PackPurchaseView. No new endpoint.",
+     "ticketNeeded": false
+    }
+   ],
+   "simplifyCandidates": [
+    "The entire PackageDetailView component (proposal: delete it — directive #22 consolidation: PackPurchaseView is the canonical fan pack-buy surface). Founder to validate removal.",
+    "badgeLabel 'BEST SELLER' — vanity, no backend field (savings/popular are the only modeled flags); drop unless ranking is real."
+   ],
+   "wiringPlan": "DO NOT wire. Recommend deletion (consolidation per directive #8/#22): PackPurchaseView already covers this surface and is wired. If founder instead wants the leaner layout, fold its differences into PackPurchaseView and still delete PackageDetailView — never run two parallel buy screens.",
+   "safeAreaPlan": "N/A if deleted. If kept: add topInset prop on header View (PackageDetailView.tsx:182).",
+   "effort": "S"
+  },
+  {
+   "screen": "PackagesOwnerView",
+   "v1Screen": "NONE (no dedicated host; owner pack-list is served by CreatorPackagesSetupView via CreatorPackagesSetupScreen)",
+   "wired": false,
+   "componentExists": true,
+   "consolidationFlag": "DUPLICATE of CreatorPackagesSetupView (WIRED in CreatorPackagesSetupScreen.tsx:147, reached from ProfileScreenV2 'packs'→CreatorPackagesSetup). Both are creator-owned pack inventory: banner + own-pack ListRows + per-pack manage/edit + 'Nouveau pack' CTA + empty state. CreatorPackagesSetupView ALSO has the inline create-form; PackagesOwnerView adds a 3-cell stats strip (sales/revenue/completion) but those metrics have NO backend. CONSOLIDATE: keep CreatorPackagesSetupView; either drop PackagesOwnerView or port its stats strip into CreatorPackagesSetupView only after backend exists.",
+   "ctas": [
+    {
+     "label": "Owner banner inline 'Nouveau pack'",
+     "target": "onAddPackage → navigation.navigate('CreatorPackagesSetup') (CreatorPackagesSetupView already handles create)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Bottom 'Nouveau pack' gradient CTA",
+     "target": "onAddPackage (same)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Per-pack row 'Manage'",
+     "target": "onEditPackage(id) → navigate('PackagesEdit') — route carries no packId param",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Empty-state create CTA",
+     "target": "onAddPackage → CreatorPackagesSetup",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Back",
+     "target": "onBack → navigation.goBack()",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    }
+   ],
+   "popups": [
+    {
+     "name": "Per-pack edit target",
+     "present": false,
+     "note": "onEditPackage(id) but PackagesEdit route is param-less (types/index.ts:899) → no per-pack prefill; same gap as PrivateSessionsManageView edit."
+    },
+    {
+     "name": "Delete pack",
+     "present": false,
+     "note": "This owner view has NO delete affordance at all (PrivateSessionsManageView does). If it were the owner surface, delete+confirm would be required."
+    }
+   ],
+   "subScreens": [
+    "Add/Edit pack → CreatorPackagesSetup (CreatorPackagesSetupView) / PackagesEdit (PackagesEditView)"
+   ],
+   "feGaps": [
+    "Orphaned: zero imports in src/. The owner pack-list surface is already served by CreatorPackagesSetupView; ProfileScreenV2 routes 'packs'→CreatorPackagesSetup, not here.",
+    "No SafeArea/topInset prop (PackagesOwnerView.tsx:226 root View) — notch collision if hosted.",
+    "Stats strip (sales-this-month / revenue-30d / completion) has no backend source — would render placeholder/fake numbers (false-data risk).",
+    "No delete affordance — incomplete vs the owner-management canonical (toggle/edit/delete)."
+   ],
+   "beGaps": [
+    {
+     "desc": "Owner stats (sales this month, revenue 30d, completion %) per pack have no endpoint. listCreatorPacks returns pack rows only, not sales analytics.",
+     "endpoint": "GET /creator/packs/stats (sales/revenue/completion per pack + aggregate)",
+     "ticketNeeded": true
+    }
+   ],
+   "simplifyCandidates": [
+    "The 3-cell owner-stats strip (sales/revenue/completion) — analytics with NO backend; drop until the stats endpoint exists (per memory rule: maquette content with no code logic = code wins).",
+    "ownerSubtitleTemplate 'commission 20 %' — verify the real commission per account type before display.",
+    "The entire PackagesOwnerView component (proposal: delete — CreatorPackagesSetupView is the wired owner surface). Founder validates."
+   ],
+   "wiringPlan": "DO NOT wire as a parallel owner surface (directive #8). Recommend deletion; CreatorPackagesSetupView already owns this. If the stats strip is wanted, build the stats endpoint first (ticket), then add the strip to CreatorPackagesSetupView — do not resurrect a second owner list.",
+   "safeAreaPlan": "N/A if deleted. If kept: add topInset prop applied to header View (PackagesOwnerView.tsx:228).",
+   "effort": "S"
+  },
+  {
+   "screen": "BusinessBookingSuccessView",
+   "componentExists": true,
+   "v1Screen": "src/screens/business/BusinessBookingSuccessScreen.tsx",
+   "wired": false,
+   "consolidationFlag": "NONE — distinct from BusinessSubscriptionSuccessView (subscription receipt) and SessionBookedView (1:1 creator session). This is the business-service booking receipt. No duplicate wired surface serves it.",
+   "subScreens": [
+    "Add-to-calendar = native OS calendar write (expo-calendar createEventAsync), not a Smuppy screen",
+    "onDone target = Tabs home reset (V1 popToTop+navigate('Tabs')); NO booking-detail screen exists despite 'View my booking' copy"
+   ],
+   "ctas": [
+    {
+     "label": "Voir ma réservation / View my booking (onDone, gradient footer)",
+     "target": "Tabs (popToTop + navigate('Tabs')) — V1 handleDone, BusinessBookingSuccessScreen.tsx:47-54",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Ajouter au calendrier / Add to calendar (onAddToCalendar, ghost)",
+     "target": "expo-calendar createEventAsync (native, no nav) — pattern: SessionBookedScreen.tsx:44-96",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Share (V1 only — SharePostModal, dropped in V2 props)",
+     "target": "SharePostModal (visible state) — BusinessBookingSuccessScreen.tsx:57-60,126-130",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "SharePostModal (V1 booking share sheet)",
+     "present": false,
+     "note": "V1 host renders SharePostModal via a 'Share' SuccessAction (BusinessBookingSuccessScreen.tsx:35,57-60,126-130). V2 props expose NO onShare / share affordance — the share entry point is lost in the V2 path. Either re-add an onShare ghost CTA + keep <SharePostModal> mounted in the wired host, or accept dropping share (founder validate)."
+    },
+    {
+     "name": "Calendar permission-denied alert / toast",
+     "present": true,
+     "note": "Handled at the container layer (toast/Alert) per SessionBookedScreen.tsx:48-96 pattern; the View intentionally owns no modal. addToCalendarLoading guards double-tap. OK by design."
+    },
+    {
+     "name": "Add-to-calendar success toast",
+     "present": true,
+     "note": "Container-owned (toastSuccess) per SessionBookedScreen.tsx:89. View stays presentational. OK."
+    }
+   ],
+   "feGaps": [
+    "UNWIRED HOST: src/screens/business/BusinessBookingSuccessScreen.tsx has NO `if (FEATURES.V2_UI)` early-return — V2 view never renders. Sibling BusinessSubscriptionSuccessScreen.tsx:131-175 is the exact template to copy (SafeAreaView edges top+bottom + useV2Theme + useTranslation('v2BusinessBookingSuccessView') + 1:1 prop mapping).",
+    "MISLABELED CTA: doneLabel = 'Voir ma réservation' / 'View my booking' (i18n fr/en) but V1 handleDone resets to Tabs home (BusinessBookingSuccessScreen.tsx:47-54) and NO booking-detail route exists in src/types/index.ts (BusinessBookingSuccess has no detail target; only BookingHistory:1011 exists). Fix: either relabel to a 'Done'/'Back to home' copy OR route onDone to navigation.navigate('BookingHistory'). Copy currently over-promises a screen that doesn't exist.",
+    "PRICE PROPS UNFED BY CALLER: priceLabel/priceRowLabel/paidChipLabel exist (View tsx:108-121) and price IS available (selectedService.price_cents / formatAmount, BusinessBookingScreen.tsx:453,726) but the caller replace('BusinessBookingSuccess', {...}) at BusinessBookingScreen.tsx:290-296 passes NO price/amount, and route params (types/index.ts:987-993) have no price field. Without threading it, the V2 'Montant + PAYÉ' row silently hides (View tsx:346 priceRowLabel!=null branch) — losing the receipt's amount-paid confirmation.",
+    "CALENDAR HANDLER NOT YET WRITTEN IN HOST: V1 BusinessBookingSuccessScreen has no handleAddToCalendar; must be added when wiring (copy SessionBookedScreen.tsx:44-96 — expo-calendar is installed, ~15.0.8). Until added, onAddToCalendar would be undefined and the ghost CTA hidden (View tsx:385).",
+    "SAFE-AREA: View pins a footer with paddingBottom:34 (tsx:462) but does NOT consume safe-area insets itself; host MUST wrap in SafeAreaView edges=['top','bottom'] (mirror sibling tsx:135-138) or the home-indicator overlaps the gradient CTA on notched devices."
+   ],
+   "beGaps": [
+    {
+     "desc": "Booking-detail endpoint/screen: V2 copy promises 'View my booking' but no GET booking-by-id detail surface exists (no BookingDetail route, no booking-detail Lambda referenced). Either descope the copy (recommended for launch) or ticket a real booking-detail screen+endpoint. Per memory rule feedback_backend_gap_always_ticket_jun21, file a KAN ticket if a detail screen is wanted.",
+     "endpoint": "GET /v2/business/bookings/{bookingId} (does not exist) + BookingDetail route",
+     "ticketNeeded": true
+    },
+    {
+     "desc": "Amount-paid on the success route: to populate the V2 priceLabel/paidChip without a caller hack, the booking-confirm response (response.sessionId path, BusinessBookingScreen.tsx:239-296) could return the charged amount_cents so it's authoritative server-side rather than re-derived from selectedService.price_cents on the client. Low priority — client-side formatAmount(price_cents) is acceptable for a receipt restyle.",
+     "endpoint": "booking confirm response → add amount_cents/currency field",
+     "ticketNeeded": false
+    }
+   ],
+   "simplifyCandidates": [
+    "V1 'reminderText' gold reminder card (BusinessBookingSuccessScreen.tsx:108-116) — vanity, no backend reminder is actually scheduled; V2 already dropped it. Confirm dropping permanently.",
+    "paidChipLabel 'PAYÉ/PAID' pill — nice-to-have meaning graphic; if amount cannot be threaded cleanly, drop the price row entirely rather than show an amount with no PAID proof (avoid half-state).",
+    "Share CTA — if founder doesn't want users sharing a private booking receipt, drop V1's share action instead of re-adding it to V2 (privacy-leaning; aligns with feedback_never_show_username). Founder validates."
+   ],
+   "wiringPlan": "1) In BusinessBookingSuccessScreen.tsx add imports: FEATURES (config/featureFlags), useV2Theme (theme/v2/ThemeContext), BusinessBookingSuccessView (components/v2/...), SafeAreaView (react-native-safe-area-context), useTranslation('v2BusinessBookingSuccessView'), expo-calendar (lazy require like SessionBookedScreen). 2) Add handleAddToCalendar (copy SessionBookedScreen.tsx:44-96, build event from businessName/serviceName/date/time, container-owned toasts + perm check). 3) Add `if (FEATURES.V2_UI) { return (<SafeAreaView edges={['top','bottom']} style={{flex:1, backgroundColor:v2.colors.surface}}><BusinessBookingSuccessView .../></SafeAreaView>); }` BEFORE the V1 SuccessScreen return — mirror BusinessSubscriptionSuccessScreen.tsx:131-175. 4) Map props: checkIcon=<Ionicons checkmark>, successA11yLabel=tV2('successA11yLabel',{business:businessName}), title/subtitle/row labels from tV2, businessName/serviceName/dateLabel=formatDateLong(date)/timeLabel=time/bookingIdLabel=bookingId from route params, businessAvatarSlot=<Avatar of business>, icons=Ionicons business/fitness/calendar/receipt tinted v2.colors.primary. 5) DECISION: relabel doneLabel OR route onDone→BookingHistory (not the non-existent detail). onDone=handleDone (keep popToTop+Tabs) but fix copy, OR navigation.navigate('BookingHistory'). 6) PRICE: add optional `price`/`amountLabel` to BusinessBookingSuccess route params (types/index.ts:987) + thread formatAmount(selectedService.price_cents) from BusinessBookingScreen.tsx:290-296; then pass priceRowLabel/priceLabel/paidChipLabel; if not threaded, omit them (row auto-hides). 7) SHARE decision: re-add onShare ghost CTA + keep <SharePostModal> mounted in host, or drop. 8) Keep V1 SuccessScreen path intact below the flag. 9) Verify: tsc 0, jest (existing 51 + add a host wiring test), gallery unaffected.",
+   "safeAreaPlan": "Host wraps the V2 view in <SafeAreaView edges={['top','bottom']} style={{flex:1, backgroundColor: v2.colors.surface}}> exactly like BusinessSubscriptionSuccessScreen.tsx:135-138. Top edge: ScrollView paddingTop:56 (View tsx:428) sits below the notch. Bottom edge: footer paddingBottom:34 (tsx:462) + SafeAreaView bottom inset keeps the gradient 'done' CTA above the home indicator. View itself takes no insets, so the SafeAreaView wrapper is mandatory — without it the footer CTA clips on notched devices. Header: success screens are headerShown:false in nav (animation:'fade', gestureEnabled:false at MainNavigator.tsx:467) so no back-button safe-area concern; the surface is terminal.",
+   "effort": "S"
+  }
+ ],
+ "beTickets": [
+  {
+   "screen": "SessionDetailView",
+   "desc": "GET session-by-id endpoint to hydrate SessionDetail from { sessionId } param (callers pass only sessionId; no full-object source). Needed to fix the route-param mismatch canonically.",
+   "endpoint": "GET /v2/sessions/{sessionId}",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "SessionDetailView",
+   "desc": "Reschedule a booked 1:1 session (move slot) — no endpoint exists; required only if the reschedule action row is kept.",
+   "endpoint": "PATCH /v2/sessions/{sessionId}/reschedule",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "SessionEndedView",
+   "desc": "Persist a 1:1 session star rating (+ optional bounded preset reasons). No endpoint today; V1 rating is discarded. Required to make onRate/onTogglePreset real, not cosmetic.",
+   "endpoint": "POST /v2/sessions/{sessionId}/rating",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "SessionEndedView",
+   "desc": "Send Smups to a creator from a session-ended context (creator-scoped tip). Only needed if the Send-Smups CTA is kept; verify SmupModal supports session/creator scope.",
+   "endpoint": "POST /v2/smups/send (creatorId, sessionId)",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "SessionPaymentView",
+   "desc": "Return a tax/VAT line and service-fee breakdown for a session PaymentIntent so the V2 multi-line breakdown (subtotal/fee/tax/total) shows real values instead of fabricated ones. Today createPaymentIntent returns no itemized breakdown.",
+   "endpoint": "createPaymentIntent (type='session') → include { lines: [{label,amount}], tax, serviceFee }",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "SessionPaymentView",
+   "desc": "List saved Stripe payment methods for the customer to power a change-method picker. Only needed if the Change-method CTA is kept.",
+   "endpoint": "GET /v2/payments/methods",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "BookingHistoryView",
+   "desc": "BusinessBookingData (internal-types.ts:250-261) is missing businessName, serviceName, access_instructions. V1 reads them via `as EnrichedBooking & { businessName?: string }` casts (BookingHistoryScreen.tsx:125,135,144) so they may arrive untyped from the API but are NOT in the typed contract. V2 BookingHistoryItem REQUIRES businessName+serviceName (non-optional, lines 92-94). Confirm the GET /business/bookings/mine payload actually returns these joined fields; if not, add them server-side + to the type.",
+   "endpoint": "GET (businessApi.getMyBusinessBookings) — confirm businessName/serviceName/access_instructions in response join",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "WaitingRoomView",
+   "desc": "Pre-call device-check + countdown require fields V1 doesn't fetch: getSession returns {status} only (used at WaitingRoomScreen.tsx:108). For the V2 countdown, the session slot start-time must be in getSession payload. Confirm or add scheduledStartAt to the session response.",
+   "endpoint": "GET session (sessionsApi.getSession) — add scheduledStartAt for countdown",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "WaitingRoomView",
+   "desc": "'ready' manual-join gate (vs current auto-advance): if founder wants the V2 green-room hold, backend must expose a host-ready signal distinct from 'confirmed' OR confirm 'confirmed' == host-ready. Currently 'confirmed'→immediate auto-join, so a manual Join CTA would be redundant.",
+   "endpoint": "GET session status — clarify confirmed vs host-ready semantics",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "PrivateCallView",
+   "desc": "connectionState='reconnecting' (directive #19 reconnection-first) requires useAgora/usePrivateCall to expose a reconnecting signal (Agora onConnectionStateChanged). V1 has no reconnecting state — it only has isJoined/remoteUsers. To use V2's reconnecting overlay, surface Agora connection-state events through the hook.",
+   "endpoint": "N/A client-only (useAgora hook) — expose reconnecting state from Agora SDK events",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "PrivateSessionsManageView",
+   "desc": "Per-pack edit prefill: PackagesEdit route carries no packId; to deep-link edit a specific pack the route param + a GET single-pack (or reuse listCreatorPacks filter) is needed.",
+   "endpoint": "GET /packs/{id} (or reuse list)",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "PackagesOwnerView",
+   "desc": "Owner stats (sales this month, revenue 30d, completion %) per pack have no endpoint. listCreatorPacks returns pack rows only, not sales analytics.",
+   "endpoint": "GET /creator/packs/stats (sales/revenue/completion per pack + aggregate)",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "BusinessBookingSuccessView",
+   "desc": "Booking-detail endpoint/screen: V2 copy promises 'View my booking' but no GET booking-by-id detail surface exists (no BookingDetail route, no booking-detail Lambda referenced). Either descope the copy (recommended for launch) or ticket a real booking-detail screen+endpoint. Per memory rule feedback_backend_gap_always_ticket_jun21, file a KAN ticket if a detail screen is wanted.",
+   "endpoint": "GET /v2/business/bookings/{bookingId} (does not exist) + BookingDetail route",
+   "ticketNeeded": true
+  }
+ ],
+ "consolidations": [
+  {
+   "screen": "SessionEndedView",
+   "dup": "Partial overlap with LiveEndedView (src/components/v2/LiveEndedView) — both are 'X ended' recap+rating surfaces. SessionEnded = 1:1 private call recap; LiveEnded = public live recap. Distinct entry points (PrivateCallScreen vs live host), so NOT a true duplicate, but keep their grammars harmonized (hero+stats+rating+CTAs) and do not let a future refactor fork the rating logic."
+  },
+  {
+   "screen": "SessionPaymentView",
+   "dup": "Distinct from PaymentGateSheet/PaymentLoadingSheet (those are gate/loading sheets, not a full checkout) and from BookSessionView (slot picker). SessionPaymentView is the dedicated 1:1 checkout. NOT a duplicate, but it overlaps conceptually with the generic payment surfaces (premium_plans / PackPurchase checkout) — keep one checkout grammar; do not fork fee/total rendering."
+  },
+  {
+   "screen": "BookingHistoryView",
+   "dup": "NONE — distinct from MySessionsView (1:1 creator sessions) and SessionDetailView. This is the business/Mindbody booking history (member↔business services). No other wired view serves it."
+  },
+  {
+   "screen": "WaitingRoomView",
+   "dup": "NONE — unique pre-call green-room. Reached from MySessionsScreen.tsx:122 navigate('WaitingRoom') (the wired MySessionsView 'Rejoindre' CTA). Distinct from PrivateCallView (in-call)."
+  },
+  {
+   "screen": "PrivateCallView",
+   "dup": "NONE — unique in-call chrome. Reached via WaitingRoom poll replace('PrivateCall') and incoming-call. No other wired view renders the Agora 1:1 call."
+  },
+  {
+   "screen": "PackageDetailView",
+   "dup": "DUPLICATE of PackPurchaseView (already WIRED in PackPurchaseScreen.tsx:185-271 behind FEATURES.V2_UI). Both are fan-facing 'buy a creator pack' full screens with header+hero+price(+old/savings)+included-items+gradient buy CTA+purchased-state flip. PackPurchaseView is the SUPERSET (adds summary rows, secure-payment strip, terms note, restore-purchases, view-pack outline). PackageDetailView is the leaner orphan → CONSOLIDATE: drop PackageDetailView, keep PackPurchaseView."
+  },
+  {
+   "screen": "PackagesOwnerView",
+   "dup": "DUPLICATE of CreatorPackagesSetupView (WIRED in CreatorPackagesSetupScreen.tsx:147, reached from ProfileScreenV2 'packs'→CreatorPackagesSetup). Both are creator-owned pack inventory: banner + own-pack ListRows + per-pack manage/edit + 'Nouveau pack' CTA + empty state. CreatorPackagesSetupView ALSO has the inline create-form; PackagesOwnerView adds a 3-cell stats strip (sales/revenue/completion) but those metrics have NO backend. CONSOLIDATE: keep CreatorPackagesSetupView; either drop PackagesOwnerView or port its stats strip into CreatorPackagesSetupView only after backend exists."
+  },
+  {
+   "screen": "BusinessBookingSuccessView",
+   "dup": "NONE — distinct from BusinessSubscriptionSuccessView (subscription receipt) and SessionBookedView (1:1 creator session). This is the business-service booking receipt. No duplicate wired surface serves it."
+  }
+ ]
+}

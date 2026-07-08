@@ -1,0 +1,47 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<link rel="stylesheet" href="_base.css">
+<style>
+.runwrap{position:absolute;inset:0;background:#02110d;overflow:hidden}
+.runmap{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.4) saturate(.7) hue-rotate(120deg)}
+.runwrap::after{content:"";position:absolute;inset:0;background:radial-gradient(80% 60% at 50% 30%,rgba(2,17,13,.1),rgba(2,17,13,.9))}
+.route{position:absolute;z-index:3;left:0;right:0;top:120px;height:420px}
+.route svg{width:100%;height:100%}
+.r-top{position:absolute;top:60px;left:0;right:0;z-index:5;text-align:center}
+.r-top .chip{background:rgba(2,17,13,.6)}
+.hero{position:absolute;z-index:5;left:0;right:0;bottom:230px;text-align:center}
+.hero .big{color:#fff;font-size:120px;font-weight:800;line-height:.9;letter-spacing:-4px;
+  text-shadow:0 0 50px rgba(91,240,200,.5)}
+.hero .unit{color:var(--accent);font-size:30px;font-weight:700;letter-spacing:2px;margin-top:4px}
+.subm{position:absolute;z-index:5;bottom:120px;left:0;right:0;display:flex;justify-content:center;gap:50px}
+.subm .m{text-align:center}
+.subm .m b{color:#fff;font-size:40px;font-weight:800;display:block}
+.subm .m span{color:#7fa89c;font-size:16px;letter-spacing:.5px}
+.r-ctl{position:absolute;z-index:6;bottom:42px;left:0;right:0;display:flex;justify-content:center;gap:22px}
+.r-ctl .b{width:74px;height:74px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px}
+.r-ctl .pause{background:rgba(84,214,166,.1);border:2px solid var(--mint);color:var(--accent)}
+.r-ctl .stop{background:#FF3B5C;color:#fff;box-shadow:0 0 30px rgba(255,59,92,.5)}
+</style></head><body>
+<div class="cap-band"><h2>Cours, partage ton tracé en Peak</h2><div class="sub">Ton run, ton tracé — une œuvre à partager.</div></div>
+<div class="device">
+  <div class="notch"></div>
+  <div class="statusbar"><span>9:41</span><span>5G ▪ 100%</span></div>
+  <div class="screen full">
+    <div class="runwrap">
+      <div class="runmap" style="background-image:url('https://images.unsplash.com/photo-1530143584546-02191bc84eb5?w=900&q=80')"></div>
+      <div class="route"><svg viewBox="0 0 480 420" fill="none">
+        <path d="M70 360 C 60 250, 180 240, 170 170 C 162 110, 300 130, 320 70 C 335 30, 400 60, 410 110"
+          stroke="#5BF0C8" stroke-width="9" stroke-linecap="round"
+          style="filter:drop-shadow(0 0 14px #5BF0C8)"/>
+        <circle cx="70" cy="360" r="13" fill="#fff" style="filter:drop-shadow(0 0 10px #5BF0C8)"/>
+        <circle cx="410" cy="110" r="15" fill="#5BF0C8" style="filter:drop-shadow(0 0 16px #5BF0C8)"/>
+      </svg></div>
+      <div class="r-top"><span class="chip">● En course · NightRun</span></div>
+      <div class="hero"><div class="big">5,24</div><div class="unit">KILOMÈTRES</div></div>
+      <div class="subm">
+        <div class="m"><b>28:14</b><span>TEMPS</span></div>
+        <div class="m"><b>5'22"</b><span>ALLURE</span></div>
+      </div>
+      <div class="r-ctl"><div class="b pause">❚❚</div><div class="b stop">■</div></div>
+    </div></div>
+</div>
+</body></html>

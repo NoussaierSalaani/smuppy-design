@@ -1,0 +1,69 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<style>
+:root{--ink:#1A2420;--sub:#9aa4a0;--line:#ECEFEE;--mintInk:#0B7A62;--mint:#2FC9A2;--mintGrad1:#36C39E;--mintGrad2:#2AA6A8;--verif:#2DD39E}
+*{box-sizing:border-box;font-family:-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;background:#0f1311;display:flex;gap:30px;padding:30px;justify-content:center}
+.col{display:flex;flex-direction:column;gap:9px;align-items:center}.cap{color:#bfeede;font-size:13px;font-weight:700}
+.phone{width:312px;height:660px;border-radius:30px;overflow:hidden;background:#fff;box-shadow:0 0 0 1px #222,0 16px 44px #0007;display:flex;flex-direction:column}
+.cover{height:138px;flex:0 0 138px;position:relative;background:linear-gradient(165deg,#b39aa6,#caaeba 55%,#d9bcc8)}
+.dots{position:absolute;top:15px;right:15px;color:#fff;font-size:21px}.back{position:absolute;top:13px;left:13px;width:33px;height:33px;border-radius:17px;background:#00000038;color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px}
+.av{position:absolute;left:18px;bottom:-40px;width:84px;height:84px;border-radius:42px;border:3.5px solid #fff;background:linear-gradient(135deg,#b58c86,#9c6f78)}
+.idblock{padding:50px 20px 0;text-align:center}.nm{font-size:21px;font-weight:800;color:var(--ink);display:inline-flex;align-items:center;gap:6px}.vb{color:var(--verif);font-size:18px}.sub{font-size:13px;color:var(--sub);margin-top:4px}.bio{font-size:13px;color:#42504b;margin:8px 16px 0}.bio .tag{color:var(--mintInk);font-weight:600}
+.stats{display:flex;justify-content:space-around;padding:16px 8px 4px}.st{flex:1;text-align:center}.stv{font-size:18px;font-weight:800;color:var(--ink)}.stl{font-size:10px;color:var(--sub);margin-top:3px;letter-spacing:.7px;text-transform:uppercase;font-weight:600}
+.ctas{display:flex;gap:12px;padding:14px 18px 0;align-items:center}
+.btn{height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex:1}
+.btn.grad{background:linear-gradient(90deg,var(--mintGrad1),var(--mintGrad2));color:#fff;box-shadow:0 6px 16px #2aa6a838}
+/* EXACT Figma circular message button */
+.msgbtn{flex:0 0 46px;width:46px;height:46px}
+.seg{display:flex;background:#F2F4F3;border-radius:14px;padding:4px;margin:14px 18px 0}.seg div{flex:1;text-align:center;font-size:13px;font-weight:700;padding:9px 0;border-radius:11px;color:var(--sub)}.seg .on{background:#fff;color:var(--mintInk);box-shadow:0 1px 4px #0000000f}
+.subtabs{display:flex;gap:18px;padding:14px 20px 8px}.subtabs span{font-size:13px;color:var(--sub);font-weight:600;padding-bottom:7px}.subtabs .on{color:var(--ink);border-bottom:2.5px solid var(--mintInk)}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;padding:2px 16px}.cell{aspect-ratio:1;border-radius:8px}
+.bnav{margin-top:auto;height:56px;border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center;color:#b7c0bc;font-size:22px}.bnav .plus{color:var(--mintInk)}
+/* booking */
+.bhead{padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}.bhead b{font-weight:800;font-size:15px;color:var(--ink)}
+.pane{padding:12px 16px;overflow:hidden}.pane h4{font-size:13.5px;font-weight:800;color:var(--ink);margin:14px 0 8px}
+.dates{display:flex;gap:7px}.dchip{flex:1;border:1px solid var(--line);border-radius:12px;padding:8px 0;text-align:center}.dchip.on{border-color:var(--mint);background:#2fc9a210}.dchip b{font-size:14px;color:var(--ink)}.dchip span{font-size:10px;color:var(--sub);display:block}
+.slots{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}.slot{border:1px solid var(--line);border-radius:10px;padding:9px 0;text-align:center;font-size:13px;color:#42504b}.slot.on{border-color:var(--mint);background:#2fc9a212;color:var(--mintInk);font-weight:700}
+.obj{border:1.5px solid var(--mint);border-radius:12px;padding:11px;font-size:12.5px;color:#9aa4a0;background:#fafffd;min-height:66px;box-shadow:0 0 10px rgba(47,201,162,.1)}
+.cta{height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;margin-top:14px;background:linear-gradient(90deg,var(--mintGrad1),var(--mintGrad2));color:#fff}
+.note{color:#bfeede;font-size:11px;max-width:312px;text-align:center;line-height:1.4}
+</style></head><body>
+
+<!-- VISITOR with EXACT circular message button -->
+<div class="col"><div class="cap">Visiteur — bouton message EXACT (cercle + glow)</div>
+<div class="phone">
+ <div class="cover"><div class="back"><ion-icon name="chevron-back"></ion-icon></div><div class="dots">•••</div><div class="av"></div></div>
+ <div class="idblock"><div class="nm">Sara Khan <ion-icon class="vb" name="checkmark-circle"></ion-icon></div><div class="sub">Yoga coach · Montreal</div><div class="bio">Find inner peace through movement & breath. <span class="tag">#wellness</span></div></div>
+ <div class="stats"><div class="st"><div class="stv">24K</div><div class="stl">Fans</div></div><div class="st"><div class="stv">412</div><div class="stl">Posts</div></div><div class="st"><div class="stv">89</div><div class="stl">Peaks</div></div></div>
+ <div class="ctas">
+   <div class="btn grad">Devenir fan</div>
+   <svg class="msgbtn" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g filter="url(#g)"><rect x="10" y="10" width="44" height="44" rx="22" fill="white"/><rect x="10.75" y="10.75" width="42.5" height="42.5" rx="21.25" stroke="#2FC9A2" stroke-width="1.5"/><path d="M26 22.25H38C40.2 22.25 42 24.05 42 26.25V34.25C42 36.45 40.2 38.25 38 38.25H31L26 42.75V38.25C23.8 38.25 22 36.45 22 34.25V26.25C22 24.05 23.8 22.25 26 22.25Z" stroke="#2FC9A2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></g><defs><filter id="g" x="0" y="0" width="64" height="64"><feGaussianBlur stdDeviation="2.4" result="b"/><feColorMatrix in="b" type="matrix" values="0 0 0 0 0.184 0 0 0 0 0.788 0 0 0 0 0.635 0 0 0 0.5 0"/><feBlend in="SourceGraphic"/></filter></defs></svg>
+ </div>
+ <div class="seg"><div class="on">Lifestyle</div><div>Channel</div></div>
+ <div class="subtabs"><span class="on">Posts</span><span>Peaks</span><span>Activités</span></div>
+ <div class="grid"><div class="cell" style="background:linear-gradient(135deg,#9CAE9B,#7e9580)"></div><div class="cell" style="background:linear-gradient(135deg,#DCC2AC,#c9a98e)"></div><div class="cell" style="background:linear-gradient(135deg,#E4E7E9,#cfd6d9)"></div><div class="cell" style="background:linear-gradient(135deg,#9DB0A4,#7f968a)"></div><div class="cell" style="background:linear-gradient(135deg,#D78E80,#c2705f)"></div><div class="cell" style="background:linear-gradient(135deg,#2C333E,#1c222c)"></div></div>
+ <div class="bnav"><ion-icon name="home-outline"></ion-icon><ion-icon name="grid-outline"></ion-icon><ion-icon class="plus" name="add-circle"></ion-icon><ion-icon name="chatbubble-outline"></ion-icon><ion-icon name="person-outline"></ion-icon></div>
+</div>
+<div class="note">Bouton message = cercle + contour mint + glow + bulle arrondie (SVG Figma exact). Toutes les icônes seront extraites de Figma pareil.</div></div>
+
+<!-- BOOKING with OBJECTIVE field -->
+<div class="col"><div class="cap">Réservation 1:1 visiteur — + champ Objectif</div>
+<div class="phone">
+ <div class="bhead"><ion-icon name="chevron-back" style="font-size:22px;color:var(--ink)"></ion-icon><b>Réserver un 1:1 · Sara</b></div>
+ <div class="pane">
+  <h4>Choisis une date</h4>
+  <div class="dates"><div class="dchip"><b>13</b><span>MER</span></div><div class="dchip on"><b>14</b><span>JEU</span></div><div class="dchip"><b>15</b><span>VEN</span></div><div class="dchip"><b>16</b><span>SAM</span></div></div>
+  <h4>Créneaux · jeu 14</h4>
+  <div class="slots"><div class="slot">09:00</div><div class="slot on">10:00</div><div class="slot">11:00</div><div class="slot">14:00</div><div class="slot">16:00</div><div class="slot">19:00</div></div>
+  <h4>Durée</h4>
+  <div class="dates"><div class="dchip"><b>30</b><span>min · 28$</span></div><div class="dchip on"><b>45</b><span>min · 40$</span></div><div class="dchip"><b>60</b><span>min · 55$</span></div></div>
+  <h4>Objectif / sujet de la séance ★</h4>
+  <div class="obj">Décris ce que tu veux travailler (souplesse, technique, préparation mentale…) — ça aide le coach à préparer la séance.</div>
+  <div class="cta">Réserver · 40 $</div>
+ </div>
+</div>
+<div class="note">★ Champ « Objectif / sujet » ajouté (ta spec, absent de Figma) — le fan explique pourquoi il veut se parler.</div></div>
+
+</body></html>

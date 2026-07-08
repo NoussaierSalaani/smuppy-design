@@ -1,0 +1,54 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  html,body{width:360px;height:780px;overflow:hidden;
+    font-family:-apple-system,"SF Pro Display",Segoe UI,Roboto,sans-serif}
+  .poster{position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 18%,#0c2c24 0%,#08161a 46%,#04070b 80%)}
+  .stars{position:absolute;inset:0;background-image:
+    radial-gradient(1px 1px at 20% 30%,rgba(201,255,241,.6),transparent),
+    radial-gradient(1px 1px at 70% 22%,rgba(201,255,241,.4),transparent),
+    radial-gradient(1.5px 1.5px at 84% 60%,rgba(91,240,200,.5),transparent),
+    radial-gradient(1px 1px at 38% 72%,rgba(201,255,241,.35),transparent)}
+  svg{position:absolute;inset:0}
+  #dot{position:absolute;width:18px;height:18px;border-radius:50%;background:#C9FFF1;margin:-9px 0 0 -9px;
+    box-shadow:0 0 0 6px rgba(91,240,200,.30),0 0 26px 8px #5BF0C8;z-index:6}
+  .ptop{position:absolute;top:78px;width:100%;text-align:center;color:#7fd9c2;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase}
+  #stats{position:absolute;inset:0}
+  .ribbon{position:absolute;top:512px;left:50%;transform:translateX(-50%);background:linear-gradient(180deg,#6FE3BC,#54D6A6);color:#04130f;font-weight:800;font-size:13.5px;padding:8px 18px;border-radius:999px;box-shadow:0 6px 22px rgba(84,214,166,.45)}
+  .big{position:absolute;top:560px;width:100%;text-align:center}
+  .big .d{color:#fff;font-size:80px;font-weight:800;letter-spacing:-2px;text-shadow:0 0 50px rgba(91,240,200,.4)}
+  .big .d small{font-size:28px;color:#5BF0C8}
+  .big .m{color:#a7bcb4;font-size:17px;font-weight:600;margin-top:10px}
+  .brand{position:absolute;bottom:70px;width:100%;text-align:center;color:#cdeae0;font-size:18px;font-weight:800}
+  .brand span{color:#54D6A6}
+  .date{position:absolute;bottom:48px;width:100%;text-align:center;color:#5d736c;font-size:12px;letter-spacing:1px}
+</style></head>
+<body>
+  <div class="poster"></div><div class="stars"></div>
+  <svg viewBox="0 0 360 780" fill="none">
+    <defs><filter id="g" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <path id="rtg" d="M95 470 C 60 380 180 360 150 280 S 70 210 160 170 S 280 175 250 110 S 150 70 210 130 S 300 250 250 330 S 120 360 150 440" stroke="#5BF0C8" stroke-width="11" stroke-linecap="round" opacity=".5" filter="url(#g)"/>
+    <path id="rt" d="M95 470 C 60 380 180 360 150 280 S 70 210 160 170 S 280 175 250 110 S 150 70 210 130 S 300 250 250 330 S 120 360 150 440" stroke="#C9FFF1" stroke-width="3.6" stroke-linecap="round"/>
+  </svg>
+  <div id="dot"></div>
+  <div class="ptop">Course du matin</div>
+  <div id="stats">
+    <div class="ribbon">🏆 Nouveau record · 5 KM</div>
+    <div class="big"><div class="d">5.2<small> km</small></div><div class="m">26:18&nbsp;&nbsp;·&nbsp;&nbsp;5'03 /km</div></div>
+    <div class="brand">smup<span>py</span></div>
+    <div class="date">25 JUIN 2026 · PARIS</div>
+  </div>
+  <script>
+    var p = parseFloat(new URLSearchParams(location.search).get('p')||'0');
+    var rt=document.getElementById('rt'), rtg=document.getElementById('rtg');
+    var L=rt.getTotalLength();
+    rt.style.strokeDasharray=L; rtg.style.strokeDasharray=L;
+    rt.style.strokeDashoffset=L*(1-p); rtg.style.strokeDashoffset=L*(1-p);
+    var pt=rt.getPointAtLength(L*Math.min(p,1));
+    var dot=document.getElementById('dot');
+    dot.style.left=pt.x+'px'; dot.style.top=pt.y+'px';
+    if(p>=1) dot.style.opacity=0;
+    document.getElementById('stats').style.opacity=Math.max(0,Math.min(1,(p-0.62)/0.32));
+    document.querySelector('.ptop').style.opacity=Math.max(.0,Math.min(1,p/0.15));
+  </script>
+</body></html>

@@ -1,0 +1,93 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  body{background:#0a0d12;font-family:-apple-system,"SF Pro Display",Segoe UI,Roboto,sans-serif;padding:54px 46px;display:flex;flex-direction:column;align-items:center}
+  h1{color:#54D6A6;font-size:32px;font-weight:800;letter-spacing:-.5px;align-self:flex-start}
+  .sub{color:#8b97a3;font-size:16px;align-self:flex-start;margin-bottom:20px}
+  .grid{display:flex;gap:44px}
+  .cap{font-size:15px;text-align:center;margin-top:13px;font-weight:500;color:#c7d2da}.cap b{color:#54D6A6}
+  .notch{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:104px;height:24px;border-radius:14px;z-index:40}
+  .phone{width:356px;height:772px;border-radius:46px;position:relative;overflow:hidden;display:flex;flex-direction:column;padding-top:50px}
+
+  .dark{background:#06090d}.dark .notch{background:#000}
+  .light{background:#f1f6f4}.light .notch{background:#10221d}
+
+  .hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 18px}
+  .hback{font-size:24px}.dark .hback{color:#eaf6f1}.light .hback{color:#0c2620}
+  .htitle{font-size:17px;font-weight:800}.dark .htitle{color:#eaf6f1}.light .htitle{color:#0c2620}
+  .hnext{font-size:16px;font-weight:800}.dark .hnext{color:#5BF0C8}.light .hnext{color:#1d8a70}
+
+  .preview{margin:8px 14px 0;height:300px;border-radius:20px;overflow:hidden;position:relative;
+    background:linear-gradient(135deg,#3aa78f,#1f6f5e)}
+  .preview .wm{position:absolute;top:18px;left:0;right:0;text-align:center;color:rgba(255,255,255,.92);font-size:24px;font-style:italic;font-weight:700}
+  .preview .ppl{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 75%,rgba(0,0,0,.28),transparent 60%)}
+
+  .recents{display:flex;align-items:center;gap:6px;padding:16px 16px 10px;font-size:14px;font-weight:700}
+  .dark .recents{color:#cfe9e0}.light .recents{color:#1d3a33}
+  .thumbs{display:flex;gap:8px;padding:0 14px}
+  .thumb{width:78px;height:96px;border-radius:12px;position:relative;background:#2a3b36;overflow:hidden}
+  .thumb.t1{background:linear-gradient(135deg,#6fb39e,#2f7a66)}
+  .thumb.t2{background:linear-gradient(135deg,#8a93a8,#4a5466)}
+  .thumb.t3{background:linear-gradient(135deg,#5a8fd6,#2b5fa0)}
+  .thumb.sel{border:2.5px solid #5BF0C8;box-shadow:0 0 14px rgba(91,240,200,.5)}
+  .light .thumb.sel{border-color:#2FC9A2}
+  .check{position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:#5BF0C8;color:#04130f;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .light .check{background:#2FC9A2;color:#fff}
+
+  /* 3 bottom buttons — contour + glow + écriture en glow, ZÉRO remplissage */
+  .modes{margin-top:auto;display:flex;gap:10px;justify-content:center;padding:18px 18px 26px}
+  .mode{flex:1;max-width:108px;text-align:center;padding:12px 6px;border-radius:14px;font-size:14px;font-weight:800;background:transparent;border:1.5px solid}
+  .dark .mode{border-color:rgba(91,240,200,.4);color:#7fe9d0;box-shadow:0 0 12px rgba(84,214,166,.12);text-shadow:0 0 10px rgba(91,240,200,.45)}
+  .light .mode{border-color:rgba(47,201,162,.42);color:#2a9c81;box-shadow:0 0 10px rgba(47,201,162,.12);text-shadow:0 0 7px rgba(47,201,162,.3)}
+  .dark .mode.on{border-color:rgba(91,240,200,.9);color:#5BF0C8;box-shadow:0 0 22px rgba(84,214,166,.34);text-shadow:0 0 14px rgba(91,240,200,.85)}
+  .light .mode.on{border-color:rgba(47,201,162,.95);color:#1d8a70;box-shadow:0 0 20px rgba(47,201,162,.3);text-shadow:0 0 12px rgba(47,201,162,.5)}
+</style></head>
+<body>
+<h1>Galerie (Nouveau post) — 3 boutons style C en bas</h1>
+<div class="sub">Galerie · Photo · Vidéo (l'actif = contour mint + glow + texte)</div>
+<div class="grid">
+
+  <div>
+  <div class="phone dark">
+    <div class="notch"></div>
+    <div class="hdr"><span class="hback">‹</span><span class="htitle">Nouveau post</span><span class="hnext">Suivant</span></div>
+    <div class="preview"><div class="wm">smuppy</div><div class="ppl"></div></div>
+    <div class="recents">Récents ⌄</div>
+    <div class="thumbs">
+      <div class="thumb t1 sel"><div class="check">✓</div></div>
+      <div class="thumb t2"></div>
+      <div class="thumb t3"></div>
+      <div class="thumb t1"></div>
+    </div>
+    <div class="modes">
+      <div class="mode on">Galerie</div>
+      <div class="mode off">Photo</div>
+      <div class="mode off">Vidéo</div>
+    </div>
+  </div>
+  <div class="cap"><b>NightRun</b></div>
+  </div>
+
+  <div>
+  <div class="phone light">
+    <div class="notch"></div>
+    <div class="hdr"><span class="hback">‹</span><span class="htitle">Nouveau post</span><span class="hnext">Suivant</span></div>
+    <div class="preview"><div class="wm">smuppy</div><div class="ppl"></div></div>
+    <div class="recents">Récents ⌄</div>
+    <div class="thumbs">
+      <div class="thumb t1 sel"><div class="check">✓</div></div>
+      <div class="thumb t2"></div>
+      <div class="thumb t3"></div>
+      <div class="thumb t1"></div>
+    </div>
+    <div class="modes">
+      <div class="mode on">Galerie</div>
+      <div class="mode off">Photo</div>
+      <div class="mode off">Vidéo</div>
+    </div>
+  </div>
+  <div class="cap"><b>DayRun</b></div>
+  </div>
+
+</div>
+</body></html>

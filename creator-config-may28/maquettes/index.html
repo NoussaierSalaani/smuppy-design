@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Smuppy V2 — Creator Config Screens (rebuild)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 32px;
+    font-family: 'Plus Jakarta Sans', -apple-system, system-ui, sans-serif;
+    background: #0B0B10;
+    color: #F1F4F6;
+    min-height: 100vh;
+  }
+  h1 { font-size: 22px; font-weight: 800; margin: 0 0 4px; letter-spacing: -.01em; }
+  .subtitle { color: #8B8B95; font-size: 13px; margin: 0 0 24px; font-weight: 500; }
+  .legend {
+    display: inline-flex; gap: 8px; align-items: center;
+    padding: 6px 12px; border-radius: 999px;
+    background: rgba(38,193,164,.10); border: 1px solid rgba(38,193,164,.25);
+    color: #26C1A4; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .row { display: flex; gap: 24px; margin-bottom: 32px; align-items: flex-start; }
+  .col { display: flex; flex-direction: column; gap: 12px; }
+  .label { font-size: 12px; font-weight: 700; color: #8B8B95; letter-spacing: .10em; text-transform: uppercase; }
+  .frame {
+    width: 393px; height: 852px;
+    border-radius: 48px; overflow: hidden; position: relative;
+    background: #000;
+    box-shadow: 0 30px 80px rgba(0,0,0,.7), 0 0 0 12px #1c1c20, 0 0 0 13px #34343c;
+  }
+  .frame iframe {
+    width: 100%; height: 100%; border: none; display: block;
+  }
+  .notch {
+    position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+    width: 110px; height: 28px; background: #000; border-radius: 16px; z-index: 100;
+  }
+  .screen-title {
+    font-size: 16px; font-weight: 700; color: #F1F4F6; margin: 0 0 2px;
+  }
+  .screen-meta {
+    font-size: 12px; color: #6B6B75; font-weight: 500;
+  }
+  .pair-block { display: flex; flex-direction: column; gap: 14px; }
+</style>
+</head>
+<body>
+<h1>Smuppy V2 — Creator Config Screens (rebuild May 28)</h1>
+<p class="subtitle">Réponse aux flags founder · 27 mai 20:28 — esthétique +/- bottom nav canonic + cohérence Settings</p>
+<div class="legend">3 écrans · Light + Dark · Bottom nav canonic visible</div>
+
+<div class="row">
+  <div class="col">
+    <div class="pair-block">
+      <h2 class="screen-title">Channel setup</h2>
+      <p class="screen-meta">Light — Hero cover + sub price + perks</p>
+    </div>
+    <div class="frame">
+      <div class="notch"></div>
+      <iframe src="harmonized/creator_channel_setup_v2_light/code.html" loading="lazy"></iframe>
+    </div>
+  </div>
+  <div class="col">
+    <div class="pair-block">
+      <h2 class="screen-title">Channel setup</h2>
+      <p class="screen-meta">Dark — Hero cover + sub price + perks</p>
+    </div>
+    <div class="frame">
+      <div class="notch"></div>
+      <iframe src="harmonized/creator_channel_setup_v2_dark/code.html" loading="lazy"></iframe>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <div class="pair-block">
+      <h2 class="screen-title">1:1 setup</h2>
+      <p class="screen-meta">Light — Durations 15/30/45/60 + days + range + subject</p>
+    </div>
+    <div class="frame">
+      <div class="notch"></div>
+      <iframe src="harmonized/creator_1on1_setup_v2_light/code.html" loading="lazy"></iframe>
+    </div>
+  </div>
+  <div class="col">
+    <div class="pair-block">
+      <h2 class="screen-title">1:1 setup</h2>
+      <p class="screen-meta">Dark — Durations + days + range + subject</p>
+    </div>
+    <div class="frame">
+      <div class="notch"></div>
+      <iframe src="harmonized/creator_1on1_setup_v2_dark/code.html" loading="lazy"></iframe>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <div class="pair-block">
+      <h2 class="screen-title">Package setup</h2>
+      <p class="screen-meta">Light — Existing packs + editor with services list</p>
+    </div>
+    <div class="frame">
+      <div class="notch"></div>
+      <iframe src="harmonized/creator_packages_setup_v2_light/code.html" loading="lazy"></iframe>
+    </div>
+  </div>
+  <div class="col">
+    <div class="pair-block">
+      <h2 class="screen-title">Package setup</h2>
+      <p class="screen-meta">Dark — Existing packs + editor with services list</p>
+    </div>
+    <div class="frame">
+      <div class="notch"></div>
+      <iframe src="harmonized/creator_packages_setup_v2_dark/code.html" loading="lazy"></iframe>
+    </div>
+  </div>
+</div>
+
+<h2 style="font-size:18px;font-weight:800;margin:32px 0 4px;color:#26C1A4">FAN-FACING VIEWS · post-configuration</h2>
+<p class="subtitle">Ce que voit le fan une fois la chaîne / sessions / packs publiés · non-scrollable · icônes colorées Settings-style</p>
+
+<div class="row">
+  <div class="col">
+    <div class="pair-block">
+      <h2 class="screen-title">Channel · subscribe</h2>
+      <p class="screen-meta">Light — Compressed hero + 4 perks colored</p>
+    </div>
+    <div class="frame">
+      <div class="notch"></div>
+      <iframe src="harmonized/creator_channel_view_v2_light/code.html" loading="lazy"></iframe>
+    </div>
+  </div>
+  <div class="col">
+    <div class="pair-block">
+      <h2 class="screen-title">Channel · subscribe</h2>
+      <p class="screen-meta">Dark — Compressed hero + 4 perks colored</p>
+    </div>
+    <div class="frame">
+      <div class="notch"></div>
+      <iframe src="harmonized/creator_channel_view_v2_dark/code.html" loading="lazy"></iframe>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <div class="pair-block">
+      <h2 class="screen-title">1:1 · book session (fan)</h2>
+      <p class="screen-meta">Light — Avatar + duration + time slot picker</p>
+    </div>
+    <div class="frame">
+      <div class="notch"></div>
+      <iframe src="harmonized/creator_1on1_view_v2_light/code.html" loading="lazy"></iframe>
+    </div>
+  </div>
+  <div class="col">
+    <div class="pair-block">
+      <h2 class="screen-title">1:1 · book session (fan)</h2>
+      <p class="screen-meta">Dark — Avatar + duration + time slot picker</p>
+    </div>
+    <div class="frame">
+      <div class="notch"></div>
+      <iframe src="harmonized/creator_1on1_view_v2_dark/code.html" loading="lazy"></iframe>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <div class="pair-block">
+      <h2 class="screen-title">Package · buy (fan)</h2>
+      <p class="screen-meta">Light — Pack details + price + 3 perks</p>
+    </div>
+    <div class="frame">
+      <div class="notch"></div>
+      <iframe src="harmonized/creator_packages_view_v2_light/code.html" loading="lazy"></iframe>
+    </div>
+  </div>
+  <div class="col">
+    <div class="pair-block">
+      <h2 class="screen-title">Package · buy (fan)</h2>
+      <p class="screen-meta">Dark — Pack details + price + 3 perks</p>
+    </div>
+    <div class="frame">
+      <div class="notch"></div>
+      <iframe src="harmonized/creator_packages_view_v2_dark/code.html" loading="lazy"></iframe>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

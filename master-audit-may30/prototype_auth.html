@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Smuppy V2 — AUTH Prototype (clickable flow)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    background: radial-gradient(circle at 50% 0%, #1a1a25 0%, #050508 70%);
+    font-family: 'Plus Jakarta Sans', -apple-system, system-ui, sans-serif;
+    color: #F1F4F6; overflow: hidden;
+  }
+  .stage { height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; gap: 32px; }
+  .sidebar {
+    width: 280px; max-height: 92vh; overflow-y: auto;
+    background: rgba(20,20,26,0.65);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 24px; padding: 20px 16px;
+  }
+  .sidebar h1 { font-size: 17px; font-weight: 800; letter-spacing: -.01em; color: #F1F4F6; margin-bottom: 4px; }
+  .sidebar .subtitle { font-size: 11px; color: #8B8B95; font-weight: 500; margin-bottom: 18px; }
+  .sidebar h2 {
+    font-size: 11px; font-weight: 800; letter-spacing: .12em;
+    text-transform: uppercase; color: #26C1A4;
+    margin: 16px 8px 8px;
+  }
+  .sidebar h2:first-of-type { margin-top: 0; }
+  .sidebar button {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; padding: 9px 12px; border-radius: 11px;
+    background: transparent; border: 1px solid transparent;
+    color: #C8C9D0; font-family: inherit; font-size: 12.5px; font-weight: 600;
+    text-align: left; cursor: pointer; margin-bottom: 3px;
+    transition: .15s ease;
+  }
+  .sidebar button:hover {
+    background: rgba(38,193,164,.06); border-color: rgba(38,193,164,.20); color: #F1F4F6;
+  }
+  .sidebar button.active {
+    background: rgba(38,193,164,.12); border-color: rgba(38,193,164,.40); color: #26C1A4;
+    box-shadow: 0 0 16px rgba(38,193,164,.20);
+  }
+  .sidebar .badge {
+    margin-left: auto;
+    font-size: 9px; font-weight: 800; letter-spacing: .08em;
+    padding: 2px 6px; border-radius: 999px;
+    background: rgba(38,193,164,.18); color: #4EDCBE;
+  }
+  .theme-tabs {
+    display: flex; gap: 4px; padding: 4px;
+    background: rgba(0,0,0,.35); border: 1px solid rgba(255,255,255,.06);
+    border-radius: 12px; margin: 0 8px 14px;
+  }
+  .theme-tabs button {
+    flex: 1; padding: 7px 8px; border-radius: 8px;
+    background: transparent; border: none;
+    color: #8B8B95; font-family: inherit; font-size: 11px; font-weight: 700;
+    cursor: pointer; transition: .15s ease;
+    margin-bottom: 0 !important; text-align: center; justify-content: center;
+  }
+  .theme-tabs button.active { background: #26C1A4; color: #000; }
+  .phone {
+    position: relative; width: 393px; height: 852px;
+    border-radius: 50px; background: #000;
+    box-shadow: 0 50px 120px rgba(0,0,0,.7),
+                0 0 0 12px #1c1c20, 0 0 0 13px #34343c, 0 0 0 14px #1c1c20,
+                0 30px 90px rgba(38,193,164,.10);
+    overflow: hidden;
+  }
+  .phone-notch {
+    position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 32px; background: #000; border-radius: 18px; z-index: 100;
+  }
+  .phone iframe { width: 100%; height: 100%; border: none; display: block; border-radius: 50px; }
+  .info {
+    width: 260px; max-height: 92vh;
+    background: rgba(20,20,26,0.45);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.05); border-radius: 24px;
+    padding: 20px; font-size: 12px; color: #C8C9D0; line-height: 1.5;
+  }
+  .info h3 { color: #26C1A4; font-size: 13px; font-weight: 800; letter-spacing: -.01em; margin-bottom: 10px; }
+  .info p { margin-bottom: 10px; }
+  .info code { background: rgba(0,0,0,.4); padding: 2px 6px; border-radius: 4px; font-size: 11px; color: #4EDCBE; }
+  .info .flow-step {
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 6px; font-size: 11.5px;
+  }
+  .info .flow-arrow { color: #26C1A4; font-weight: 800; }
+  @media (max-width: 1280px) { .info { display: none; } .stage { gap: 24px; } }
+  @media (max-width: 980px) { .sidebar { display: none; } }
+</style>
+</head>
+<body>
+<div class="stage">
+  <aside class="sidebar">
+    <h1>Sprint P0 · AUTH</h1>
+    <p class="subtitle">13 écrans canonical V2 · clickable</p>
+
+    <div class="theme-tabs">
+      <button class="active" data-theme="dark">Dark</button>
+      <button data-theme="light">Light</button>
+    </div>
+
+    <h2>Entry point</h2>
+    <button class="active" data-key="auth_welcome">Welcome <span class="badge">Hero</span></button>
+
+    <h2>Signin flow</h2>
+    <button data-key="auth_login">Login</button>
+    <button data-key="auth_signup">Signup</button>
+
+    <h2>Password reset</h2>
+    <button data-key="auth_forgot_password">Forgot Password</button>
+    <button data-key="auth_check_email">Check Email</button>
+    <button data-key="auth_reset_code">Reset Code</button>
+    <button data-key="auth_new_password">New Password</button>
+    <button data-key="auth_password_success">Password Success</button>
+
+    <h2>Signup verify</h2>
+    <button data-key="auth_verify_code">Verify Code (6-digit)</button>
+    <button data-key="auth_email_verification_pending">Verify Email Pending</button>
+
+    <h2>MFA enrollment</h2>
+    <button data-key="auth_mfa_enroll_prompt">MFA Prompt</button>
+    <button data-key="auth_mfa_enroll_qr">MFA QR</button>
+    <button data-key="auth_mfa_enroll_backup_codes">MFA Backup Codes</button>
+  </aside>
+
+  <div class="phone">
+    <div class="phone-notch"></div>
+    <iframe id="phone-frame" src="maquettes/harmonized/auth_welcome_v2_dark/code.html"></iframe>
+  </div>
+
+  <aside class="info">
+    <h3>🔐 AUTH flows</h3>
+    <p><b>Signin :</b></p>
+    <div class="flow-step"><span class="flow-arrow">→</span> Welcome</div>
+    <div class="flow-step"><span class="flow-arrow">→</span> Login OU Signup</div>
+    <p><b>Forgot password :</b></p>
+    <div class="flow-step"><span class="flow-arrow">→</span> Login (lien)</div>
+    <div class="flow-step"><span class="flow-arrow">→</span> Forgot Password</div>
+    <div class="flow-step"><span class="flow-arrow">→</span> Check Email</div>
+    <div class="flow-step"><span class="flow-arrow">→</span> Reset Code (OTP)</div>
+    <div class="flow-step"><span class="flow-arrow">→</span> New Password</div>
+    <div class="flow-step"><span class="flow-arrow">→</span> Password Success</div>
+    <p><b>Email verify :</b></p>
+    <div class="flow-step"><span class="flow-arrow">→</span> Signup</div>
+    <div class="flow-step"><span class="flow-arrow">→</span> Verify Code OR Email Pending</div>
+    <p><b>MFA (Pro Premium) :</b></p>
+    <div class="flow-step"><span class="flow-arrow">→</span> MFA Prompt</div>
+    <div class="flow-step"><span class="flow-arrow">→</span> MFA QR (scan + 6-digit)</div>
+    <div class="flow-step"><span class="flow-arrow">→</span> MFA Backup Codes</div>
+    <p style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);font-size:11px">
+      <b>Logo + textes :</b> sourcés du vrai code (<code>SmuppyLogo.tsx</code> + <code>i18n/locales/fr/auth.json</code>).<br>
+      Branche : <code>design/creator-config-may28</code>
+    </p>
+  </aside>
+</div>
+
+<script>
+  const frame = document.getElementById('phone-frame');
+  const sidebarBtns = document.querySelectorAll('.sidebar button[data-key]');
+  const themeBtns = document.querySelectorAll('.theme-tabs button');
+  let currentTheme = 'dark';
+  let currentKey = 'auth_welcome';
+
+  function updateFrame() {
+    const url = `maquettes/harmonized/${currentKey}_v2_${currentTheme}/code.html?v=${Date.now()}`;
+    frame.src = url;
+  }
+
+  sidebarBtns.forEach(b => b.addEventListener('click', () => {
+    currentKey = b.dataset.key;
+    sidebarBtns.forEach(x => x.classList.toggle('active', x === b));
+    updateFrame();
+  }));
+
+  themeBtns.forEach(b => b.addEventListener('click', () => {
+    currentTheme = b.dataset.theme;
+    themeBtns.forEach(x => x.classList.toggle('active', x === b));
+    updateFrame();
+  }));
+</script>
+</body>
+</html>

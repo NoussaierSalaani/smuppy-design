@@ -1,0 +1,72 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../APP_STORE_SCREENSHOTS/_html/_base.css">
+<style>
+body{display:block}
+.screen.full{position:relative;width:645px;height:1398px;padding:0;overflow:hidden;
+  background:radial-gradient(120% 60% at 50% -8%, #07221b 0%, #04090c 50%, #000 82%)}
+.statusbar{position:absolute;top:26px;left:0;right:0;z-index:55;
+  display:flex;justify-content:space-between;padding:0 54px;
+  color:#dff5ee;font-size:24px;font-weight:600;opacity:.92}
+.hdr{position:relative;z-index:10;display:flex;align-items:center;gap:18px;padding:84px 40px 4px}
+.hdr .back{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.06);
+  border:1px solid var(--line);display:flex;align-items:center;justify-content:center;
+  color:#dff5ee;font-size:30px;flex:none}
+.hdr .ttl{color:#fff;font-size:34px;font-weight:800;letter-spacing:-.4px}
+.subline{color:#8fbfb0;font-size:21px;font-weight:500;padding:4px 40px 0;margin-left:70px}
+.list{position:relative;z-index:5;padding:24px 40px 0;display:flex;flex-direction:column;gap:18px}
+.pack{display:flex;align-items:center;gap:20px;background:var(--card);
+  border:1px solid var(--line);border-radius:22px;padding:20px 22px}
+.pack .coin{width:62px;height:62px;border-radius:18px;flex:none;display:flex;align-items:center;justify-content:center;
+  font-size:30px;color:var(--mint);
+  background:rgba(84,214,166,.12);border:1px solid rgba(91,240,200,.22)}
+.pack .info{flex:1;min-width:0}
+.pack .nm{color:#fff;font-size:25px;font-weight:800;letter-spacing:-.2px}
+.pack .cnt{color:#8fa39c;font-size:18px;font-weight:600;margin-top:3px}
+.pack .buy{flex:none;border:1.6px solid #6FE3BC;color:#6FE3BC;background:rgba(84,214,166,.06);
+  border-radius:999px;font-size:22px;font-weight:800;padding:13px 24px;letter-spacing:.2px}
+/* highlight tier accent on bigger packs via coin glow */
+.pack.glow .coin{box-shadow:0 0 22px rgba(84,214,166,.35)}
+</style></head><body>
+<div class="screen full">
+  <div class="statusbar"><span>9:41</span><span>5G ▪ 100%</span></div>
+  <div class="hdr"><div class="back">‹</div><div class="ttl">Acheter des Smups</div></div>
+  <div class="subline">Soutiens tes créateurs préférés</div>
+  <div class="list">
+    <div class="pack">
+      <div class="coin">◆</div>
+      <div class="info"><div class="nm">Single Smup</div><div class="cnt">1 Smup</div></div>
+      <div class="buy">$1.99</div>
+    </div>
+    <div class="pack">
+      <div class="coin">◆</div>
+      <div class="info"><div class="nm">Fist Bump</div><div class="cnt">3 Smups</div></div>
+      <div class="buy">$4.99</div>
+    </div>
+    <div class="pack">
+      <div class="coin">◆</div>
+      <div class="info"><div class="nm">High Five</div><div class="cnt">5 Smups</div></div>
+      <div class="buy">$7.99</div>
+    </div>
+    <div class="pack glow">
+      <div class="coin">◆</div>
+      <div class="info"><div class="nm">Power Pack</div><div class="cnt">10 Smups</div></div>
+      <div class="buy">$14.99</div>
+    </div>
+    <div class="pack glow">
+      <div class="coin">◆</div>
+      <div class="info"><div class="nm">Super Fan</div><div class="cnt">20 Smups</div></div>
+      <div class="buy">$29.99</div>
+    </div>
+    <div class="pack glow">
+      <div class="coin">◆</div>
+      <div class="info"><div class="nm">Legend</div><div class="cnt">35 Smups</div></div>
+      <div class="buy">$49.99</div>
+    </div>
+    <div class="pack glow">
+      <div class="coin">◆</div>
+      <div class="info"><div class="nm">GOAT</div><div class="cnt">70 Smups</div></div>
+      <div class="buy">$99.99</div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="utf-8">
+<title>Smuppy V2 — ONBOARDING Prototype</title>
+<meta http-equiv="Cache-Control" content="no-cache">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    background: radial-gradient(circle at 50% 0%, #1a1a25 0%, #050508 70%);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: #F1F4F6; overflow: hidden;
+  }
+  .stage { height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; gap: 32px; }
+  .sidebar { width: 280px; max-height: 92vh; overflow-y: auto;
+    background: rgba(20,20,26,0.65); backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 24px; padding: 20px 16px; }
+  .sidebar h1 { font-size: 17px; font-weight: 800; margin-bottom: 4px; }
+  .sidebar .subtitle { font-size: 11px; color: #8B8B95; margin-bottom: 18px; }
+  .sidebar h2 { font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #26C1A4; margin: 16px 8px 8px; }
+  .sidebar h2:first-of-type { margin-top: 0; }
+  .sidebar button {
+    display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 12px;
+    border-radius: 11px; background: transparent; border: 1px solid transparent;
+    color: #C8C9D0; font: 600 12.5px/1.5 inherit; text-align: left; cursor: pointer;
+    margin-bottom: 3px; transition: .15s;
+  }
+  .sidebar button:hover { background: rgba(38,193,164,.06); border-color: rgba(38,193,164,.20); color: #F1F4F6; }
+  .sidebar button.active { background: rgba(38,193,164,.12); border-color: rgba(38,193,164,.40); color: #26C1A4; box-shadow: 0 0 16px rgba(38,193,164,.20); }
+  .theme-tabs { display: flex; gap: 4px; padding: 4px; background: rgba(0,0,0,.35); border: 1px solid rgba(255,255,255,.06); border-radius: 12px; margin: 0 8px 14px; }
+  .theme-tabs button { flex: 1; padding: 7px 8px; border-radius: 8px; background: transparent; border: none; color: #8B8B95; font: 700 11px inherit; cursor: pointer; margin-bottom: 0 !important; }
+  .theme-tabs button.active { background: #26C1A4; color: #000; }
+  .phone { position: relative; width: 393px; height: 852px; border-radius: 50px; background: #000;
+    box-shadow: 0 50px 120px rgba(0,0,0,.7), 0 0 0 12px #1c1c20, 0 0 0 13px #34343c, 0 0 0 14px #1c1c20, 0 30px 90px rgba(38,193,164,.10);
+    overflow: hidden;
+  }
+  .phone-notch { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 120px; height: 32px; background: #000; border-radius: 18px; z-index: 100; }
+  .phone iframe { width: 100%; height: 100%; border: none; border-radius: 50px; }
+  .info { width: 260px; max-height: 92vh; background: rgba(20,20,26,0.45); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; padding: 20px; font: 500 12px/1.5 inherit; color: #C8C9D0; }
+  .info h3 { color: #26C1A4; font-size: 13px; font-weight: 800; margin-bottom: 10px; }
+  .info p { margin-bottom: 10px; }
+  .info code { background: rgba(0,0,0,.4); padding: 2px 6px; border-radius: 4px; font-size: 11px; color: #4EDCBE; }
+  .flow-step { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; font-size: 11.5px; }
+  .flow-arrow { color: #26C1A4; font-weight: 800; }
+  @media (max-width: 1280px) { .info { display: none; } }
+  @media (max-width: 980px) { .sidebar { display: none; } }
+</style>
+</head><body>
+<div class="stage">
+  <aside class="sidebar">
+    <h1>Sprint P0 · ONBOARDING</h1>
+    <p class="subtitle">12 écrans canonical V2</p>
+    <div class="theme-tabs">
+      <button class="active" data-theme="dark">Dark</button>
+      <button data-theme="light">Light</button>
+    </div>
+    <h2>Entry</h2>
+    <button class="active" data-key="onb_account_type">Account Type</button>
+    <h2>Personal flow</h2>
+    <button data-key="onb_tell_us">Tell us about you</button>
+    <button data-key="onb_interests">Interests</button>
+    <button data-key="onb_find_friends">Find Friends</button>
+    <button data-key="onb_guidelines">Guidelines</button>
+    <h2>Creator flow</h2>
+    <button data-key="onb_creator_info">Creator Info</button>
+    <button data-key="onb_profession">Profession</button>
+    <button data-key="onb_expertise">Expertise</button>
+    <button data-key="onb_creator_optional">Optional Info</button>
+    <h2>Business flow</h2>
+    <button data-key="onb_business_category">Business Category</button>
+    <button data-key="onb_business_info">Business Info</button>
+    <h2>Final</h2>
+    <button data-key="onb_success">Success 🎉</button>
+  </aside>
+  <div class="phone"><div class="phone-notch"></div><iframe id="phone-frame" src="maquettes/harmonized/onb_account_type_v2_dark/code.html"></iframe></div>
+  <aside class="info">
+    <h3>🚀 Onboarding flows</h3>
+    <p><b>Personal :</b></p>
+    <div class="flow-step"><span class="flow-arrow">→</span> AccountType (1/5)</div>
+    <div class="flow-step"><span class="flow-arrow">→</span> TellUsAboutYou (1/3)</div>
+    <div class="flow-step"><span class="flow-arrow">→</span> Interests (2/3)</div>
+    <div class="flow-step"><span class="flow-arrow">→</span> FindFriends (3/3) — optional</div>
+    <div class="flow-step"><span class="flow-arrow">→</span> Guidelines (3/3) → Success</div>
+    <p><b>Creator :</b></p>
+    <div class="flow-step"><span class="flow-arrow">→</span> CreatorInfo (2/5)</div>
+    <div class="flow-step"><span class="flow-arrow">→</span> Profession (2/5)</div>
+    <div class="flow-step"><span class="flow-arrow">→</span> Expertise (3/5)</div>
+    <div class="flow-step"><span class="flow-arrow">→</span> CreatorOptional (4/5)</div>
+    <p><b>Business :</b></p>
+    <div class="flow-step"><span class="flow-arrow">→</span> BusinessCategory (2/3)</div>
+    <div class="flow-step"><span class="flow-arrow">→</span> BusinessInfo (3/3)</div>
+    <p style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);font-size:11px">
+      <b>Logo + i18n :</b> <code>SmuppyLogo.tsx</code> + <code>onboarding.json</code>
+    </p>
+  </aside>
+</div>
+<script>
+  const frame = document.getElementById('phone-frame');
+  const sidebarBtns = document.querySelectorAll('.sidebar button[data-key]');
+  const themeBtns = document.querySelectorAll('.theme-tabs button');
+  let currentTheme = 'dark', currentKey = 'onb_account_type';
+  function update() { frame.src = `maquettes/harmonized/${currentKey}_v2_${currentTheme}/code.html?v=${Date.now()}`; }
+  sidebarBtns.forEach(b => b.addEventListener('click', () => { currentKey = b.dataset.key; sidebarBtns.forEach(x => x.classList.toggle('active', x === b)); update(); }));
+  themeBtns.forEach(b => b.addEventListener('click', () => { currentTheme = b.dataset.theme; themeBtns.forEach(x => x.classList.toggle('active', x === b)); update(); }));
+</script>
+</body></html>

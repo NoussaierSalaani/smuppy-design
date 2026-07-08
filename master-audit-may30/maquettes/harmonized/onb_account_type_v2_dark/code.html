@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html class="dark" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Smuppy V2 — Account Type</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+  :root {
+    --mint: #26C1A4; --mint-hi: #11E3A3; --mint-deep: #00B3C7;
+    --page: #000000; --card: #14141A;
+    --text: #F1F4F6; --sub: #8B8B95; --section: #6B6B75;
+    --border: rgba(255,255,255,0.06);
+    --input-bg: rgba(255,255,255,0.04); --input-border: rgba(255,255,255,0.10);
+    --back: #F1F4F6;
+  }
+  * { box-sizing:border-box; -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent; }
+  html { background:var(--page); }
+  html, body { max-width:100%; overflow-x:hidden; }
+  body {
+    margin:0; width:393px; height:852px; overflow:hidden;
+    background:var(--page); color:var(--text);
+    font-family:'Plus Jakarta Sans',-apple-system,system-ui,sans-serif;
+    font-size:15px; line-height:1.5; position:relative;
+  }
+
+  /* ── Smuppy logos (real SVG paths) ──────────────────────── */
+  .smuppy-full { display:inline-flex; align-items:center; gap:8px;
+    filter:drop-shadow(0 0 18px rgba(38,193,164,.30)); }
+  .smuppy-stacked { display:flex; flex-direction:column; align-items:center; gap:12px;
+    filter:drop-shadow(0 0 24px rgba(38,193,164,.45)); }
+
+  /* ── Back/Close ───────────────────────────────────────────── */
+  .v2-back { width:40px; height:40px; border:none; background:transparent;
+    border-radius:999px; color:var(--back);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; transition:background .15s ease; }
+  .v2-back:active { background:rgba(38,193,164,.10); }
+
+  /* ── Welcome ──────────────────────────────────────────────── */
+  .welcome-bg { position:absolute; inset:0; z-index:1; }
+  .welcome-hero-img { width:100%; height:100%; object-fit:cover; }
+  .welcome-overlay { position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.85) 100%); }
+  .welcome-content { position:absolute; inset:0; z-index:5;
+    display:flex; flex-direction:column;
+    padding:60px 24px 36px env(safe-area-inset-bottom,36px); }
+  .welcome-top-spacer { flex:1; }
+  .welcome-brand { text-align:center; margin-bottom:36px; }
+  .welcome-title { font-size:18px; font-weight:600; color:#fff;
+    opacity:.85; margin-bottom:10px; letter-spacing:.02em;
+    text-shadow:0 2px 8px rgba(0,0,0,.4); }
+  .welcome-tagline { color:#fff; font-size:14px; font-weight:500;
+    margin:14px 0 0; text-shadow:0 2px 8px rgba(0,0,0,.4); opacity:.95; line-height:1.45;
+    max-width:300px; margin-left:auto; margin-right:auto; }
+  .welcome-stats { display:flex; align-items:center; justify-content:center; gap:18px;
+    margin:0 0 28px; padding:14px 18px; border-radius:18px;
+    background:rgba(20,20,26,.55);
+    -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px);
+    border:1px solid rgba(38,193,164,.25);
+    box-shadow:0 0 24px rgba(38,193,164,.18); }
+  .welcome-stat { display:flex; flex-direction:column; align-items:center; gap:2px; }
+  .welcome-stat-num { font-size:18px; font-weight:800; color:var(--mint); letter-spacing:-.02em; }
+  .welcome-stat-lbl { font-size:10px; font-weight:600; color:#fff;
+    text-transform:lowercase; letter-spacing:.06em; opacity:.85; }
+  .welcome-stat-divider { width:1px; height:24px; background:rgba(255,255,255,.18); }
+  .welcome-actions { display:flex; flex-direction:column; gap:12px; }
+  .welcome-tos { text-align:center; font-size:11px; color:#fff;
+    opacity:.75; margin:14px 0 0; font-weight:500; line-height:1.4; }
+  .welcome-tos b { font-weight:700; color:#fff; opacity:1;
+    text-decoration:underline; text-underline-offset:2px; }
+
+  /* ── CTAs ─────────────────────────────────────────────────── */
+  .cta-primary { display:flex; align-items:center; justify-content:center;
+    width:100%; height:54px; border:none; border-radius:999px;
+    background:linear-gradient(135deg, var(--mint-hi) 0%, var(--mint-deep) 100%);
+    color:#fff; font-family:inherit; font-size:15px; font-weight:800;
+    cursor:pointer; transition:transform .15s ease;
+    box-shadow:0 8px 24px rgba(38,193,164,.45),
+               0 0 0 1px rgba(255,255,255,.08) inset; letter-spacing:.01em; }
+  .cta-primary:active { transform:scale(.98); }
+  .cta-ghost { display:flex; align-items:center; justify-content:center;
+    width:100%; height:52px; border-radius:999px;
+    background:transparent; color:#fff;
+    border:1.5px solid rgba(255,255,255,.35);
+    font-family:inherit; font-size:15px; font-weight:700; cursor:pointer;
+    -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); }
+  .cta-ghost:active { background:rgba(255,255,255,.10); }
+
+  /* ── Auth scaffolding ─────────────────────────────────────── */
+  .auth-topbar { position:absolute; top:0; left:0; right:0; z-index:10;
+    height:52px; padding:0 12px;
+    display:flex; align-items:center; justify-content:space-between; }
+  .auth-main { padding:62px 24px 24px; height:100%; overflow-y:auto; }
+  .auth-main-tight { padding-top:62px; }
+  .auth-main-onb { padding-top:74px; }
+  .auth-brand-row { display:flex; justify-content:center; margin-bottom:14px; }
+  .auth-icon-circle { width:64px; height:64px; border-radius:999px;
+    background:rgba(38,193,164,.12);
+    border:1.5px solid rgba(38,193,164,.30);
+    display:flex; align-items:center; justify-content:center;
+    margin:8px auto 14px;
+    box-shadow:0 0 24px rgba(38,193,164,.25),
+               0 0 0 1px rgba(38,193,164,.10) inset;
+    filter:drop-shadow(0 0 10px rgba(38,193,164,.30)); }
+  .auth-icon-circle-lg { width:80px; height:80px; }
+  .auth-title { font-size:24px; font-weight:800; letter-spacing:-.02em;
+    color:var(--text); margin:6px 0 6px; text-align:center; }
+  .auth-title-lg { font-size:22px; }
+  .auth-sub { font-size:13.5px; font-weight:500; color:var(--sub);
+    text-align:center; margin:0 0 22px; line-height:1.45;
+    padding:0 8px; }
+  .auth-sub-small { font-size:12px; margin-top:14px; }
+  .auth-warn { background:rgba(245,158,11,.08); border:1px solid rgba(245,158,11,.20);
+    border-radius:14px; padding:11px 14px; margin:0 -2px 18px;
+    color:var(--sub); font-size:12px; line-height:1.4; }
+
+  /* ── Inputs ───────────────────────────────────────────────── */
+  .v2-input-label { display:block; margin-bottom:12px; }
+  .v2-input-lbl-txt { display:block; font-size:11px; font-weight:700;
+    color:var(--sub); margin:0 0 6px 4px;
+    text-transform:uppercase; letter-spacing:.08em; }
+  .v2-input { position:relative; display:flex; align-items:center;
+    height:50px; padding:0 16px; border-radius:14px;
+    background:var(--input-bg); border:1.5px solid var(--input-border);
+    transition:.18s ease; }
+  .v2-input.has-icon { padding-left:42px; }
+  .v2-input-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%);
+    font-size:18px; color:var(--sub); }
+  .v2-input-value { color:var(--text); font-size:15px; font-weight:500; }
+  .v2-input-placeholder { color:var(--sub); font-size:15px; font-weight:500; opacity:.7; }
+  .v2-input-trail { margin-left:auto; }
+  .v2-input-trail-btn { border:none; background:transparent; cursor:pointer;
+    color:var(--mint); font-family:inherit; font-size:12px; font-weight:700; padding:0; }
+  .v2-input.v2-input-focus { border-color:rgba(38,193,164,.45);
+    box-shadow:0 0 16px rgba(38,193,164,.25),
+               0 0 0 1px rgba(38,193,164,.15) inset; }
+  .v2-input-err { font-size:12px; color:#EF4444; margin:5px 0 0 4px; font-weight:600; }
+
+  .auth-form { display:flex; flex-direction:column; gap:0; margin-bottom:14px; }
+  .auth-form .cta-primary { margin-top:10px; }
+  .auth-form .cta-ghost { margin-top:8px; color:var(--text);
+    border-color:var(--input-border); }
+
+  /* ── Row + remember + link ────────────────────────────────── */
+  .auth-row-between { display:flex; align-items:center; justify-content:space-between;
+    margin:4px 4px 18px; }
+  .auth-remember { display:flex; align-items:center; gap:8px;
+    font-size:13px; font-weight:600; color:var(--text); cursor:pointer; }
+  .auth-checkbox { width:18px; height:18px; border-radius:6px;
+    border:1.5px solid var(--input-border); background:var(--input-bg);
+    display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .auth-checkbox.auth-checkbox-on { background:var(--mint); border-color:var(--mint);
+    box-shadow:0 0 12px rgba(38,193,164,.40); }
+  .auth-link { border:none; background:transparent; cursor:pointer;
+    color:var(--mint); font-family:inherit; font-size:13px; font-weight:700; padding:0; }
+  .auth-link-strong { font-weight:800; }
+  .auth-link-small { font-size:12px; display:block; text-align:center; margin:14px auto 0; }
+  .auth-link-row { display:block; margin:12px auto 0;
+    border:none; background:transparent; cursor:pointer;
+    color:var(--mint); font-family:inherit; font-size:13px; font-weight:700; text-align:center; padding:8px 0; }
+
+  /* ── Password strength + reqs ─────────────────────────────── */
+  .auth-pwd-strength { display:flex; align-items:center; gap:8px; margin:6px 4px 10px; }
+  .auth-pwd-strength-bar { flex:1; height:5px; border-radius:999px;
+    background:var(--input-border); overflow:hidden; }
+  .auth-pwd-strength-fill { height:100%; border-radius:999px;
+    background:linear-gradient(90deg, var(--mint-hi) 0%, var(--mint-deep) 100%);
+    box-shadow:0 0 8px rgba(38,193,164,.40); }
+  .auth-pwd-strength-lbl { font-size:11px; font-weight:700; color:var(--mint); letter-spacing:.02em; }
+  .auth-pwd-must { font-size:11px; font-weight:700; color:var(--sub);
+    margin:0 4px 8px; text-transform:uppercase; letter-spacing:.06em; }
+  .auth-pwd-reqs { display:grid; grid-template-columns:1fr 1fr; gap:6px 12px;
+    margin:0 4px 14px; }
+  .auth-pwd-req { display:flex; align-items:center; gap:6px;
+    font-size:12px; font-weight:500; color:var(--sub); }
+  .auth-pwd-req.auth-pwd-req-ok { color:var(--text); }
+  .auth-helper { font-size:11.5px; margin:4px 4px 6px;
+    display:inline-flex; align-items:center; gap:5px; font-weight:600; }
+  .auth-helper-ok { color:var(--mint); }
+
+  /* ── Terms ────────────────────────────────────────────────── */
+  .auth-terms { align-items:flex-start; margin:4px 4px 18px;
+    font-size:12px; line-height:1.4; }
+  .auth-terms .auth-checkbox { margin-top:1px; }
+  .auth-terms b { font-weight:700; color:var(--mint); }
+
+  /* ── Divider ──────────────────────────────────────────────── */
+  .auth-divider { display:flex; align-items:center; gap:12px; margin:18px 0 12px; }
+  .auth-divider-line { flex:1; height:1px; background:var(--border); }
+  .auth-divider-txt { font-size:11px; font-weight:600; color:var(--sub); text-transform:lowercase; }
+
+  /* ── Social ───────────────────────────────────────────────── */
+  .auth-social { display:flex; gap:10px; margin-bottom:14px; }
+  .social-btn { flex:1; display:flex; align-items:center; justify-content:center; gap:8px;
+    height:48px; border-radius:14px;
+    background:#14141A; border:1px solid var(--input-border);
+    color:var(--text); font-family:inherit; font-size:14px; font-weight:700;
+    cursor:pointer; transition:.15s ease;
+    box-shadow:0 2px 8px rgba(0,0,0,0.5); }
+  .social-btn:hover { border-color:rgba(38,193,164,.30); }
+  .social-ic { display:flex; align-items:center; justify-content:center; }
+
+  /* ── Footer link ──────────────────────────────────────────── */
+  .auth-footer { text-align:center; font-size:12.5px; font-weight:500;
+    color:var(--sub); margin:8px 0 0; }
+  .auth-footer .auth-link { margin-left:4px; }
+
+  /* ── Onb header ───────────────────────────────────────────── */
+  .onb-header { position:absolute; top:0; left:0; right:0; z-index:10;
+    height:56px; padding:0 14px;
+    display:flex; align-items:center; gap:12px;
+    background:var(--header);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    backdrop-filter:blur(20px) saturate(180%); }
+  .onb-progress { flex:1; height:4px; border-radius:999px;
+    background:var(--input-border); overflow:hidden; }
+  .onb-progress-bar { height:100%; border-radius:999px;
+    background:linear-gradient(90deg, var(--mint-hi) 0%, var(--mint-deep) 100%);
+    box-shadow:0 0 8px rgba(38,193,164,.40); transition:width .3s ease; }
+  .onb-step { font-size:12px; font-weight:700; color:var(--sub);
+    min-width:30px; text-align:right; }
+
+  /* ── Steps list ───────────────────────────────────────────── */
+  .auth-steps { background:var(--card); border:1px solid rgba(38,193,164,.15);
+    border-radius:18px; padding:14px 16px; margin:0 0 18px;
+    box-shadow:0 0 20px rgba(38,193,164,.08); }
+  .auth-step-prelude { font-size:12px; font-weight:700; color:var(--sub);
+    margin:0 0 10px; text-transform:uppercase; letter-spacing:.06em; }
+  .auth-step { display:flex; align-items:flex-start; gap:12px;
+    font-size:13px; font-weight:500; color:var(--text);
+    margin-bottom:10px; line-height:1.4; }
+  .auth-step:last-child { margin-bottom:0; }
+  .auth-step-num { flex-shrink:0; width:24px; height:24px; border-radius:999px;
+    background:rgba(38,193,164,.14); color:var(--mint);
+    font-size:12px; font-weight:800;
+    display:inline-flex; align-items:center; justify-content:center;
+    border:1px solid rgba(38,193,164,.30); }
+
+  /* ── Code input ───────────────────────────────────────────── */
+  .code-grid { display:flex; gap:8px; justify-content:center; margin:8px 0 22px; }
+  .code-cell { width:48px; height:60px; border-radius:14px;
+    background:var(--input-bg); border:1.5px solid var(--input-border);
+    display:flex; align-items:center; justify-content:center;
+    font-size:24px; font-weight:800; color:var(--text);
+    letter-spacing:.02em; transition:.18s ease; }
+  .code-cell-filled { border-color:rgba(38,193,164,.45);
+    background:rgba(38,193,164,.06); color:var(--mint);
+    box-shadow:0 0 14px rgba(38,193,164,.18); }
+  .code-cell-focus { border-color:rgba(38,193,164,.55);
+    box-shadow:0 0 18px rgba(38,193,164,.30),
+               0 0 0 1px rgba(38,193,164,.20) inset; }
+  .code-cursor { width:2px; height:24px; background:var(--mint);
+    border-radius:999px; animation:cursor-blink 1s infinite;
+    box-shadow:0 0 6px rgba(38,193,164,.50); }
+  @keyframes cursor-blink { 0%,49% { opacity:1; } 50%,100% { opacity:0; } }
+
+  /* ── Success screen (PasswordSuccess) ─────────────────────── */
+  .success-wrap { position:absolute; inset:0; padding:0 24px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .success-confetti { position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(circle at 30% 25%, rgba(38,193,164,.15) 0%, transparent 30%),
+               radial-gradient(circle at 75% 70%, rgba(0,179,199,.10) 0%, transparent 32%); }
+  .success-check { position:relative; width:120px; height:120px;
+    border-radius:999px; background:rgba(38,193,164,.10);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 60px rgba(38,193,164,.45),
+               0 0 0 2px rgba(38,193,164,.35) inset;
+    margin-bottom:26px; }
+  .success-check-ring { position:absolute; inset:-12px; border-radius:999px;
+    border:2px solid rgba(38,193,164,.40);
+    box-shadow:0 0 24px rgba(38,193,164,.30); }
+  .success-check-icon { font-size:62px; color:var(--mint);
+    filter:drop-shadow(0 0 12px rgba(38,193,164,.6)); }
+  .success-title { font-size:26px; font-weight:800; margin:0 0 6px;
+    color:var(--text); letter-spacing:-.02em; text-align:center; }
+  .success-body { font-size:14px; font-weight:500; color:var(--sub);
+    text-align:center; margin:0 0 30px; max-width:280px; line-height:1.45; }
+  .success-loader { display:flex; align-items:center; gap:10px;
+    font-size:13px; font-weight:600; color:var(--sub); }
+  .success-spinner { width:18px; height:18px; border-radius:999px;
+    border:2.5px solid rgba(38,193,164,.18);
+    border-top-color:var(--mint);
+    animation:spin .8s linear infinite; }
+  @keyframes spin { 100% { transform:rotate(360deg); } }
+
+  /* ── MFA apps ─────────────────────────────────────────────── */
+  .auth-mfa-apps { background:var(--card); border:1px solid rgba(38,193,164,.18);
+    border-radius:18px; padding:14px 16px; margin:0 0 22px;
+    box-shadow:0 0 20px rgba(38,193,164,.08); }
+  .auth-mfa-apps-label { font-size:11px; font-weight:700; color:var(--sub);
+    margin:0 0 10px; text-transform:uppercase; letter-spacing:.06em; }
+  .auth-mfa-app-row { display:flex; gap:8px; margin-bottom:8px; }
+  .auth-mfa-app-row:last-child { margin-bottom:0; }
+  .auth-mfa-app { flex:1; padding:8px 12px; border-radius:10px;
+    background:var(--input-bg); border:1px solid var(--input-border);
+    font-size:12px; font-weight:600; color:var(--text); text-align:center; }
+
+  /* ── MFA QR ───────────────────────────────────────────────── */
+  .auth-qr-frame { width:200px; height:200px; margin:0 auto 18px;
+    padding:12px; border-radius:20px;
+    background:#fff;
+    box-shadow:0 8px 24px rgba(0,0,0,0.5),
+               0 0 24px rgba(38,193,164,.20),
+               0 0 0 1.5px rgba(38,193,164,.30); }
+  .auth-qr-img { width:100%; height:100%; display:block; }
+  .auth-manual { margin:0 0 18px; padding:12px 14px;
+    background:var(--card); border:1px dashed rgba(38,193,164,.30);
+    border-radius:14px; }
+  .auth-manual-label { font-size:11px; font-weight:700; color:var(--sub);
+    margin:0 0 8px; text-transform:uppercase; letter-spacing:.06em; }
+  .auth-manual-code { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .auth-manual-code-val { font-family:'Courier New',monospace;
+    font-size:14px; font-weight:700; color:var(--text); letter-spacing:.08em; }
+  .auth-manual-copy { display:inline-flex; align-items:center; gap:4px;
+    padding:6px 10px; border:none; border-radius:8px;
+    background:rgba(38,193,164,.12); color:var(--mint);
+    font-family:inherit; font-size:11px; font-weight:700; cursor:pointer; }
+
+  /* ── Backup codes ─────────────────────────────────────────── */
+  .auth-backup-grid { display:grid; grid-template-columns:1fr 1fr;
+    gap:8px; margin:0 0 18px; }
+  .auth-backup-code { display:flex; align-items:center; gap:8px;
+    padding:11px 12px; border-radius:12px;
+    background:var(--input-bg); border:1px solid var(--input-border); }
+  .auth-backup-num { font-size:10px; font-weight:700; color:var(--sub);
+    min-width:14px; }
+  .auth-backup-val { font-family:'Courier New',monospace;
+    font-size:13px; font-weight:700; color:var(--text); letter-spacing:.04em; }
+  .auth-backup-actions { display:flex; gap:10px; margin-bottom:18px; }
+  .auth-backup-btn { flex:1; display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    padding:11px 14px; border-radius:12px;
+    background:var(--input-bg); border:1px solid rgba(38,193,164,.30);
+    color:var(--mint); font-family:inherit; font-size:12px; font-weight:700;
+    cursor:pointer; box-shadow:0 0 14px rgba(38,193,164,.10); }
+</style>
+<style>
+  /* ── ONBOARDING atoms ─────────────────────────────────────── */
+  .onb-cards { display:flex; flex-direction:column; gap:10px; margin:0 0 14px; }
+  .onb-card { display:flex; align-items:center; gap:14px;
+    width:100%; padding:14px 14px; border-radius:18px;
+    background:var(--card); border:1.5px solid var(--input-border);
+    cursor:pointer; font-family:inherit; transition:.18s ease; text-align:left; }
+  .onb-card-sel { border-color:rgba(38,193,164,.45);
+    box-shadow:0 0 18px rgba(38,193,164,.20),
+               0 0 0 1px rgba(38,193,164,.15) inset; }
+  .onb-card-ic { width:42px; height:42px; border-radius:14px;
+    display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .onb-card-text { flex:1; min-width:0; }
+  .onb-card-title { font-size:15px; font-weight:700; color:var(--text);
+    display:inline-flex; align-items:center; gap:6px; }
+  .onb-card-desc { font-size:12px; font-weight:500; color:var(--sub); margin-top:3px; line-height:1.35; }
+  .onb-card-chev { font-size:18px; color:var(--sub); opacity:.55; }
+  .onb-card-badge { display:inline-block; padding:2px 8px; border-radius:999px;
+    background:rgba(38,193,164,.18); color:var(--mint);
+    font-size:9.5px; font-weight:800; letter-spacing:.06em; }
+
+  .onb-sub-prompt {
+    display:flex; align-items:center; gap:5px;
+    font-size:11px; font-weight:700; color:var(--mint);
+    text-transform:uppercase; letter-spacing:.10em;
+    margin:6px 0 8px; padding-left:4px;
+  }
+
+  /* Category chips multi-select */
+  .onb-cat-wrap { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 18px; }
+  .cat-chip {
+    display:inline-flex; align-items:center;
+    padding:8px 14px; border-radius:999px;
+    background:var(--input-bg); border:1.5px solid var(--input-border);
+    color:var(--sub); font-family:inherit; font-size:13px; font-weight:600;
+    cursor:pointer; transition:.15s ease;
+  }
+  .cat-chip-on {
+    background:rgba(38,193,164,.12); border-color:rgba(38,193,164,.45);
+    color:var(--mint); font-weight:700;
+    box-shadow:0 0 14px rgba(38,193,164,.20);
+  }
+  .onb-cat-count {
+    text-align:center; font-size:12px; font-weight:600; color:var(--sub);
+    margin:0 0 14px;
+  }
+  .onb-cat-count-num { color:var(--mint); font-weight:800; font-size:14px; }
+
+  /* Avatar picker */
+  .onb-avatar-pick { display:flex; flex-direction:column; align-items:center; gap:10px;
+    margin:6px 0 22px; }
+  .onb-avatar-wrap {
+    position:relative;
+    width:96px; height:96px; border-radius:999px;
+    background:rgba(38,193,164,.10);
+    border:2px dashed rgba(38,193,164,.40);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 24px rgba(38,193,164,.25);
+    overflow:hidden;
+  }
+  .onb-avatar-img { width:100%; height:100%; object-fit:cover; border-radius:999px; }
+  .onb-avatar-edit {
+    position:absolute; bottom:0; right:0;
+    width:32px; height:32px; border-radius:999px;
+    background:linear-gradient(135deg, var(--mint-hi) 0%, var(--mint-deep) 100%);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 4px 12px rgba(38,193,164,.45),
+               0 0 0 3px var(--page);
+  }
+  .onb-avatar-wrap-square { border-radius:22px; }
+  .onb-avatar-lbl { font-size:12px; font-weight:700; color:var(--mint);
+    letter-spacing:.02em; }
+
+  /* Category sections (real CategorySelectionScreen.tsx pattern) ──── */
+  .cat-sections { display:flex; flex-direction:column; gap:18px; margin:0 0 18px; }
+  .cat-section { display:flex; flex-direction:column; gap:10px; }
+  .cat-section-header { display:flex; align-items:center; gap:10px; padding:0 4px; }
+  .cat-section-ic { width:32px; height:32px; border-radius:11px;
+    display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .cat-section-title { font-size:14px; font-weight:800; color:var(--text);
+    letter-spacing:-.01em; margin:0; }
+  .cat-section-count { color:var(--mint); font-weight:700; font-size:12.5px;
+    text-shadow:0 0 8px rgba(38,193,164,.30); }
+  .cat-section-items { display:flex; flex-wrap:wrap; gap:6px; }
+
+  /* "Voir plus" button */
+  .cat-explore-more {
+    display:flex; align-items:center; justify-content:center;
+    width:100%; padding:11px 16px; border:1.5px dashed rgba(38,193,164,.40);
+    border-radius:14px; background:rgba(38,193,164,.06);
+    color:var(--mint); font-family:inherit; font-size:13px; font-weight:700;
+    cursor:pointer; margin-top:6px;
+    box-shadow:0 0 14px rgba(38,193,164,.10);
+  }
+  .cat-explore-more:hover { border-style:solid; }
+
+  /* Long-scroll main */
+  .auth-main-scroll {
+    padding-bottom:120px;
+  }
+
+  /* Guidelines main override — slightly tighter */
+  .gl-main { padding-top:60px; }
+  .gl-title { font-size:21px; line-height:1.25; }
+  .gl-intro-para {
+    font-size:12.5px; line-height:1.55; color:var(--sub);
+    margin:0 4px 12px; text-align:left;
+  }
+  .gl-intro-para b { color:var(--text); font-weight:700; }
+  .gl-section {
+    background:var(--card); border:1px solid var(--input-border);
+    border-radius:16px; padding:14px 14px;
+    margin:0 0 14px;
+    box-shadow:0 0 14px rgba(38,193,164,.04);
+  }
+  .gl-section-head { display:flex; align-items:flex-start; gap:10px; margin-bottom:10px; }
+  .gl-section-num {
+    flex-shrink:0; width:28px; height:28px; border-radius:9px;
+    display:inline-flex; align-items:center; justify-content:center;
+    margin-top:1px;
+  }
+  .gl-section-title { font-size:13.5px; font-weight:800; color:var(--text);
+    letter-spacing:-.005em; line-height:1.35; margin:0; }
+  .gl-intro {
+    font-size:12px; line-height:1.5; color:var(--sub); margin:0 0 8px;
+  }
+  .gl-sub-title {
+    font-size:11.5px; font-weight:800; color:var(--mint);
+    letter-spacing:.02em; margin:6px 0 6px;
+  }
+  .gl-sub-title-warn { color:#EF4444; }
+  .gl-item {
+    font-size:11.5px; line-height:1.45; color:var(--text);
+    padding:6px 10px; border-radius:8px;
+    background:var(--input-bg); border:1px solid var(--input-border);
+    margin-bottom:5px;
+  }
+  .gl-item-bullet { background:transparent; border-color:transparent;
+    padding:2px 4px; color:var(--sub); font-size:12px; }
+  .gl-text { font-size:12px; line-height:1.5; color:var(--text);
+    margin:6px 0 0; }
+  .gl-note {
+    font-size:11.5px; line-height:1.4; color:var(--sub);
+    padding:10px 12px; border-radius:10px;
+    background:rgba(245,158,11,.06);
+    border:1px solid rgba(245,158,11,.22);
+    margin:8px 0 4px;
+  }
+  .gl-footer-note {
+    font-size:11.5px; line-height:1.45; color:var(--mint);
+    background:rgba(38,193,164,.06);
+    border-left:3px solid var(--mint);
+    padding:8px 12px; border-radius:0 8px 8px 0;
+    margin:8px 0 0;
+  }
+  .gl-conclusion {
+    background:linear-gradient(135deg, rgba(38,193,164,.10), rgba(0,179,199,.05));
+    border:1.5px solid rgba(38,193,164,.30);
+    border-radius:18px; padding:16px 16px;
+    margin:14px 0;
+    box-shadow:0 0 24px rgba(38,193,164,.15);
+  }
+  .gl-conclusion-title {
+    font-size:11px; font-weight:900; color:var(--mint);
+    letter-spacing:.18em; margin:0 0 10px;
+  }
+  .gl-conclusion-text {
+    font-size:12.5px; line-height:1.55; color:var(--text); margin:0 0 10px;
+  }
+  .gl-conclusion-highlight {
+    font-size:12.5px; line-height:1.5; color:var(--mint);
+    font-weight:700; margin:0;
+  }
+
+  /* Chip refinement (colored icon inline, no chip-ic box) — founder may30 */
+  .cat-chip { padding:7px 14px; gap:0; }
+  .cat-chip ion-icon { flex-shrink:0; }
+
+  /* Find friends list */
+  .onb-friends-list { display:flex; flex-direction:column; gap:8px; margin:0 0 18px; }
+  .onb-friend-row {
+    display:flex; align-items:center; gap:12px;
+    padding:12px 14px; border-radius:14px;
+    background:var(--card); border:1px solid var(--input-border);
+  }
+  .onb-friend-avatar { width:44px; height:44px; border-radius:999px; object-fit:cover; flex-shrink:0; }
+  .onb-friend-text { flex:1; min-width:0; }
+  .onb-friend-name { font-size:14px; font-weight:700; color:var(--text); }
+  .onb-friend-phone { font-size:11.5px; font-weight:500; color:var(--sub); margin-top:2px; }
+  .onb-friend-btn {
+    padding:7px 14px; border-radius:999px;
+    background:linear-gradient(135deg, var(--mint-hi) 0%, var(--mint-deep) 100%);
+    color:#fff; border:none; cursor:pointer;
+    font-family:inherit; font-size:12px; font-weight:700;
+    box-shadow:0 4px 12px rgba(38,193,164,.35);
+  }
+  .onb-friend-btn-done {
+    background:rgba(38,193,164,.12); color:var(--mint);
+    border:1.5px solid rgba(38,193,164,.45);
+    box-shadow:0 0 14px rgba(38,193,164,.18);
+  }
+
+  /* Guidelines list */
+  .onb-guidelines {
+    background:var(--card); border:1px solid rgba(38,193,164,.18);
+    border-radius:20px; padding:14px 16px; margin:0 0 18px;
+    box-shadow:0 0 20px rgba(38,193,164,.08);
+    display:flex; flex-direction:column; gap:14px;
+  }
+  .onb-guide-item { display:flex; align-items:flex-start; gap:12px; }
+  .onb-guide-ic {
+    width:36px; height:36px; border-radius:11px;
+    display:inline-flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .onb-guide-title { font-size:14px; font-weight:700; color:var(--text); margin-bottom:2px; }
+  .onb-guide-sub { font-size:12px; font-weight:500; color:var(--sub); line-height:1.35; }
+
+  /* Business locations */
+  .onb-locations { margin:6px 0 14px; }
+  .onb-loc-label { font-size:11px; font-weight:800; color:var(--sub);
+    margin:0 0 8px 4px; text-transform:uppercase; letter-spacing:.10em; }
+  .onb-loc-row { display:flex; flex-direction:column; gap:8px; }
+
+  /* Info note */
+  .onb-info-note { font-size:11.5px; font-weight:500; color:var(--sub);
+    background:var(--input-bg); border:1px dashed var(--input-border);
+    border-radius:12px; padding:10px 12px; margin:4px 0 14px; line-height:1.4; }
+
+  /* Social grid */
+  .onb-social-lbl { font-size:11px; font-weight:800; color:var(--sub);
+    margin:14px 0 8px 4px; text-transform:uppercase; letter-spacing:.10em; }
+  .onb-social-grid { display:flex; flex-direction:column; gap:8px; margin-bottom:10px; }
+  .onb-social-row { display:flex; align-items:center; gap:12px;
+    padding:11px 14px; border-radius:14px;
+    background:var(--card); border:1px solid var(--input-border); }
+  .onb-social-ic { width:32px; height:32px; border-radius:10px;
+    display:inline-flex; align-items:center; justify-content:center;
+    flex-shrink:0; }
+  .onb-social-val { font-size:13.5px; font-weight:600; color:var(--text); }
+  .onb-social-val-empty { color:var(--sub); font-weight:500; }
+
+  /* Success confetti particles */
+  .success-confetti-particles {
+    position:absolute; inset:0; pointer-events:none;
+    background:
+      radial-gradient(circle 4px at 20% 30%, var(--mint), transparent 70%),
+      radial-gradient(circle 3px at 80% 35%, #11C6FF, transparent 70%),
+      radial-gradient(circle 5px at 35% 65%, var(--mint-deep), transparent 70%),
+      radial-gradient(circle 3px at 65% 70%, #FFA63D, transparent 70%),
+      radial-gradient(circle 4px at 75% 25%, #9966FF, transparent 70%);
+    opacity:.45;
+  }
+
+  /* Sticky form on long lists */
+  .auth-form-sticky {
+    position:sticky; bottom:0;
+    background:linear-gradient(180deg, transparent 0%, var(--page) 30%, var(--page) 100%);
+    padding:14px 0 4px;
+    margin:0 -24px;
+    padding-left:24px; padding-right:24px;
+  }
+</style>
+
+</head><body>
+<header class="onb-header">
+  <span style="width:40px"></span>
+  <div class="onb-progress"><div class="onb-progress-bar" style="width:20.0%"></div></div>
+  <div class="onb-step">1/5</div>
+</header>
+<main class="auth-main auth-main-onb">
+  <div class="auth-brand-row"><span class="smuppy-full"><svg width="32" height="32" viewBox="0 0 74 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="iconBgG" x1="0" y1="0" x2="57.9282" y2="80.0519" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0EBF8A"/><stop offset="1" stop-color="#00B3C7"/>
+    </linearGradient>
+    <linearGradient id="iconSDk" x1="3.00305" y1="36.9755" x2="50.033" y2="35.7238" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#134456"/><stop offset="0.701923" stop-color="#0A252F"/>
+    </linearGradient>
+    <linearGradient id="iconSGr" x1="18" y1="16" x2="55" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0EBF8A"/><stop offset="1" stop-color="#00B3C7"/>
+    </linearGradient>
+  </defs>
+  <path d="M55.578 0H17.8914C8.01027 0 0 8.01027 0 17.8914V55.578C0 65.4591 8.01027 73.4694 17.8914 73.4694H55.578C65.4591 73.4694 73.4694 65.4591 73.4694 55.578V17.8914C73.4694 8.01027 65.4591 0 55.578 0Z" fill="url(#iconBgG)"/>
+  <path d="M36.8445 16.3889C40.2001 16.3889 43.1731 16.7499 45.6952 17.5466L45.6961 17.5457C47.9435 18.24 49.925 19.1587 51.568 20.351L51.8917 20.5928L52.0447 20.72C52.3901 21.0282 52.6527 21.4197 52.8057 21.859L52.9845 22.4094C53.3743 23.7004 53.5686 25.0322 53.5686 26.3954C53.5686 27.8947 53.368 29.3288 52.9285 30.6705C52.6766 31.4394 52.3447 32.1684 51.9202 32.8356C54.413 35.3416 55.5594 38.7191 55.5594 42.6438C55.5594 46.8053 53.879 50.3262 50.6985 53.0495L50.3855 53.3101C50.3815 53.3133 50.3778 53.3167 50.3739 53.3199C46.7451 56.2443 42.0323 57.562 36.5262 57.562C33.6012 57.562 30.9821 57.341 28.6982 56.8685C26.5188 56.4342 24.4075 55.686 22.3683 54.6376L21.9602 54.4233C21.6244 54.2432 21.3303 53.9955 21.0968 53.696L21.0008 53.5644C19.4181 51.2641 18.5281 48.7785 18.528 46.1488C18.528 43.5103 19.4407 41.1733 21.2924 39.3335C20.6433 38.6636 20.0879 37.8937 19.6261 37.0377C18.6813 35.2863 18.2098 33.3884 18.2097 31.3871C18.2097 26.3967 20.3723 22.3915 24.5485 19.6726L24.5529 19.6699L24.8784 19.4627C28.2676 17.3645 32.3024 16.389 36.8445 16.3889ZM36.8445 21.8519C32.9667 21.8519 29.911 22.7065 27.5254 24.2535C24.9076 25.9593 23.6727 28.2372 23.6727 31.3871C23.6727 32.5008 23.9273 33.5053 24.4338 34.4441C24.7176 34.9702 25.0354 35.3753 25.3798 35.6906C26.4403 35.4225 27.5388 35.2932 28.667 35.2932C31.744 35.2932 34.5125 36.0865 36.6836 37.9348L36.8917 38.1171L36.9068 38.1296L37.2047 38.4132C37.8628 39.0637 38.4191 39.7981 38.8327 40.6228H38.8345C39.2875 41.4784 39.6294 42.471 39.6294 43.5472C39.6294 44.3873 39.3495 45.3164 38.6104 46.0555C38.0185 46.6474 37.3213 46.9265 36.7477 47.0611L36.5103 47.11C35.2509 47.3389 34.0147 46.6634 33.5156 45.5087L33.4258 45.2721C32.9929 43.948 32.422 43.2244 31.8511 42.819L31.7373 42.7425L31.7222 42.7327C31.0334 42.2865 29.9679 41.9503 28.3221 41.9503C27.0073 41.9503 26.024 42.3582 25.1967 43.1533C24.4036 43.9156 23.991 44.8437 23.991 46.1488C23.991 47.3261 24.3321 48.5736 25.1478 49.9206C26.4571 50.5687 27.7798 51.0496 29.1187 51.369L29.7829 51.514L29.8052 51.5184C31.6275 51.8955 33.8582 52.0991 36.5262 52.0991C41.1726 52.0991 44.5452 50.9948 46.9338 49.0751C49.1085 47.3018 50.0965 45.2156 50.0965 42.6438C50.0965 39.4048 49.0686 37.3795 47.3277 36.0587V36.0578C45.7382 34.8748 43.5481 34.1711 40.5355 34.1711C39.6857 34.1711 39.1404 34.2433 38.8265 34.324C37.475 34.6715 36.0783 33.9448 35.5882 32.6382C35.4358 32.2319 35.356 31.8159 35.3383 31.404L35.3348 31.2271L35.3472 30.9292C35.4068 30.2359 35.6755 29.5672 36.1519 29.0114C36.6521 28.4278 37.2604 28.1081 37.7444 27.9266L37.7782 27.9141C38.7339 27.57 40.0676 27.514 41.3055 27.514C42.9157 27.514 44.6123 27.799 46.3727 28.3134C46.861 28.456 47.3385 28.6092 47.7963 28.7713C47.9916 28.1017 48.1057 27.3168 48.1057 26.3954C48.1057 25.7232 48.0275 25.0748 47.8763 24.4446C47.0508 23.9174 46.0329 23.429 44.7945 22.9989L44.0831 22.7659L44.0645 22.7597C42.2366 22.1801 39.8523 21.8519 36.8445 21.8519Z" fill="url(#iconSDk)"/>
+</svg><svg width="96" height="20.53953488372093" viewBox="0 0 215 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="textG" x1="0" y1="0" x2="11.5723" y2="74.4849" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0EBF8A"/><stop offset="1" stop-color="#00B3C7"/>
+    </linearGradient>
+    <linearGradient id="textDkG" x1="-87.1345" y1="22.9746" x2="177.596" y2="-13.1995" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#134456"/><stop offset="0.701923" stop-color="#0A252F"/>
+    </linearGradient>
+  </defs>
+  <path d="M184.138 6.12109C185.812 4.4176 191.327 5.23915 191.354 5.24316C193.846 5.73812 195.303 6.79708 196.473 8.14844C197.331 9.15283 197.485 10.7833 197.723 12.7188C197.723 16.0413 197.514 18.9589 197.514 22.2275V22.8584C197.514 23.1504 197.523 23.3605 197.541 23.4883C197.724 23.5796 197.925 23.625 198.145 23.625C198.674 23.6249 198.939 23.2231 198.939 22.4199C198.939 19.7356 199.086 16.9506 199.378 14.0654C199.689 11.1618 200.017 8.92401 200.364 7.35352C201.844 6.27611 203.818 5.7373 206.285 5.7373C208.752 5.73733 210.652 6.22161 211.986 7.18945C213.338 8.13897 214.015 9.28943 214.015 10.6406C214.015 11.2067 213.676 13.5445 213 17.6533C212.251 21.8352 211.292 26.2363 210.122 30.8564C209.885 31.7878 209.455 33.0934 208.834 34.7734C208.231 36.4535 207.582 37.8509 206.888 38.9648C204.713 42.416 198.705 44.5522 195.507 45.374C194.009 45.7575 192.501 45.9492 190.984 45.9492C188.043 45.9492 185.767 45.2195 184.159 43.7588C182.679 42.444 183.721 40.0914 184.432 37.6396C185.262 34.774 187.695 33.1549 188.496 33.2666C189.227 33.2666 190.141 33.3584 191.237 33.541C194.269 34.1067 195.812 34.3893 195.869 34.3896C195.997 34.4079 196.134 34.4361 196.28 34.4727C196.445 34.4909 196.655 34.5 196.911 34.5C197.167 34.4999 197.386 34.4263 197.568 34.2803C197.751 34.1342 197.843 33.8424 197.843 33.4043L191.374 32.1709C189.784 31.5135 188.405 30.1351 187.235 28.0352C185.792 25.4421 185.231 21.8585 184.303 17.4893C183.647 14.3302 182.46 7.82877 184.138 6.12109ZM134.474 5.51172C136.557 5.51174 138.457 5.84073 140.175 6.49805C142.532 7.42939 144.396 8.92673 145.767 10.9902C147.484 13.6016 148.344 17.0261 148.344 21.2627C148.344 26.0287 147.064 29.736 144.506 32.3838C141.966 35.0133 138.439 36.3281 133.926 36.3281C131.404 36.3281 130.547 36.0174 129.14 35.3965C129.012 35.4696 128.948 35.6251 128.948 35.8623C128.948 36.369 128.931 36.7663 128.929 37.6992L128.928 41.5078C128.927 43.9389 126.474 45.9382 124.043 45.9385C121.612 45.9385 119.015 43.9391 119.015 41.5078L119.016 39.9619C119.015 39.9287 119.015 39.8948 119.015 39.8613V17.8105C117.937 16.2949 117.397 14.414 117.397 12.168C117.397 11.255 117.544 10.2599 117.836 9.18262C118.128 8.1052 118.521 7.18201 119.015 6.41504H122.907C124.497 6.41507 125.711 6.63514 126.552 7.07324C125.054 8.18703 124.305 9.08221 124.305 9.75781C124.305 10.3053 124.625 10.579 125.264 10.5791C126.36 8.86258 127.649 7.59324 129.129 6.77148C130.609 5.93158 132.391 5.51178 134.474 5.51172ZM167.702 5.51172C169.785 5.51174 171.686 5.84073 173.403 6.49805C175.76 7.42939 177.625 8.92673 178.995 10.9902C180.713 13.6016 181.572 17.0261 181.572 21.2627C181.572 26.0287 180.293 29.736 177.734 32.3838C175.194 35.0133 171.668 36.3281 167.154 36.3281C164.633 36.3281 163.775 36.0174 162.368 35.3965C162.24 35.4696 162.177 35.6251 162.177 35.8623C162.177 36.369 162.16 36.7663 162.157 37.6992L162.156 41.5078C162.156 43.9389 159.703 45.9382 157.271 45.9385C154.84 45.9385 152.243 43.9391 152.243 41.5078L152.244 39.9619C152.244 39.9287 152.243 39.8948 152.243 39.8613V17.8105C151.165 16.2949 150.626 14.414 150.626 12.168C150.626 11.255 150.772 10.2599 151.064 9.18262C151.357 8.1052 151.75 7.18201 152.243 6.41504H156.136C157.725 6.41507 158.94 6.63514 159.78 7.07324C158.282 8.18703 157.533 9.08221 157.533 9.75781C157.533 10.3053 157.853 10.579 158.492 10.5791C159.589 8.86258 160.877 7.59324 162.357 6.77148C163.837 5.93158 165.619 5.51178 167.702 5.51172ZM16.4189 0C19.708 1.53782e-05 22.4761 0.356209 24.7236 1.06836C26.9712 1.7623 28.8081 2.65724 30.2334 3.75293C30.6535 4.95795 30.8632 6.20859 30.8633 7.50488C30.8633 8.80145 30.69 9.97989 30.3428 11.0391C29.9956 12.0981 29.4928 12.9468 28.835 13.5859C28.2136 13.1295 27.0898 12.6641 25.4639 12.1895C23.8376 11.7147 22.3574 11.4775 21.0234 11.4775C19.69 11.4775 18.7948 11.5594 18.3379 11.7236C17.8995 11.8879 17.6799 12.1435 17.6797 12.4902C17.6797 12.6545 17.707 12.81 17.7617 12.9561C18.4012 12.7917 19.2236 12.71 20.2285 12.71C23.7918 12.71 26.6977 13.5494 28.9453 15.2295C31.5949 17.2383 32.9199 20.252 32.9199 24.2695C32.9199 27.8122 31.4851 30.7524 28.6162 33.0898C25.5098 35.5917 21.3342 36.8428 16.0898 36.8428C13.2027 36.8428 10.6988 36.6228 8.5791 36.1846C6.45958 35.7645 4.39467 35.0158 2.38477 33.9385C1.01442 31.9481 0.329102 29.93 0.329102 27.8848C0.329188 25.8214 1.03257 24.114 2.43945 22.7627C3.84648 21.4114 5.57354 20.7354 7.62012 20.7354C9.68499 20.7354 11.3667 21.1561 12.6641 21.9961C13.9795 22.8361 14.9481 24.2055 15.5693 26.1045C16.1719 25.9949 16.4734 25.6939 16.4736 25.2012C16.4736 24.6898 16.3094 24.1228 15.9805 23.502C15.6698 22.8629 15.2032 22.2604 14.582 21.6943C12.9557 20.2335 10.7539 19.5029 7.97656 19.5029C6.60607 19.5029 5.32643 19.731 4.13867 20.1875C2.87809 19.5483 1.87312 18.5351 1.12402 17.1475C0.374862 15.7597 4.05272e-05 14.2622 0 12.6553C0 8.45517 1.75433 5.21335 5.2627 2.93066C8.27778 0.976678 11.9968 0 16.4189 0ZM41.2266 5.51172C44.0105 5.51192 46.2861 7.68267 46.4561 10.4238C46.7316 10.4581 47.054 10.4512 47.332 10.4512C48.1358 9.06341 47.636 7.78265 49.043 6.96094C50.6874 6.02979 52.6153 5.56446 54.8262 5.56445C56.5071 5.56451 57.9785 5.91974 59.2393 6.63184C60.5182 7.344 61.4686 8.16639 62.0898 9.09766C62.9486 7.92905 64.0632 7.05211 65.4336 6.46777C66.8223 5.86524 68.2664 5.56445 69.7646 5.56445C73.0719 5.56455 75.6396 6.58665 77.4668 8.63184C79.2574 10.677 80.1533 13.4803 80.1533 17.041L80.043 22.4922C80.043 23.8251 80.1891 24.912 80.4814 25.752C80.7738 26.5919 81.2857 27.2407 82.0166 27.6973C82.0348 27.7886 82.0439 27.9442 82.0439 28.1631V28.5732C82.0439 31.0749 81.3132 33.0294 79.8516 34.4355C78.3898 35.8416 76.4982 36.5448 74.1777 36.5449C71.8754 36.5449 70.0203 35.9142 68.6133 34.6543C66.9506 33.1934 66.1191 30.9564 66.1191 27.9434V19.2871C66.119 18.0641 65.7167 17.4524 64.9131 17.4521C64.6027 17.4521 64.3555 17.525 64.1729 17.6709L64.666 21.7529V27.9434C64.666 30.4266 65.0773 32.3076 65.8994 33.5859C65.0224 34.5172 63.9259 35.2478 62.6104 35.7773C61.3131 36.2886 59.9878 36.5449 58.6357 36.5449C56.4434 36.5449 54.744 36.0149 53.5381 34.9561C52.0762 33.6778 51.3447 31.6598 51.3447 28.9023V19.2871C51.3446 18.0641 50.9423 17.4523 50.1387 17.4521C49.8286 17.4522 49.582 17.5252 49.3994 17.6709L49.8926 21.7529V29.0117C49.8926 31.057 50.1666 32.637 50.7148 33.751C48.9241 35.5953 46.4109 36.5175 43.1768 36.5176C41.2583 36.5175 39.6408 36.0331 38.3252 35.0654C36.8087 33.9515 36.0508 32.4541 36.0508 30.5732V19.3564H36.0498L35.9854 10.792C35.9637 7.88223 38.3167 5.51182 41.2266 5.51172ZM86.665 6.0332C88.8183 5.15866 91.3105 5.64941 91.3105 5.64941C94.0343 6.15948 95.1166 6.57124 96.3955 7.64844C97.6929 8.70756 98.3417 10.3241 98.3418 12.4971V21.3721C98.3418 23.1431 98.6796 24.0289 99.3555 24.0293C99.5747 24.0293 99.8126 23.9384 100.068 23.7559V20.9414C100.068 20.9414 99.3564 8.90892 99.7949 7.40234C100.234 5.8959 104.062 5.64941 106.784 5.64941C111.41 5.64946 113.188 7.14678 113.499 7.89551C114.09 8.97147 113.499 22.167 113.499 22.167C113.499 24.8879 114.157 26.6597 115.473 27.4814C115.491 27.5728 115.5 27.7459 115.5 28.001V28.4941C115.5 31.1603 114.797 33.1782 113.39 34.5479C112.111 35.8262 110.347 36.4658 108.1 36.4658C106.693 36.4658 105.414 36.1459 104.263 35.5068C103.13 34.8677 102.279 33.9364 101.713 32.7129C101.092 32.713 100.781 33.0146 100.781 33.6172C100.781 34.0371 100.992 34.4571 101.412 34.877C100.827 35.3518 100.123 35.7352 99.3008 36.0273C98.4785 36.3195 97.2632 36.4658 95.6553 36.4658C94.0657 36.4658 92.5126 36.1368 90.9961 35.4795C89.114 34.676 87.6701 33.4431 86.665 31.7812C85.4409 29.8091 84.8291 27.5866 84.8291 24.2764V17.4004C84.6652 10.6963 84.5121 6.90793 86.665 6.0332ZM133.46 16.9346C133.204 16.9346 132.984 17.0255 132.802 17.208C132.966 19.0158 133.049 20.4678 133.049 21.5635V25.2344C133.177 25.362 133.387 25.4257 133.679 25.4258C133.971 25.4258 134.182 25.3257 134.31 25.125C134.437 24.9242 134.501 24.5768 134.501 24.084V21.29C134.501 19.5369 134.428 18.3767 134.282 17.8105C134.136 17.2266 133.862 16.9348 133.46 16.9346ZM166.688 16.9346C166.433 16.9346 166.213 17.0255 166.03 17.208C166.195 19.0158 166.277 20.4678 166.277 21.5635V25.2344C166.405 25.362 166.615 25.4257 166.907 25.4258C167.199 25.4258 167.41 25.3257 167.538 25.125C167.666 24.9242 167.729 24.5768 167.729 24.084V21.29C167.729 19.5369 167.657 18.3767 167.511 17.8105C167.365 17.2266 167.09 16.9348 166.688 16.9346Z" fill="url(#textG)"/>
+</svg></span></div>
+  <h1 class="auth-title">Quel type de compte ?</h1>
+  <p class="auth-sub">Choisis comment tu vas utiliser Smuppy</p>
+
+  <div class="onb-cards">
+    <button class="onb-card">
+  <span class="onb-card-ic" style="background:#11C6FF0F;color:#11C6FF">
+    <ion-icon name="person-outline" style="font-size:22px;color:#11C6FF"></ion-icon>
+  </span>
+  <div class="onb-card-text">
+    <div class="onb-card-title">Personnel</div>
+    <div class="onb-card-desc">Pour les passionnés de sport et de fitness</div>
+  </div>
+  <ion-icon name="chevron-forward" class="onb-card-chev"></ion-icon>
+</button>
+    <button class="onb-card onb-card-sel">
+  <span class="onb-card-ic" style="background:#9966FF14;color:#9966FF">
+    <ion-icon name="briefcase-outline" style="font-size:22px;color:#9966FF"></ion-icon>
+  </span>
+  <div class="onb-card-text">
+    <div class="onb-card-title">Professionnel</div>
+    <div class="onb-card-desc">Pour les professionnels et les entreprises</div>
+  </div>
+  <ion-icon name="chevron-forward" class="onb-card-chev"></ion-icon>
+</button>
+  </div>
+
+  <div class="onb-sub-prompt">
+    <ion-icon name="chevron-down" style="font-size:14px;color:var(--mint);vertical-align:middle"></ion-icon>
+    <span>Quel type de professionnel ?</span>
+  </div>
+  <div class="onb-cards">
+    <button class="onb-card">
+  <span class="onb-card-ic" style="background:#26C1A40F;color:#26C1A4">
+    <ion-icon name="star-outline" style="font-size:22px;color:#26C1A4"></ion-icon>
+  </span>
+  <div class="onb-card-text">
+    <div class="onb-card-title">Creator</div>
+    <div class="onb-card-desc">Coach, Athlète, Influenceur...</div>
+  </div>
+  <ion-icon name="chevron-forward" class="onb-card-chev"></ion-icon>
+</button>
+    <button class="onb-card">
+  <span class="onb-card-ic" style="background:#FFA63D0F;color:#FFA63D">
+    <ion-icon name="storefront-outline" style="font-size:22px;color:#FFA63D"></ion-icon>
+  </span>
+  <div class="onb-card-text">
+    <div class="onb-card-title">Business</div>
+    <div class="onb-card-desc">Salle de sport, Studio, Boutique...</div>
+  </div>
+  <ion-icon name="chevron-forward" class="onb-card-chev"></ion-icon>
+</button>
+  </div>
+</main>
+</body></html>

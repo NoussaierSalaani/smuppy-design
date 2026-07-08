@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Smuppy V2 — Creator Config · Prototype v2</title><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    background: radial-gradient(circle at 50% 0%, #1a1a25 0%, #050508 70%);
+    font-family: 'Plus Jakarta Sans', -apple-system, system-ui, sans-serif;
+    color: #F1F4F6;
+    overflow: hidden;
+  }
+  .stage {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    gap: 32px;
+  }
+  /* Sidebar : screen list */
+  .sidebar {
+    width: 280px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: rgba(20,20,26,0.65);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 24px;
+    padding: 20px 16px;
+  }
+  .sidebar h2 {
+    font-size: 11px; font-weight: 800; letter-spacing: .12em;
+    text-transform: uppercase; color: #26C1A4;
+    margin: 14px 8px 8px;
+  }
+  .sidebar h2:first-child { margin-top: 0; }
+  .sidebar h1 {
+    font-size: 17px; font-weight: 800; letter-spacing: -.01em;
+    color: #F1F4F6; margin-bottom: 4px;
+  }
+  .sidebar .subtitle { font-size: 11px; color: #8B8B95; font-weight: 500; margin-bottom: 18px; }
+  .sidebar button {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; padding: 10px 12px; border-radius: 12px;
+    background: transparent; border: 1px solid transparent;
+    color: #C8C9D0; font-family: inherit; font-size: 13px; font-weight: 600;
+    text-align: left; cursor: pointer;
+    margin-bottom: 4px;
+    transition: .15s ease;
+  }
+  .sidebar button:hover {
+    background: rgba(38,193,164,.06);
+    border-color: rgba(38,193,164,.20);
+    color: #F1F4F6;
+  }
+  .sidebar button.active {
+    background: rgba(38,193,164,.12);
+    border-color: rgba(38,193,164,.40);
+    color: #26C1A4;
+    box-shadow: 0 0 16px rgba(38,193,164,.20);
+  }
+  .sidebar .badge {
+    margin-left: auto;
+    font-size: 9px; font-weight: 800; letter-spacing: .08em;
+    padding: 2px 6px; border-radius: 999px;
+    background: rgba(38,193,164,.18);
+    color: #4EDCBE;
+  }
+  /* Phone frame */
+  .phone {
+    position: relative;
+    width: 393px;
+    height: 852px;
+    border-radius: 50px;
+    background: #000;
+    box-shadow:
+      0 50px 120px rgba(0,0,0,.7),
+      0 0 0 12px #1c1c20,
+      0 0 0 13px #34343c,
+      0 0 0 14px #1c1c20,
+      0 30px 90px rgba(38,193,164,.08);
+    overflow: hidden;
+  }
+  .phone-notch {
+    position: absolute;
+    top: 12px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 32px;
+    background: #000; border-radius: 18px; z-index: 100;
+  }
+  .phone iframe {
+    width: 100%; height: 100%; border: none; display: block;
+    border-radius: 50px;
+  }
+  /* Theme toggle */
+  .theme-tabs {
+    display: flex; gap: 4px; padding: 4px;
+    background: rgba(0,0,0,.35); border: 1px solid rgba(255,255,255,.06);
+    border-radius: 12px; margin: 0 8px 14px;
+  }
+  .theme-tabs button {
+    flex: 1; padding: 7px 8px; border-radius: 8px;
+    background: transparent; border: none;
+    color: #8B8B95; font-family: inherit; font-size: 11px; font-weight: 700;
+    cursor: pointer; transition: .15s ease;
+    margin-bottom: 0 !important; text-align: center; justify-content: center;
+  }
+  .theme-tabs button.active {
+    background: #26C1A4; color: #000;
+  }
+  /* Controls (right side, optional info) */
+  .info {
+    width: 240px;
+    max-height: 90vh;
+    background: rgba(20,20,26,0.45);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 24px;
+    padding: 20px;
+    font-size: 12px;
+    color: #C8C9D0;
+    line-height: 1.5;
+  }
+  .info h3 { color: #26C1A4; font-size: 13px; font-weight: 800; letter-spacing: -.01em; margin-bottom: 10px; }
+  .info p { margin-bottom: 10px; }
+  .info code {
+    background: rgba(0,0,0,.4); padding: 2px 6px; border-radius: 4px;
+    font-size: 11px; color: #4EDCBE;
+  }
+  @media (max-width: 1280px) { .info { display: none; } .stage { gap: 24px; } }
+  @media (max-width: 980px) { .sidebar { display: none; } }
+</style>
+</head>
+<body>
+<div class="stage">
+  <aside class="sidebar">
+    <h1>Smuppy · Creator Config</h1>
+    <p class="subtitle">Prototype cliquable · navigue dans la maquette</p>
+
+    <div class="theme-tabs">
+      <button class="active" data-theme="dark">Dark</button>
+      <button data-theme="light">Light</button>
+    </div>
+
+    <h2>A · Owner config</h2>
+    <button data-screen="channel_setup">
+      Channel setup
+    </button>
+    <button data-screen="1on1_setup">
+      1:1 setup
+    </button>
+    <button data-screen="packages_setup">
+      Package setup
+    </button>
+
+    <h2>B · Owner profile</h2>
+    <button class="active" data-screen="channel_owner_profile">
+      Channel · own profile
+    </button>
+    <button data-screen="1on1_owner_profile">
+      1:1 · own profile
+    </button>
+    <button data-screen="packages_owner_profile">
+      Packages · own profile
+    </button>
+
+    <h2>C · Visitor (fan)</h2>
+    <button data-screen="channel_view">
+      Channel · subscribe
+    </button>
+    <button data-screen="1on1_view">
+      1:1 · book session
+    </button>
+    <button data-screen="packages_view">
+      Package · buy
+    </button>
+
+    <h2>C1/C2/C3 · Post-transaction</h2>
+    <button data-screen="channel_view_v2_subscribed">
+      Channel · subscribed
+    </button>
+    <button data-screen="1on1_view_v2_booked">
+      1:1 · booked (Session confirmée)
+    </button>
+    <button data-screen="packages_view_v2_purchased">
+      Package · purchased
+    </button>
+
+    <h2>Profile shell (Sprint C v3)</h2>
+    <button data-screen="profile_owner">
+      Profile · owner (creator)
+    </button>
+    <button data-screen="profile_visitor">
+      Profile · visitor (fan)
+    </button>
+
+    <h2>V2 Canonical (Home + Settings validés)</h2>
+    <button data-external="v2_canonical_home_feed_light">Home Feed · light</button>
+    <button data-external="v2_canonical_home_feed_dark">Home Feed · dark</button>
+    <button data-external="v2_canonical_settings_definitive">Settings · light</button>
+    <button data-external="v2_canonical_settings_definitive_dark">Settings · dark</button>
+
+  </aside>
+
+  <div class="phone">
+    <div class="phone-notch"></div>
+    <iframe id="phone-frame" src="maquettes/harmonized/creator_channel_owner_profile_v2_dark/code.html"></iframe>
+  </div>
+
+  <aside class="info">
+    <h3>💡 Comment ça marche</h3>
+    <p>Clique sur n'importe quel CTA, chip ou icône dans le téléphone — la nav fonctionne dans l'iframe.</p>
+    <p><b>Topbar ←</b> retourne au profil owner.</p>
+    <p><b>Topbar ×</b> bascule owner ↔ visitor.</p>
+    <p><b>Chip Gérer</b> ouvre le setup.</p>
+    <p><b>CTA Save</b> → popup success.</p>
+    <p>Tu peux aussi changer d'écran via le menu de gauche, et basculer Light / Dark en haut.</p>
+    <p style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);font-size:11px">
+      Branche : <code>design/creator-config-may28</code><br>
+      18 maquettes · 6 popups · 5 commits
+    </p>
+  </aside>
+</div>
+
+<script>
+  const frame = document.getElementById('phone-frame');
+  const sidebarBtns = document.querySelectorAll('.sidebar button[data-screen]');
+  const themeBtns = document.querySelectorAll('.theme-tabs button');
+  let currentTheme = 'dark';
+  let currentScreen = 'channel_owner_profile';
+
+  function updateFrame() {
+    // Lifecycle screens already include "_v2_<state>" in their key — append only theme
+    const hasV2 = currentScreen.includes('_v2_');
+    const cb = '?v=' + Date.now();  // cache buster
+    const url = hasV2
+      ? `maquettes/harmonized/creator_${currentScreen}_${currentTheme}/code.html${cb}`
+      : `maquettes/harmonized/creator_${currentScreen}_v2_${currentTheme}/code.html${cb}`;
+    frame.src = url;
+  }
+
+  // Detect screen change from iframe's URL — keep sidebar in sync
+  frame.addEventListener('load', () => {
+    try {
+      const path = frame.contentWindow.location.pathname;
+      const match = path.match(/creator_(.+)_v2_(dark|light)\/code\.html/);
+      if (match) {
+        currentScreen = match[1];
+        currentTheme = match[2];
+        sidebarBtns.forEach(b => b.classList.toggle('active', b.dataset.screen === currentScreen));
+        themeBtns.forEach(b => b.classList.toggle('active', b.dataset.theme === currentTheme));
+      }
+    } catch (e) { /* cross-origin / same-origin both OK in localhost */ }
+  });
+
+  sidebarBtns.forEach(b => b.addEventListener('click', () => {
+    currentScreen = b.dataset.screen;
+    sidebarBtns.forEach(x => x.classList.toggle('active', x === b));
+    document.querySelectorAll('[data-external]').forEach(x => x.classList.remove('active'));
+    updateFrame();
+  }));
+
+  // External (Stitch ZIP) screens — direct path, no theme toggle
+  document.querySelectorAll('[data-external]').forEach(b => b.addEventListener('click', () => {
+    sidebarBtns.forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('[data-external]').forEach(x => x.classList.toggle('active', x === b));
+    frame.src = `external_screens/${b.dataset.external}/code.html?v=` + Date.now();
+  }));
+
+  themeBtns.forEach(b => b.addEventListener('click', () => {
+    currentTheme = b.dataset.theme;
+    themeBtns.forEach(x => x.classList.toggle('active', x === b));
+    updateFrame();
+  }));
+</script>
+</body>
+</html>

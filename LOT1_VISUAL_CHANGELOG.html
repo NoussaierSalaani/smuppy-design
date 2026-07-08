@@ -1,0 +1,88 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lot 1 — ce qui change (Auth/Onboarding)</title>
+<style>
+ body{margin:0;background:#0b0f14;color:#e8eef2;font:15px/1.5 -apple-system,BlinkMacSystemFont,sans-serif;padding:26px}
+ h1{font-size:19px;margin:0 0 4px}h1 b{color:#54D6A6}
+ .sub{color:#8b97a7;font-size:13px;margin:0 0 24px}
+ .row{display:flex;gap:18px;flex-wrap:wrap;margin:0 0 18px}
+ .card{background:#11161d;border:1px solid #1d2733;border-radius:16px;padding:16px 18px;flex:1;min-width:300px}
+ .card h2{font-size:14px;margin:0 0 12px;color:#54D6A6;letter-spacing:.02em}
+ .ba{display:flex;gap:14px;align-items:center}
+ .col{flex:1}.lbl{font-size:11px;font-weight:800;text-transform:uppercase;color:#64748b;margin:0 0 7px}
+ .arrow{color:#54D6A6;font-size:20px}
+ /* logo */
+ .wm{font-weight:900;font-size:26px;letter-spacing:-.02em}
+ .wm.navy{color:#0B1A22}.wm.white{color:#fff}.wm.mint{background:linear-gradient(135deg,#10D99A,#00B5C1);-webkit-background-clip:text;background-clip:text;color:transparent}
+ .swatch{display:inline-block;padding:10px 16px;border-radius:10px}
+ .sw-light{background:#F7FAF9}.sw-dark{background:#020403}
+ /* buttons */
+ .btn{height:52px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
+ .btn-flat{background:#2BA98C;color:#06231C}
+ .btn-grad{background:linear-gradient(135deg,#10D99A,#0EBF8A,#00B5C1);color:#fff;box-shadow:0 12px 28px rgba(46,216,195,.34)}
+ /* profession icons */
+ .icons{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+ .ic{background:#161d27;border:1px solid #243042;border-radius:12px;padding:12px 6px;text-align:center;font-size:12px}
+ .ic .big{font-size:24px;display:block;margin-bottom:6px}
+ .ic .mint{color:#54D6A6}
+ code{background:#1a2129;padding:2px 7px;border-radius:6px;color:#9fe9d4;font-size:13px}
+ .del{color:#ff6b6b;text-decoration:line-through}.add{color:#54D6A6;font-weight:700}
+</style></head><body>
+<h1><b>Lot 1</b> — Auth / Onboarding · ce qui change</h1>
+<p class="sub">Récap visuel des corrections appliquées au code RN. Pour le rendu live des écrans → <code>npx expo start</code>.</p>
+
+<div class="row">
+ <div class="card"><h2>① Logo par thème</h2>
+  <div class="ba">
+   <div class="col"><div class="lbl">Light (inchangé)</div><span class="swatch sw-light"><span class="wm navy">Smuppy</span></span></div>
+   <div class="arrow">→</div>
+   <div class="col"><div class="lbl">Dark — avant ❌</div><span class="swatch sw-dark"><span class="wm white">Smuppy</span></span>
+     <div class="lbl" style="margin-top:10px">Dark — après ✅ mint</div><span class="swatch sw-dark"><span class="wm mint">Smuppy</span></span></div>
+  </div>
+  <p class="sub" style="margin:12px 0 0">Welcome · Guidelines · Success</p>
+ </div>
+
+ <div class="card"><h2>② CTA MFA — plat → gradient canonique</h2>
+  <div class="ba">
+   <div class="col"><div class="lbl">Avant ❌ plat</div><div class="btn btn-flat">Activer</div></div>
+   <div class="arrow">→</div>
+   <div class="col"><div class="lbl">Après ✅ gradient + glow</div><div class="btn btn-grad">Activer</div></div>
+  </div>
+  <p class="sub" style="margin:12px 0 0">3 écrans MFA (Prompt · QR · Backup codes)</p>
+ </div>
+</div>
+
+<div class="row">
+ <div class="card"><h2>⑦ Profession — emoji → icônes Ionicons</h2>
+  <div class="icons">
+   <div class="ic"><span class="big">🏃</span>→ <span class="mint">walk</span></div>
+   <div class="ic"><span class="big">💪</span>→ <span class="mint">barbell</span></div>
+   <div class="ic"><span class="big">🏋️</span>→ <span class="mint">fitness</span></div>
+   <div class="ic"><span class="big">📱</span>→ <span class="mint">megaphone</span></div>
+   <div class="ic"><span class="big">🍎</span>→ <span class="mint">nutrition</span></div>
+   <div class="ic"><span class="big">🦽</span>→ <span class="mint">medkit</span></div>
+   <div class="ic"><span class="big">🧘</span>→ <span class="mint">leaf</span></div>
+   <div class="ic"><span class="big">⚙️</span>→ <span class="mint">options</span></div>
+  </div>
+ </div>
+
+ <div class="card"><h2>④ Copy</h2>
+  <p>Welcome CTA : <span class="del">Créer un compte ?</span> → <span class="add">Créer un compte</span></p>
+  <p>Signup checkbox : <span class="del">J'accepte la</span> → <span class="add">J'accepte les</span> Conditions générales…</p>
+  <p class="sub">⚠️ La checkbox garde ses <b>3 liens légaux</b> (Conditions · Confidentialité · Politique de contenu). Ta copy en cite 2 — dis-moi si je retire le 3e.</p>
+ </div>
+</div>
+
+<div class="row">
+ <div class="card"><h2>Déjà conformes — aucun changement</h2>
+  <p>⑥ <b>« Voir plus »</b> : déjà présent dans BusinessCategory (révèle 3 cat. à la fois). ✅</p>
+  <p>③ <b>Safe-area</b> : le code RN gère déjà via SafeAreaView/insets — aucun <code>top:0</code>. ✅</p>
+  <p>⑤ <b>Chips / overlap</b> : style sélectionné gardé, pas d'overlap CTA. ✅</p>
+ </div>
+ <div class="card"><h2>Gates</h2>
+  <p>✅ tsc <code>0 erreur</code></p>
+  <p>✅ eslint <code>0 erreur</code></p>
+  <p>✅ jest <code>vert</code> (Profession 12/12 + 27 voisins)</p>
+  <p class="sub">11 fichiers · +44/−43 · rien hors Auth/Onboarding · non commité</p>
+ </div>
+</div>
+</body></html>

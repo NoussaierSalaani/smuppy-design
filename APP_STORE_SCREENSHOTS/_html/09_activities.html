@@ -1,0 +1,60 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<link rel="stylesheet" href="_base.css">
+<style>
+.acard{margin:0 22px 16px;border:1px solid var(--line);border-radius:24px;overflow:hidden;background:var(--card)}
+.acard .img{height:180px;background-size:cover;background-position:center;position:relative}
+.acard .img .date{position:absolute;top:14px;left:14px;background:rgba(2,12,10,.78);border-radius:14px;
+  text-align:center;padding:8px 14px;color:#fff}
+.acard .img .date b{font-size:24px;font-weight:800;display:block;line-height:1}
+.acard .img .date span{font-size:13px;color:var(--accent);text-transform:uppercase;letter-spacing:1px}
+.acard .b{padding:16px 18px}
+.acard .t{color:#fff;font-size:21px;font-weight:800}
+.acard .loc{color:#9fb0aa;font-size:15px;margin:7px 0 14px;display:flex;align-items:center;gap:7px}
+.acard .ft{display:flex;align-items:center;gap:-10px}
+.faces{display:flex}
+.faces .avatar{width:34px;height:34px;border:2px solid #0E1316;margin-left:-10px}
+.faces .avatar:first-child{margin-left:0}
+.acard .join{margin-left:auto}
+.maphead{height:200px;margin:0 0 18px;background-size:cover;background-position:center;position:relative;
+  filter:saturate(.6) brightness(.7)}
+.maphead::before{content:"";position:absolute;inset:0;background:rgba(8,40,32,.45);mix-blend-mode:multiply}
+.maphead::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(2,8,6,.95))}
+.pin{position:absolute;z-index:3;width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+  background:var(--mint);box-shadow:0 0 18px rgba(91,240,200,.7);border:2px solid #fff}
+</style></head><body>
+<div class="cap-band"><h2>Organise &amp; rejoins des activités</h2><div class="sub">Des events sportifs autour de toi, sur la carte.</div></div>
+<div class="device">
+  <div class="notch"></div>
+  <div class="statusbar"><span>9:41</span><span>5G ▪ 100%</span></div>
+  <div class="screen">
+    <div class="appbar"><div class="wordmark">Activités</div>
+      <div style="display:flex;gap:6px"><div class="ic">📍</div></div></div>
+    <div class="maphead" style="background-image:url('https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&q=80')">
+      <div class="pin" style="top:60px;left:120px"></div>
+      <div class="pin" style="top:100px;left:280px"></div>
+      <div class="pin" style="top:130px;left:180px"></div>
+    </div>
+    <div class="acard">
+      <div class="img" style="background-image:url('https://images.unsplash.com/photo-1486218119243-13883505764c?w=700&q=80')">
+        <div class="date"><b>14</b><span>Juil</span></div></div>
+      <div class="b"><div class="t">Run collectif au lever du jour</div>
+        <div class="loc">📍 Parc de la Tête d'Or · Lyon · 7h00</div>
+        <div class="ft"><div class="faces"><div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&q=80')"></div><div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&q=80')"></div><div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80')"></div><div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&q=80')"></div></div>
+          <div class="chip join">Rejoindre</div></div></div>
+    </div>
+    <div class="acard">
+      <div class="img" style="background-image:url('https://images.unsplash.com/photo-1518611012118-696072aa579a?w=700&q=80')">
+        <div class="date"><b>18</b><span>Juil</span></div></div>
+      <div class="b"><div class="t">Yoga &amp; brunch en plein air</div>
+        <div class="loc">📍 Berges du Rhône · Lyon · 10h30</div>
+        <div class="ft"><div class="faces"><div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&q=80')"></div><div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=120&q=80')"></div><div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1488161628813-04466f872be2?w=120&q=80')"></div></div>
+          <div class="chip join">Rejoindre</div></div></div>
+    </div>
+    <div class="bnav">
+    <div class="n on">⌂</div><div class="n ">▶</div>
+    <div class="fab">＋</div>
+    <div class="n ">✉</div>
+    <div class="av" style="background-image:url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&q=80');"></div>
+  </div></div>
+</div>
+</body></html>

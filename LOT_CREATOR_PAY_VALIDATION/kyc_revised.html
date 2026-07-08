@@ -1,0 +1,70 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KycCompany — révisé</title>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<style>
+:root{--mint:#33A089;--mintInk:#0B7A62;--blue:#3B82F6;--slate:#64748B;--violet:#8B5CF6;--amber:#F59E0B;--teal:#14B8A6}
+*{box-sizing:border-box;font-family:-apple-system,Segoe UI,Roboto,sans-serif}
+body{margin:0;background:#1a1d1c;display:flex;gap:28px;padding:28px;justify-content:center;flex-wrap:wrap}
+.phone{width:300px;border-radius:26px;overflow:hidden;border:1px solid #2a2a2a}
+.light{background:#F5F6F8;color:#16201c}
+.dark{background:#000;color:#eef4f0}
+.bar{height:30px;display:flex;align-items:center;padding:0 14px;font-size:12px;opacity:.5}
+.body{padding:18px 18px 24px}
+.back{font-size:22px;opacity:.6;margin-bottom:10px}
+.hero{width:84px;height:84px;border-radius:26px;display:flex;align-items:center;justify-content:center;margin:8px auto 14px;font-size:40px}
+.light .hero{background:rgba(59,130,246,.13)}
+.dark  .hero{background:rgba(59,130,246,.18)}
+.htitle{font-size:21px;font-weight:800;text-align:center;letter-spacing:-.3px}
+.hsub{font-size:13.5px;text-align:center;opacity:.62;margin:6px 16px 18px;line-height:1.5}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:.6px;color:var(--blue);text-align:center;margin-bottom:4px}
+.row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid rgba(125,140,135,.16)}
+.tile{width:36px;height:36px;border-radius:11px;flex:0 0 36px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.rtext b{font-size:14.5px;font-weight:700}
+.rtext div{font-size:12.5px;opacity:.6;margin-top:2px;line-height:1.45}
+.note{display:flex;gap:6px;align-items:center;justify-content:center;margin:16px 0 14px;font-size:12px;opacity:.6}
+.cta{height:54px;border-radius:14px;border:1.5px solid var(--mint);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--mintInk);box-shadow:0 0 10px rgba(84,214,166,.16)}
+.dark .cta{color:#6FE3BC}
+.pending{margin-top:12px;font-size:11px;opacity:.5;text-align:center}
+.t-blue{background:rgba(59,130,246,.13)} .t-blue ion-icon{color:var(--blue)}
+.t-slate{background:rgba(100,116,139,.15)} .t-slate ion-icon{color:var(--slate)}
+.t-violet{background:rgba(139,92,246,.14)} .t-violet ion-icon{color:var(--violet)}
+.t-teal{background:rgba(20,184,166,.14)} .t-teal ion-icon{color:var(--teal)}
+.hero ion-icon{color:var(--blue)}
+</style></head><body>
+<div class="phone light">
+  <div class="bar">9:41</div>
+  <div class="body">
+    <div class="back"><ion-icon name="chevron-back"></ion-icon></div>
+    <div class="hero"><ion-icon name="business-outline"></ion-icon></div>
+    <div class="eyebrow">VÉRIFICATION ENTREPRISE</div>
+    <div class="htitle">Vérifie ton entreprise</div>
+    <div class="hsub">Vérification sécurisée gérée par Stripe. Prépare ces éléments — tu les fourniras directement sur Stripe.</div>
+    <div class="row"><div class="tile t-slate"><ion-icon name="document-text-outline"></ion-icon></div><div class="rtext"><b>Enregistrement de l'entreprise</b><div>Kbis (FR), EIN/SS-4 (US) ou numéro de société selon ton pays</div></div></div>
+    <div class="row"><div class="tile t-blue"><ion-icon name="card-outline"></ion-icon></div><div class="rtext"><b>Pièce d'identité du représentant</b><div>Passeport, CNI ou permis de conduire en cours de validité</div></div></div>
+    <div class="row"><div class="tile t-violet"><ion-icon name="people-outline"></ion-icon></div><div class="rtext"><b>Bénéficiaires effectifs</b><div>Noms et fonctions des détenteurs de plus de 25 %</div></div></div>
+    <div class="row"><div class="tile t-teal"><ion-icon name="wallet-outline"></ion-icon></div><div class="rtext"><b>Compte bancaire pro</b><div>Pour recevoir tes virements</div></div></div>
+    <div class="note"><ion-icon name="lock-closed-outline"></ion-icon> Vérification sécurisée via Stripe</div>
+    <div class="cta">Continuer sur Stripe</div>
+    <div class="pending">KYC société en attente backend (KAN-2388)</div>
+  </div>
+</div>
+<div class="phone dark">
+  <div class="bar">9:41</div>
+  <div class="body">
+    <div class="back"><ion-icon name="chevron-back"></ion-icon></div>
+    <div class="hero"><ion-icon name="business-outline"></ion-icon></div>
+    <div class="eyebrow">VÉRIFICATION ENTREPRISE</div>
+    <div class="htitle">Vérifie ton entreprise</div>
+    <div class="hsub">Vérification sécurisée gérée par Stripe. Prépare ces éléments — tu les fourniras directement sur Stripe.</div>
+    <div class="row"><div class="tile t-slate"><ion-icon name="document-text-outline"></ion-icon></div><div class="rtext"><b>Enregistrement de l'entreprise</b><div>Kbis (FR), EIN/SS-4 (US) ou numéro de société selon ton pays</div></div></div>
+    <div class="row"><div class="tile t-blue"><ion-icon name="card-outline"></ion-icon></div><div class="rtext"><b>Pièce d'identité du représentant</b><div>Passeport, CNI ou permis de conduire en cours de validité</div></div></div>
+    <div class="row"><div class="tile t-violet"><ion-icon name="people-outline"></ion-icon></div><div class="rtext"><b>Bénéficiaires effectifs</b><div>Noms et fonctions des détenteurs de plus de 25 %</div></div></div>
+    <div class="row"><div class="tile t-teal"><ion-icon name="wallet-outline"></ion-icon></div><div class="rtext"><b>Compte bancaire pro</b><div>Pour recevoir tes virements</div></div></div>
+    <div class="note"><ion-icon name="lock-closed-outline"></ion-icon> Vérification sécurisée via Stripe</div>
+    <div class="cta">Continuer sur Stripe</div>
+    <div class="pending">KYC société en attente backend (KAN-2388)</div>
+  </div>
+</div>
+</body></html>

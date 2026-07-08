@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html class="dark" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Smuppy — Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&amp;display=swap" rel="stylesheet"/>
+<style>
+  * { box-sizing:border-box; -webkit-font-smoothing:antialiased; }
+  body { margin:0; min-height:max(844px,100dvh); background:#000000; color:#F1F4F6;
+         font-family:'Plus Jakarta Sans',sans-serif; padding-bottom:40px; }
+  .topbar { position:fixed; top:0; left:0; right:0; z-index:50; height:56px;
+            display:flex; align-items:center; padding:0 12px; background:rgba(10,10,12,0.92);
+            backdrop-filter:blur(12px); border-bottom:1px solid rgba(255,255,255,0.06); }
+  .back { width:40px; height:40px; border:none; background:transparent; border-radius:999px;
+          display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .topbar h1 { flex:1; text-align:center; font-size:16px; font-weight:700; margin:0; padding-right:40px; color:#F1F4F6; }
+  main { padding:72px 16px 0; }
+  .profile { display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; gap:6px; margin-bottom:26px; }
+  .avatar-wrap { position:relative; }
+  .avatar-wrap img { width:72px; height:72px; border-radius:999px; object-fit:cover;
+                     box-shadow:0 0 0 2.5px #26C1A4; }
+  .avatar-edit { position:absolute; bottom:-2px; right:-2px; width:24px; height:24px;
+                 border-radius:999px; background:#26C1A4; border:2.5px solid #000000;
+                 display:flex; align-items:center; justify-content:center; }
+  .pname { display:flex; align-items:center; justify-content:center; text-align:center; gap:5px; font-size:19px; font-weight:800; margin-top:8px; color:#F1F4F6; }
+  .psub { font-size:11px; font-weight:700; letter-spacing:.12em; color:#26C1A4; text-transform:uppercase; }
+  .section-label { font-size:11px; font-weight:700; letter-spacing:.10em; text-transform:uppercase;
+                   color:#6B6B75; margin:22px 8px 8px; }
+  .card { background:#14141A; border-radius:18px; overflow:hidden;
+          box-shadow:0 1px 3px rgba(0,0,0,0.4); }
+  .settings-row { width:100%; display:flex; align-items:center; gap:13px; padding:14px 16px;
+                  background:transparent; border:none; cursor:pointer; text-align:left; }
+  .settings-row:active { background:#1D1D24; }
+  .ico { width:36px; height:36px; border-radius:999px; display:flex; align-items:center;
+         justify-content:center; flex-shrink:0; }
+  .lbl { flex:1; font-size:15px; font-weight:500; color:#F1F4F6; }
+  .trail { display:flex; align-items:center; gap:8px; }
+  .chev { font-size:20px; color:#5A5A66; }
+  .danger-btn { width:100%; display:flex; align-items:center; justify-content:center; gap:8px;
+                margin-top:14px; padding:15px; border-radius:16px; font-size:15px; font-weight:700;
+                background:rgba(239,68,68,0.08); border:1.5px solid rgba(239,68,68,0.25);
+                color:#F87171; cursor:pointer; }
+  .disclaimer { text-align:center; font-size:11px; line-height:1.5; color:#8B8B95;
+                margin:22px 14px 18px; }
+  .footer-logo { display:flex; flex-direction:column; align-items:center; gap:4px; opacity:.9; }
+  .ver { font-size:11px; color:#8B8B95; font-weight:600; }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <button class="back" aria-label="Back">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F1F4F6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <h1>Settings</h1>
+</header>
+<main>
+  <div class="profile">
+    <div class="avatar-wrap">
+      <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=160&h=160&fit=crop" alt="Clara Montgomery"/>
+      <span class="avatar-edit"><span class="material-symbols-outlined" style="color:#fff;font-size:13px;">edit</span></span>
+    </div>
+    <div class="pname">Clara Montgomery
+      <span class="material-symbols-outlined" style="color:#26C1A4;font-size:18px;font-variation-settings:'FILL' 1;">verified</span>
+    </div>
+    <div class="psub">Paramètres du compte</div>
+  </div>
+      <h3 class="section-label">ACCOUNT</h3>
+      <div class="card">
+        <button class="settings-row" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span class="ico" style="background:#6366F11A;color:#6366F1;box-shadow:0 0 18px #6366F155;filter:drop-shadow(0 0 10px #6366F180);">
+            <span class="material-symbols-outlined" style="font-size:20px;font-variation-settings:'wght' 400;">person</span>
+          </span>
+          <span class="lbl">Edit profile</span>
+          <span class="trail"><span class="material-symbols-outlined chev">chevron_right</span></span>
+        </button>
+        <button class="settings-row" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span class="ico" style="background:#14B8A61A;color:#14B8A6;box-shadow:0 0 18px #14B8A655;filter:drop-shadow(0 0 10px #14B8A680);">
+            <span class="material-symbols-outlined" style="font-size:20px;font-variation-settings:'wght' 400;">lock</span>
+          </span>
+          <span class="lbl">Change password</span>
+          <span class="trail"><span class="material-symbols-outlined chev">chevron_right</span></span>
+        </button>
+        <button class="settings-row" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span class="ico" style="background:#F59E0B1A;color:#F59E0B;box-shadow:0 0 18px #F59E0B55;filter:drop-shadow(0 0 10px #F59E0B80);">
+            <span class="material-symbols-outlined" style="font-size:20px;font-variation-settings:'wght' 400;">dashboard_customize</span>
+          </span>
+          <span class="lbl">Channel setup</span>
+          <span class="trail"><span class="material-symbols-outlined chev">chevron_right</span></span>
+        </button>
+        <button class="settings-row" style="">
+          <span class="ico" style="background:#8B5CF61A;color:#8B5CF6;box-shadow:0 0 18px #8B5CF655;filter:drop-shadow(0 0 10px #8B5CF680);">
+            <span class="material-symbols-outlined" style="font-size:20px;font-variation-settings:'wght' 400;">bolt</span>
+          </span>
+          <span class="lbl">Upgrade to Pro</span>
+          <span class="trail"><span style="background:linear-gradient(135deg,#26C1A4 0%,#4EDCBE 100%);color:#fff;font-size:9px;font-weight:800;letter-spacing:.04em;padding:2px 7px;border-radius:999px;">NEW</span><span class="material-symbols-outlined chev">chevron_right</span></span>
+        </button>
+      </div>
+      <h3 class="section-label">PREFERENCES</h3>
+      <div class="card">
+        <button class="settings-row" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span class="ico" style="background:#8B5CF61A;color:#8B5CF6;box-shadow:0 0 18px #8B5CF655;filter:drop-shadow(0 0 10px #8B5CF680);">
+            <span class="material-symbols-outlined" style="font-size:20px;font-variation-settings:'wght' 400;">notifications</span>
+          </span>
+          <span class="lbl">Notifications</span>
+          <span class="trail"><span class="material-symbols-outlined chev">chevron_right</span></span>
+        </button>
+        <button class="settings-row" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span class="ico" style="background:#14B8A61A;color:#14B8A6;box-shadow:0 0 18px #14B8A655;filter:drop-shadow(0 0 10px #14B8A680);">
+            <span class="material-symbols-outlined" style="font-size:20px;font-variation-settings:'wght' 400;">group</span>
+          </span>
+          <span class="lbl">Find friends</span>
+          <span class="trail"><span class="material-symbols-outlined chev">chevron_right</span></span>
+        </button>
+        <button class="settings-row" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span class="ico" style="background:#F59E0B1A;color:#F59E0B;box-shadow:0 0 18px #F59E0B55;filter:drop-shadow(0 0 10px #F59E0B80);">
+            <span class="material-symbols-outlined" style="font-size:20px;font-variation-settings:'wght' 400;">account_balance_wallet</span>
+          </span>
+          <span class="lbl">Smup wallet</span>
+          <span class="trail"><span style="color:#26C1A4;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:3px;">◇ 2 480</span><span class="material-symbols-outlined chev">chevron_right</span></span>
+        </button>
+        <button class="settings-row" style="">
+          <span class="ico" style="background:#3B82F61A;color:#3B82F6;box-shadow:0 0 18px #3B82F655;filter:drop-shadow(0 0 10px #3B82F680);">
+            <span class="material-symbols-outlined" style="font-size:20px;font-variation-settings:'wght' 400;">credit_card</span>
+          </span>
+          <span class="lbl">Manage subscription</span>
+          <span class="trail"><span class="material-symbols-outlined chev">chevron_right</span></span>
+        </button>
+      </div>
+      <h3 class="section-label">PRIVACY & SAFETY</h3>
+      <div class="card">
+        <button class="settings-row" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span class="ico" style="background:#10B9811A;color:#10B981;box-shadow:0 0 18px #10B98155;filter:drop-shadow(0 0 10px #10B98180);">
+            <span class="material-symbols-outlined" style="font-size:20px;font-variation-settings:'wght' 400;">shield</span>
+          </span>
+          <span class="lbl">Privacy settings</span>
+          <span class="trail"><span style="color:#8B8B95;font-size:13px;font-weight:500;">Public</span><span class="material-symbols-outlined chev">chevron_right</span></span>
+        </button>
+        <button class="settings-row" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span class="ico" style="background:#EF44441A;color:#EF4444;box-shadow:0 0 18px #EF444455;filter:drop-shadow(0 0 10px #EF444480);">
+            <span class="material-symbols-outlined" style="font-size:20px;font-variation-settings:'wght' 400;">block</span>
+          </span>
+          <span class="lbl">Blocked accounts</span>
+          <span class="trail"><span class="material-symbols-outlined chev">chevron_right</span></span>
+        </button>
+        <button class="settings-row" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span class="ico" style="background:#64748B1A;color:#64748B;box-shadow:0 0 18px #64748B55;filter:drop-shadow(0 0 10px #64748B80);">
+            <span class="material-symbols-outlined" style="font-size:20px;font-variation-settings:'wght' 400;">volume_off</span>
+          </span>
+          <span class="lbl">Muted accounts</span>
+          <span class="trail"><span class="material-symbols-outlined chev">chevron_right</span></span>
+        </button>
+        <button class="settings-row" style="">
+          <span class="ico" style="background:#F59E0B1A;color:#F59E0B;box-shadow:0 0 18px #F59E0B55;filter:drop-shadow(0 0 10px #F59E0B80);">
+            <span class="material-symbols-outlined" style="font-size:20px;font-variation-settings:'wght' 400;">gavel</span>
+          </span>
+          <span class="lbl">Dispute center</span>
+          <span class="trail"><span class="material-symbols-outlined chev">chevron_right</span></span>
+        </button>
+      </div>
+      <h3 class="section-label">SUPPORT & LEGAL</h3>
+      <div class="card">
+        <button class="settings-row" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span class="ico" style="background:#64748B1A;color:#64748B;box-shadow:0 0 18px #64748B55;filter:drop-shadow(0 0 10px #64748B80);">
+            <span class="material-symbols-outlined" style="font-size:20px;font-variation-settings:'wght' 400;">help</span>
+          </span>
+          <span class="lbl">Help center</span>
+          <span class="trail"><span class="material-symbols-outlined chev">chevron_right</span></span>
+        </button>
+        <button class="settings-row" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span class="ico" style="background:#F59E0B1A;color:#F59E0B;box-shadow:0 0 18px #F59E0B55;filter:drop-shadow(0 0 10px #F59E0B80);">
+            <span class="material-symbols-outlined" style="font-size:20px;font-variation-settings:'wght' 400;">report</span>
+          </span>
+          <span class="lbl">Report a problem</span>
+          <span class="trail"><span class="material-symbols-outlined chev">chevron_right</span></span>
+        </button>
+        <button class="settings-row" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span class="ico" style="background:#3B82F61A;color:#3B82F6;box-shadow:0 0 18px #3B82F655;filter:drop-shadow(0 0 10px #3B82F680);">
+            <span class="material-symbols-outlined" style="font-size:20px;font-variation-settings:'wght' 400;">download</span>
+          </span>
+          <span class="lbl">Export my data</span>
+          <span class="trail"><span class="material-symbols-outlined chev">chevron_right</span></span>
+        </button>
+        <button class="settings-row" style="">
+          <span class="ico" style="background:#64748B1A;color:#64748B;box-shadow:0 0 18px #64748B55;filter:drop-shadow(0 0 10px #64748B80);">
+            <span class="material-symbols-outlined" style="font-size:20px;font-variation-settings:'wght' 400;">description</span>
+          </span>
+          <span class="lbl">Terms & policies</span>
+          <span class="trail"><span class="material-symbols-outlined chev">chevron_right</span></span>
+        </button>
+      </div>
+  <button class="danger-btn">
+    <span class="material-symbols-outlined" style="font-size:20px;">logout</span> Log out
+  </button>
+  <button class="danger-btn">
+    <span class="material-symbols-outlined" style="font-size:20px;">delete</span> Delete my account permanently
+  </button>
+  <p class="disclaimer">Deletion is permanent after 14 days. All your posts, peaks, activities,
+    channel subscriptions and Smups balance will be erased.</p>
+  <div class="footer-logo">
+    <svg width="92" height="20" viewBox="0 0 215 46" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Smuppy" role="img"><defs><linearGradient id="setLogo" x1="0" y1="0" x2="11.5" y2="74.5" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#0EBF8A"/><stop offset="1" stop-color="#00B3C7"/></linearGradient></defs><text x="0" y="34" font-family="Plus Jakarta Sans" font-weight="800" font-size="40" fill="url(#setLogo)">Smuppy</text></svg>
+    <span class="ver">V2 · 4.0</span>
+  </div>
+</main>
+</body>
+</html>

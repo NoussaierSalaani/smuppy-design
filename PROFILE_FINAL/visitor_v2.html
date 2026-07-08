@@ -1,0 +1,57 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<style>
+:root{--ink:#1A2420;--sub:#9aa4a0;--line:#ECEFEE;--mintInk:#0B7A62;--mint:#2FC9A2;--mintAcc:#33A089;--verif:#2DD39E}
+*{box-sizing:border-box;font-family:-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;background:#0f1311;display:flex;gap:30px;padding:30px;justify-content:center}
+.col{display:flex;flex-direction:column;gap:9px;align-items:center}.cap{color:#bfeede;font-size:13px;font-weight:700;max-width:316px;text-align:center}
+.phone{width:316px;height:680px;border-radius:30px;overflow:hidden;background:#fff;box-shadow:0 0 0 1px #222,0 16px 44px #0007;display:flex;flex-direction:column}
+.cover{height:138px;flex:0 0 138px;position:relative;background:linear-gradient(165deg,#b39aa6,#caaeba 55%,#d9bcc8)}
+.dots{position:absolute;top:15px;right:15px;color:#fff;font-size:21px}.back{position:absolute;top:13px;left:13px;width:33px;height:33px;border-radius:17px;background:#00000038;color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px}
+.av{position:absolute;left:18px;bottom:-40px;width:84px;height:84px;border-radius:42px;border:3.5px solid #fff;background:linear-gradient(135deg,#b58c86,#9c6f78)}
+.idblock{padding:50px 20px 0;text-align:center}.nm{font-size:21px;font-weight:800;color:var(--ink);display:inline-flex;align-items:center;gap:6px;justify-content:center}.vb{width:18px;height:18px}.sub{font-size:13px;color:var(--sub);margin-top:4px}.bio{font-size:13px;color:#42504b;margin:8px 16px 0}.bio .tag{color:var(--mintInk);font-weight:600}
+.stats{display:flex;justify-content:space-around;padding:16px 8px 4px}.st{flex:1;text-align:center}.stv{font-size:18px;font-weight:800;color:var(--ink)}.stl{font-size:10px;color:var(--sub);margin-top:3px;letter-spacing:.7px;text-transform:uppercase;font-weight:600}
+.ctas{display:flex;gap:12px;padding:14px 18px 0;align-items:center}
+/* CTA = STYLE C : contour pill, mint, PAS de remplissage + glow léger */
+.ctaC{height:46px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex:1;background:transparent;border:1.5px solid var(--mintAcc);color:var(--mintInk);box-shadow:0 0 12px rgba(47,201,162,.16)}
+.msgbtn{flex:0 0 46px;width:46px;height:46px}
+.seg{display:flex;background:#F2F4F3;border-radius:14px;padding:4px;margin:14px 18px 0}.seg div{flex:1;text-align:center;font-size:13px;font-weight:700;padding:9px 0;border-radius:11px;color:var(--sub)}.seg .on{background:#fff;color:var(--mintInk);box-shadow:0 1px 4px #0000000f}
+.subtabs{display:flex;gap:20px;padding:14px 20px 6px}.subtabs span{font-size:13px;color:var(--sub);font-weight:600;padding-bottom:7px}.subtabs .on{color:var(--ink);border-bottom:2.5px solid var(--mintInk)}
+/* embedded 1:1 booking content (dans le corps, pas un écran séparé) */
+.pane{padding:8px 16px 12px;overflow:hidden}.pane h4{font-size:13px;font-weight:800;color:var(--ink);margin:12px 0 7px}
+.dates{display:flex;gap:7px}.dchip{flex:1;border:1px solid var(--line);border-radius:12px;padding:7px 0;text-align:center}.dchip.on{border-color:var(--mint);background:#2fc9a210}.dchip b{font-size:14px;color:var(--ink)}.dchip span{font-size:9.5px;color:var(--sub);display:block}
+.slots{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}.slot{border:1px solid var(--line);border-radius:10px;padding:8px 0;text-align:center;font-size:12.5px;color:#42504b}.slot.on{border-color:var(--mint);background:#2fc9a212;color:var(--mintInk);font-weight:700}
+.obj{border:1.5px solid var(--mint);border-radius:12px;padding:10px;font-size:12px;color:#9aa4a0;background:#fafffd;min-height:56px}
+.ctaBook{height:48px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;margin-top:12px;background:transparent;border:1.5px solid var(--mintAcc);color:var(--mintInk);box-shadow:0 0 12px rgba(47,201,162,.16)}
+.bnav{margin-top:auto;height:56px;border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center;color:#b7c0bc}.bnav svg{width:23px;height:23px}.bnav .plus{color:var(--mintInk)}
+.note{color:#bfeede;font-size:11px;max-width:316px;text-align:center;line-height:1.4}
+</style></head><body>
+
+<!-- VISITOR · Channel → 1:1 sub-tab (embedded booking) -->
+<div class="col"><div class="cap">Visiteur → Channel → onglet 1:1 (booking DANS le corps, pas un écran séparé)</div>
+<div class="phone">
+ <div class="cover"><div class="back">‹</div><div class="dots">•••</div><div class="av"></div></div>
+ <div class="idblock"><div class="nm">Sara Khan <svg class="vb" viewBox="0 0 20 20"><circle cx="10" cy="10" r="10" fill="#2DD39E"/><path d="M6 10l2.5 2.5L14 7" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="sub">Yoga coach · Montreal</div><div class="bio">Find inner peace through movement & breath. <span class="tag">#wellness</span></div></div>
+ <div class="stats"><div class="st"><div class="stv">24K</div><div class="stl">Fans</div></div><div class="st"><div class="stv">412</div><div class="stl">Posts</div></div><div class="st"><div class="stv">89</div><div class="stl">Peaks</div></div></div>
+ <div class="ctas">
+   <div class="ctaC">Devenir fan</div>
+   <!-- message icon = app MSG_PATH (cercle bubble) in circular button + glow -->
+   <svg class="msgbtn" viewBox="0 0 46 46" fill="none"><g filter="url(#mg)"><circle cx="23" cy="23" r="22" fill="white"/><circle cx="23" cy="23" r="22" stroke="#33A089" stroke-width="1.5"/><g transform="translate(11,11) scale(1)"><path d="M12 3C7.029 3 3 7.029 3 12C3 13.689 3.466 15.274 4.287 16.628L3.016 19.832C2.76 20.478 3.303 21.14 3.985 20.994L7.789 20.158C9.05 20.693 10.447 21 12 21C16.971 21 21 16.971 21 12C21 7.029 16.971 3 12 3Z" stroke="#33A089" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g></g><defs><filter id="mg" x="-4" y="-4" width="54" height="54"><feGaussianBlur stdDeviation="2.2" result="b"/><feColorMatrix in="b" type="matrix" values="0 0 0 0 0.184 0 0 0 0 0.788 0 0 0 0 0.635 0 0 0 0.45 0"/><feBlend in="SourceGraphic"/></filter></defs></svg>
+ </div>
+ <div class="seg"><div>Lifestyle</div><div class="on">Channel</div></div>
+ <div class="subtabs"><span>Library</span><span class="on">1:1</span><span>Package</span></div>
+ <div class="pane">
+  <h4>Choisis une date</h4>
+  <div class="dates"><div class="dchip"><b>13</b><span>MER</span></div><div class="dchip on"><b>14</b><span>JEU</span></div><div class="dchip"><b>15</b><span>VEN</span></div><div class="dchip"><b>16</b><span>SAM</span></div></div>
+  <h4>Créneaux · jeu 14</h4>
+  <div class="slots"><div class="slot">09:00</div><div class="slot on">10:00</div><div class="slot">11:00</div><div class="slot">14:00</div><div class="slot">16:00</div><div class="slot">19:00</div></div>
+  <h4>Durée</h4>
+  <div class="dates"><div class="dchip"><b>30</b><span>min·28$</span></div><div class="dchip on"><b>45</b><span>min·40$</span></div><div class="dchip"><b>60</b><span>min·55$</span></div></div>
+  <h4>Objectif / sujet ★</h4>
+  <div class="obj">Décris ce que tu veux travailler — ça aide le coach à préparer.</div>
+  <div class="ctaBook">Réserver · 40 $</div>
+ </div>
+ <div class="bnav"><svg viewBox="0 0 24 24" fill="none"><path d="M3 11l9-7 9 7v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#b7c0bc" stroke-width="1.8" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" stroke="#b7c0bc" stroke-width="1.8"/></svg><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#0B7A62" stroke-width="2.4" stroke-linecap="round"/></svg><svg viewBox="0 0 24 24" fill="none"><path d="M12 3C7.029 3 3 7.029 3 12C3 13.689 3.466 15.274 4.287 16.628L3.016 19.832C2.76 20.478 3.303 21.14 3.985 20.994L7.789 20.158C9.05 20.693 10.447 21 12 21C16.971 21 21 16.971 21 12C21 7.029 16.971 3 12 3Z" stroke="#b7c0bc" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#b7c0bc" stroke-width="1.8"/><path d="M4 20c0-3.5 3.6-6 8-6s8 2.5 8 6" stroke="#b7c0bc" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+</div>
+<div class="note">1:1 = sous-onglet de Channel (Library | 1:1 | Package), booking dans le corps. CTA = style C contour pill. Message = bulle circulaire de l'app (MSG_PATH) dans bouton cercle + glow.</div></div>
+
+</body></html>

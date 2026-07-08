@@ -1,0 +1,168 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  body{background:#0a0d12;font-family:-apple-system,"SF Pro Display",Segoe UI,Roboto,sans-serif;
+       padding:56px 48px;display:flex;flex-direction:column;align-items:center}
+  h1{color:#54D6A6;font-size:34px;font-weight:800;letter-spacing:-.5px;align-self:flex-start}
+  .sub{color:#8b97a3;font-size:16px;align-self:flex-start;margin-bottom:18px}
+  .rowp{display:flex;gap:44px}
+  .cap{color:#c7d2da;font-size:15px;text-align:center;margin-top:14px;font-weight:500}
+  .cap b{color:#54D6A6}
+  .notch{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:110px;height:26px;background:#000;border-radius:16px;z-index:40}
+
+  .phone{width:360px;height:780px;border-radius:46px;position:relative;overflow:hidden;padding:64px 22px 22px}
+
+  /* dark */
+  .dark{background:radial-gradient(120% 70% at 50% 0%,#0c211b 0%,#06090d 55%);border:1px solid rgba(91,240,200,.14);box-shadow:0 24px 70px rgba(0,0,0,.6)}
+  .dark .title{color:#EAF6F1} .dark .muted{color:#7E8B91}
+  .dark .ring-track{stroke:#15302a} .dark .ringv{color:#fff} .dark .ringk{color:#5BF0C8}
+  .dark .card{background:rgba(255,255,255,.04);border:1px solid rgba(91,240,200,.12)}
+  .dark .cdist{color:#fff} .dark .cmeta{color:#9fb3ac}
+  .dark .thumbg{stroke:#5BF0C8} .dark .thumbc{stroke:#C9FFF1}
+  .dark .recwrap{background:rgba(91,240,200,.06);border:1px solid rgba(91,240,200,.14)}
+  .dark .recv{color:#EAF6F1} .dark .recl{color:#6f857d}
+
+  /* light */
+  .light{background:radial-gradient(120% 70% at 50% 0%,#dcefe7 0%,#eef5f2 55%);border:1px solid rgba(23,106,90,.12);box-shadow:0 24px 60px rgba(40,80,70,.22)}
+  .light .title{color:#0c2620} .light .muted{color:#5f7a72}
+  .light .ring-track{stroke:#cfe3db} .light .ringv{color:#0c2620} .light .ringk{color:#33A089}
+  .light .card{background:#fff;border:1px solid rgba(23,106,90,.10)}
+  .light .cdist{color:#0c2620} .light .cmeta{color:#5f7a72}
+  .light .thumbg{stroke:#33A089} .light .thumbc{stroke:#176A5A}
+  .light .recwrap{background:rgba(47,201,162,.08);border:1px solid rgba(47,201,162,.18)}
+  .light .recv{color:#0c2620} .light .recl{color:#6f928a}
+
+  .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .title{font-size:26px;font-weight:800;letter-spacing:-.4px}
+  .gear{font-size:20px;opacity:.5}
+
+  .hero{display:flex;align-items:center;gap:18px;margin-bottom:22px;padding:4px 4px}
+  .ringbox{position:relative;width:104px;height:104px;flex:0 0 auto}
+  .ringbox .rv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ringv{font-size:26px;font-weight:800;line-height:1}
+  .ringk{font-size:12px;font-weight:700;margin-top:2px}
+  .herotxt .ht{font-size:15px;font-weight:700} .herotxt .ht.title{font-size:15px}
+  .herotxt .hs{font-size:13.5px;margin-top:4px}
+
+  .card{border-radius:20px;padding:14px;display:flex;align-items:center;gap:14px;margin-bottom:12px}
+  .thumb{flex:0 0 auto;width:58px;height:58px;border-radius:14px;background:rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center}
+  .cinfo{flex:1}
+  .cdist{font-size:22px;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;gap:8px}
+  .pr{font-size:11px;font-weight:800;color:#04130f;background:linear-gradient(180deg,#6FE3BC,#54D6A6);padding:3px 8px;border-radius:999px}
+  .cmeta{font-size:13px;font-weight:600;margin-top:4px}
+  .when{font-size:12.5px;font-weight:700;opacity:.7;text-align:right;white-space:nowrap}
+
+  .recwrap{border-radius:20px;padding:14px 16px;margin-top:8px}
+  .recttl{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#54D6A6;margin-bottom:12px}
+  .light .recttl{color:#0d6e58}
+  .recgrid{display:flex;justify-content:space-between}
+  .reccell{text-align:center;flex:1}
+  .recv{font-size:18px;font-weight:800}
+  .recl{font-size:11px;font-weight:600;margin-top:3px;letter-spacing:.5px}
+</style></head>
+<body>
+<h1>« Mes runs » — historique + records (cartes-tracés, zéro tableau)</h1>
+<div class="sub">Anneau de la semaine · chaque run = son tracé en miniature · records en bas</div>
+<div class="rowp">
+
+  <!-- DARK -->
+  <div>
+  <div class="phone dark">
+    <div class="notch"></div>
+    <div class="head"><div class="title">Mes runs</div><div class="gear muted">⚙︎</div></div>
+    <div class="hero">
+      <div class="ringbox">
+        <svg width="104" height="104" viewBox="0 0 104 104">
+          <circle class="ring-track" cx="52" cy="52" r="46" fill="none" stroke-width="9"/>
+          <circle cx="52" cy="52" r="46" fill="none" stroke="#5BF0C8" stroke-width="9" stroke-linecap="round"
+            stroke-dasharray="289" stroke-dashoffset="87" transform="rotate(-90 52 52)"
+            style="filter:drop-shadow(0 0 6px rgba(91,240,200,.6))"/>
+        </svg>
+        <div class="rv"><div class="ringv">18.4</div><div class="ringk">km</div></div>
+      </div>
+      <div class="herotxt">
+        <div class="ht title">Cette semaine</div>
+        <div class="hs muted">4 runs · +12% vs sem. dernière</div>
+        <div class="hs" style="color:#5BF0C8;font-weight:700;margin-top:6px">🔥 3 semaines d'affilée</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="thumb"><svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M8 32 C6 24 16 24 14 17 S8 11 16 8" stroke-width="5" stroke-linecap="round" class="thumbg" opacity=".5"/><path d="M8 32 C6 24 16 24 14 17 S8 11 16 8" stroke-width="2" stroke-linecap="round" class="thumbc"/></svg></div>
+      <div class="cinfo"><div class="cdist">5.2 km <span class="pr">🏆 5K</span></div><div class="cmeta muted">26:18 · 5'03 /km</div></div>
+      <div class="when muted">Auj.<br>7h32</div>
+    </div>
+    <div class="card">
+      <div class="thumb"><svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M10 30 C20 30 14 18 24 16 S30 26 20 28" stroke-width="5" stroke-linecap="round" class="thumbg" opacity=".5"/><path d="M10 30 C20 30 14 18 24 16 S30 26 20 28" stroke-width="2" stroke-linecap="round" class="thumbc"/></svg></div>
+      <div class="cinfo"><div class="cdist">8.1 km</div><div class="cmeta muted">1:02:40 · 7'44 /km</div></div>
+      <div class="when muted">Hier</div>
+    </div>
+    <div class="card">
+      <div class="thumb"><svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M9 28 C14 20 26 26 28 16" stroke-width="5" stroke-linecap="round" class="thumbg" opacity=".5"/><path d="M9 28 C14 20 26 26 28 16" stroke-width="2" stroke-linecap="round" class="thumbc"/></svg></div>
+      <div class="cinfo"><div class="cdist">3.4 km</div><div class="cmeta muted">21:00 · 6'10 /km</div></div>
+      <div class="when muted">Mar.</div>
+    </div>
+
+    <div class="recwrap">
+      <div class="recttl">Mes records</div>
+      <div class="recgrid">
+        <div class="reccell"><div class="recv">24:30</div><div class="recl muted">5 KM</div></div>
+        <div class="reccell"><div class="recv">52:10</div><div class="recl muted">10 KM</div></div>
+        <div class="reccell"><div class="recv">12.4<span style="font-size:11px"> km</span></div><div class="recl muted">PLUS LONG</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="cap"><b>Mes runs — NightRun</b> · anneau semaine + streak + records</div>
+  </div>
+
+  <!-- LIGHT -->
+  <div>
+  <div class="phone light">
+    <div class="notch"></div>
+    <div class="head"><div class="title">Mes runs</div><div class="gear muted">⚙︎</div></div>
+    <div class="hero">
+      <div class="ringbox">
+        <svg width="104" height="104" viewBox="0 0 104 104">
+          <circle class="ring-track" cx="52" cy="52" r="46" fill="none" stroke-width="9"/>
+          <circle cx="52" cy="52" r="46" fill="none" stroke="#33A089" stroke-width="9" stroke-linecap="round"
+            stroke-dasharray="289" stroke-dashoffset="87" transform="rotate(-90 52 52)"/>
+        </svg>
+        <div class="rv"><div class="ringv">18.4</div><div class="ringk">km</div></div>
+      </div>
+      <div class="herotxt">
+        <div class="ht title">Cette semaine</div>
+        <div class="hs muted">4 runs · +12% vs sem. dernière</div>
+        <div class="hs" style="color:#0d6e58;font-weight:700;margin-top:6px">🔥 3 semaines d'affilée</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="thumb" style="background:rgba(23,106,90,.06)"><svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M8 32 C6 24 16 24 14 17 S8 11 16 8" stroke-width="5" stroke-linecap="round" class="thumbg" opacity=".6"/><path d="M8 32 C6 24 16 24 14 17 S8 11 16 8" stroke-width="2" stroke-linecap="round" class="thumbc"/></svg></div>
+      <div class="cinfo"><div class="cdist">5.2 km <span class="pr">🏆 5K</span></div><div class="cmeta muted">26:18 · 5'03 /km</div></div>
+      <div class="when muted">Auj.<br>7h32</div>
+    </div>
+    <div class="card">
+      <div class="thumb" style="background:rgba(23,106,90,.06)"><svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M10 30 C20 30 14 18 24 16 S30 26 20 28" stroke-width="5" stroke-linecap="round" class="thumbg" opacity=".6"/><path d="M10 30 C20 30 14 18 24 16 S30 26 20 28" stroke-width="2" stroke-linecap="round" class="thumbc"/></svg></div>
+      <div class="cinfo"><div class="cdist">8.1 km</div><div class="cmeta muted">1:02:40 · 7'44 /km</div></div>
+      <div class="when muted">Hier</div>
+    </div>
+    <div class="card">
+      <div class="thumb" style="background:rgba(23,106,90,.06)"><svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M9 28 C14 20 26 26 28 16" stroke-width="5" stroke-linecap="round" class="thumbg" opacity=".6"/><path d="M9 28 C14 20 26 26 28 16" stroke-width="2" stroke-linecap="round" class="thumbc"/></svg></div>
+      <div class="cinfo"><div class="cdist">3.4 km</div><div class="cmeta muted">21:00 · 6'10 /km</div></div>
+      <div class="when muted">Mar.</div>
+    </div>
+
+    <div class="recwrap">
+      <div class="recttl">Mes records</div>
+      <div class="recgrid">
+        <div class="reccell"><div class="recv">24:30</div><div class="recl muted">5 KM</div></div>
+        <div class="reccell"><div class="recv">52:10</div><div class="recl muted">10 KM</div></div>
+        <div class="reccell"><div class="recv">12.4<span style="font-size:11px"> km</span></div><div class="recl muted">PLUS LONG</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="cap"><b>Mes runs — DayRun</b> · même structure, terrain clair</div>
+  </div>
+
+</div>
+</body></html>

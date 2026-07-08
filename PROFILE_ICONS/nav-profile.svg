@@ -1,0 +1,15 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 64 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="slot/profile">
+<circle id="avatar" cx="32" cy="26" r="15" fill="var(--fill-0, #D1D6DB)" stroke="var(--stroke-0, #2FC9A2)" stroke-width="2"/>
+<g id="person" clip-path="url(#clip0_0_24)">
+<circle id="Ellipse" cx="32" cy="22.5" r="4.5" fill="var(--fill-0, white)"/>
+<ellipse id="Ellipse_2" cx="32" cy="37" rx="10" ry="8" fill="var(--fill-0, white)"/>
+</g>
+<rect id="underline" x="22" y="44" width="20" height="3" rx="1.5" fill="var(--fill-0, #2FC9A2)"/>
+</g>
+<defs>
+<clipPath id="clip0_0_24">
+<rect width="28" height="28" fill="white" transform="translate(18 12)"/>
+</clipPath>
+</defs>
+</svg>

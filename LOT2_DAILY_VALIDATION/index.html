@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Lot 2 — Daily · Validation avant câblage</title>
+<style>
+  :root{--mint:#54D6A6;--bg:#0b0f12;--card:#11171c;--line:#1f2a30;--ink:#e9eef0;--mut:#8b97a0}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 -apple-system,Segoe UI,Roboto,sans-serif}
+  header{position:sticky;top:0;z-index:5;background:#070a0c;border-bottom:1px solid var(--line);padding:16px 24px}
+  header h1{margin:0;font-size:18px}
+  header p{margin:4px 0 0;color:var(--mut);font-size:13px}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--mut)}
+  .tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600}
+  .t-wired{background:rgba(84,214,166,.15);color:var(--mint)}
+  .t-fid{background:rgba(255,196,84,.15);color:#ffc454}
+  main{padding:24px;display:grid;gap:22px;max-width:1400px;margin:0 auto}
+  .screen{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .head .n{font-size:13px;color:var(--mut);font-variant-numeric:tabular-nums}
+  .head h2{margin:0;font-size:16px}
+  .body{display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:16px;padding:16px 18px}
+  @media(max-width:1000px){.body{grid-template-columns:1fr}}
+  figure{margin:0}
+  figure img{width:100%;border-radius:10px;border:1px solid var(--line);display:block;background:#000}
+  figcaption{font-size:11px;color:var(--mut);margin-top:6px;text-align:center;text-transform:uppercase;letter-spacing:.5px}
+  .meta dt{font-size:11px;color:var(--mint);text-transform:uppercase;letter-spacing:.6px;margin-top:10px}
+  .meta dt:first-child{margin-top:0}
+  .meta dd{margin:3px 0 0;color:var(--ink)}
+  .meta code{background:#0a1014;padding:1px 5px;border-radius:5px;color:#bfe9d8;font-size:12px}
+  .pill{font-size:11px;color:var(--mut)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Lot 2 — « Daily » · 10 écrans + popups · à valider avant la passe fidélité</h1>
+  <p>Principe : <b>logique V1 inchangée</b> (controllers/hooks/nav) — <b>affichage = maquette V2</b> (light + dark). Les 10 écrans sont déjà câblés derrière <code>FEATURES.V2_UI</code> ; il reste la <b>passe fidélité + complétude des slots/popups</b>.</p>
+  <div class="legend">
+    <span><span class="tag t-wired">câblé</span> early-return V2 déjà en place</span>
+    <span><span class="tag t-fid">fidélité</span> à aligner pixel sur la maquette</span>
+    <span>Colonnes : maquette LIGHT · maquette DARK · plan d'implémentation</span>
+  </div>
+</header>
+<main>
+
+  <section class="screen">
+    <div class="head"><span class="n">01</span><h2>Messages</h2><span class="tag t-wired">câblé</span><span class="tag t-fid">fidélité</span></div>
+    <div class="body">
+      <figure><img src="img/messages_light.png"/><figcaption>Light</figcaption></figure>
+      <figure><img src="img/messages_dark.png"/><figcaption>Dark</figcaption></figure>
+      <dl class="meta">
+        <dt>Écran V1</dt><dd><code>src/screens/messages/MessagesScreen.tsx</code></dd>
+        <dt>Logique conservée</dt><dd>liste conversations, recherche, polling, unread, navigation → Chat. Hooks <code>useChatPolling</code>, <code>useMessageActions</code>.</dd>
+        <dt>Composant V2</dt><dd><code>MessagesView</code></dd>
+        <dt>Affichage cible</dt><dd>header titre + recherche, lignes avatar/nom/aperçu/heure/badge unread, état vide.</dd>
+        <dt>Popups</dt><dd>—</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="screen">
+    <div class="head"><span class="n">02</span><h2>New Message</h2><span class="tag t-wired">câblé</span><span class="tag t-fid">fidélité</span></div>
+    <div class="body">
+      <figure><img src="img/newmessage_light.png"/><figcaption>Light</figcaption></figure>
+      <figure><img src="img/newmessage_dark.png"/><figcaption>Dark</figcaption></figure>
+      <dl class="meta">
+        <dt>Écran V1</dt><dd><code>src/screens/messages/NewMessageScreen.tsx</code></dd>
+        <dt>Logique conservée</dt><dd>recherche destinataires, sélection, création conversation, droits (fans/follow).</dd>
+        <dt>Composant V2</dt><dd><code>NewMessageView</code></dd>
+        <dt>Affichage cible</dt><dd>barre recherche, résultats avatar+nom, bouton démarrer.</dd>
+        <dt>Popups</dt><dd>—</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="screen">
+    <div class="head"><span class="n">03</span><h2>Chat</h2><span class="tag t-wired">câblé</span><span class="tag t-fid">fidélité</span></div>
+    <div class="body">
+      <figure><img src="img/chat_light.png"/><figcaption>Light</figcaption></figure>
+      <figure><img src="img/chat_dark.png"/><figcaption>Dark</figcaption></figure>
+      <dl class="meta">
+        <dt>Écran V1</dt><dd><code>src/screens/messages/ChatScreen.tsx</code></dd>
+        <dt>Logique conservée</dt><dd>fil messages, envoi, polling, accusés, actions message. Hooks <code>useChatMessages</code>, <code>useSendMessage</code>, <code>useChatPolling</code>.</dd>
+        <dt>Composant V2</dt><dd><code>ChatView</code> + <code>ChatInputArea</code></dd>
+        <dt>Affichage cible</dt><dd>bulles in/out, header interlocuteur, barre saisie + pièces jointes.</dd>
+        <dt>Popups (conformes aussi)</dt><dd><code>ChatModals</code>, <code>MessageInfoSheet</code>, <code>MessageReportSheet</code></dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="screen">
+    <div class="head"><span class="n">04</span><h2>Create Group Chat</h2><span class="tag t-wired">câblé</span><span class="tag t-fid">fidélité</span></div>
+    <div class="body">
+      <figure><img src="img/creategroup_light.png"/><figcaption>Light</figcaption></figure>
+      <figure><img src="img/creategroup_dark.png"/><figcaption>Dark</figcaption></figure>
+      <dl class="meta">
+        <dt>Écran V1</dt><dd><code>src/screens/messages/CreateGroupChatScreen.tsx</code></dd>
+        <dt>Logique conservée</dt><dd>sélection multi-membres, nom de groupe, création, validation min/max.</dd>
+        <dt>Composant V2</dt><dd><code>CreateGroupChatView</code></dd>
+        <dt>Affichage cible</dt><dd>champ nom, recherche, chips membres sélectionnés, liste, CTA créer.</dd>
+        <dt>Popups</dt><dd>—</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="screen">
+    <div class="head"><span class="n">05</span><h2>Notifications</h2><span class="tag t-wired">câblé</span><span class="tag t-fid">fidélité</span></div>
+    <div class="body">
+      <figure><img src="img/notifications_light.png"/><figcaption>Light</figcaption></figure>
+      <figure><img src="img/notifications_dark.png"/><figcaption>Dark</figcaption></figure>
+      <dl class="meta">
+        <dt>Écran V1</dt><dd><code>src/screens/notifications/NotificationsScreen.tsx</code></dd>
+        <dt>Logique conservée</dt><dd>flux notifs, groupes, mark-as-read, deep-links. Hooks <code>useNotificationsData</code>, <code>useNotificationsActions</code>.</dd>
+        <dt>Composant V2</dt><dd><code>NotificationsView</code> (≠ NotificationSettings)</dd>
+        <dt>Affichage cible</dt><dd>lignes acteur+action+temps, avatars, regroupement, état vide.</dd>
+        <dt>Popups</dt><dd>—</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="screen">
+    <div class="head"><span class="n">06</span><h2>Post Detail</h2><span class="tag t-wired">câblé</span><span class="tag t-fid">fidélité</span></div>
+    <div class="body">
+      <figure><img src="img/postdetail_light.png"/><figcaption>Light</figcaption></figure>
+      <figure><img src="img/postdetail_dark.png"/><figcaption>Dark</figcaption></figure>
+      <dl class="meta">
+        <dt>Écran V1</dt><dd><code>src/screens/posts/PostDetailScreen.tsx</code></dd>
+        <dt>Logique conservée</dt><dd>média, likes (optimiste), partage, options auteur. <b>Pas de commentaires (contrat Smuppy)</b>.</dd>
+        <dt>Composant V2</dt><dd><code>PostDetailView</code></dd>
+        <dt>Affichage cible</dt><dd>header auteur, média plein, barre actions like/partage, légende.</dd>
+        <dt>Popups</dt><dd>sheet options post (réutilise l'existant).</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="screen">
+    <div class="head"><span class="n">07</span><h2>Post Likers</h2><span class="tag t-wired">câblé</span><span class="tag t-fid">fidélité</span></div>
+    <div class="body">
+      <figure><img src="img/postlikers_light.png"/><figcaption>Light</figcaption></figure>
+      <figure><img src="img/postlikers_dark.png"/><figcaption>Dark</figcaption></figure>
+      <dl class="meta">
+        <dt>Écran V1</dt><dd><code>src/screens/profile/PostLikersScreen.tsx</code></dd>
+        <dt>Logique conservée</dt><dd>liste likers paginée, follow/unfollow inline, nav profil.</dd>
+        <dt>Composant V2</dt><dd><code>PostLikersView</code></dd>
+        <dt>Affichage cible</dt><dd>lignes avatar/nom/@/bouton suivre, état vide.</dd>
+        <dt>Popups</dt><dd>—</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="screen">
+    <div class="head"><span class="n">08</span><h2>Edit Profile</h2><span class="tag t-wired">câblé</span><span class="tag t-fid">fidélité</span></div>
+    <div class="body">
+      <figure><img src="img/editprofile_light.png"/><figcaption>Light</figcaption></figure>
+      <figure><img src="img/editprofile_dark.png"/><figcaption>Dark</figcaption></figure>
+      <dl class="meta">
+        <dt>Écran V1</dt><dd><code>src/screens/settings/EditProfileScreen.tsx</code></dd>
+        <dt>Logique conservée</dt><dd>avatar/cover upload, champs nom/bio/liens, save + validation, presigned S3.</dd>
+        <dt>Composant V2</dt><dd><code>EditProfileView</code></dd>
+        <dt>Affichage cible</dt><dd>header avatar+cover éditables, champs groupés, CTA enregistrer.</dd>
+        <dt>Popups</dt><dd>picker média (réutilise l'existant).</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="screen">
+    <div class="head"><span class="n">09</span><h2>Fans List</h2><span class="tag t-wired">câblé</span><span class="tag t-fid">fidélité</span></div>
+    <div class="body">
+      <figure><img src="img/fanslist_light.png"/><figcaption>Light</figcaption></figure>
+      <figure><img src="img/fanslist_dark.png"/><figcaption>Dark</figcaption></figure>
+      <dl class="meta">
+        <dt>Écran V1</dt><dd><code>src/screens/profile/FansListScreen.tsx</code></dd>
+        <dt>Logique conservée</dt><dd>liste fans/abonnés, onglets, recherche, nav profil.</dd>
+        <dt>Composant V2</dt><dd><code>FansListView</code></dd>
+        <dt>Affichage cible</dt><dd>onglets, lignes avatar/nom/relation, état vide.</dd>
+        <dt>Popups</dt><dd>—</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="screen">
+    <div class="head"><span class="n">10</span><h2>Follow Requests</h2><span class="tag t-wired">câblé</span><span class="tag t-fid">fidélité</span></div>
+    <div class="body">
+      <figure><img src="img/followreq_light.png"/><figcaption>Light</figcaption></figure>
+      <figure><img src="img/followreq_dark.png"/><figcaption>Dark</figcaption></figure>
+      <dl class="meta">
+        <dt>Écran V1</dt><dd><code>src/screens/notifications/FollowRequestsScreen.tsx</code></dd>
+        <dt>Logique conservée</dt><dd>demandes en attente, accepter/refuser (optimiste), nav profil.</dd>
+        <dt>Composant V2</dt><dd><code>FollowRequestsView</code></dd>
+        <dt>Affichage cible</dt><dd>lignes avatar/nom + boutons accepter/refuser, état vide.</dd>
+        <dt>Popups</dt><dd>—</dd>
+      </dl>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

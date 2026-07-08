@@ -1,0 +1,1074 @@
+{
+ "count": 13,
+ "screens": [
+  {
+   "screen": "RunTrackingView",
+   "lot": "Run-Activities",
+   "v1Screen": "src/screens/activities/PersonalRunTrackingScreen.tsx (running/paused/auto_paused phase — the inline stats overlay, lines 152-194)",
+   "wired": false,
+   "componentExists": true,
+   "consolidationFlag": "NONE",
+   "figmaHint": "s_tracking (build_run_v2.py) — 'Run en cours' / live tracking overlay with GPS pill + stats card",
+   "subScreens": [
+    "idle→RunStartView (already V2)",
+    "countdown→RunCountdownView (already V2)",
+    "running/paused/auto_paused→RunTrackingView (NOT wired, inline V1)",
+    "stop→navigate PersonalRunShare"
+   ],
+   "ctas": [
+    {
+     "label": "Pause / Reprendre toggle",
+     "target": "controller.pauseRun() / resumeRun()",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Terminer (Stop)",
+     "target": "controller.pauseRun() + navigation.navigate('PersonalRunShare')",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Signal GPS weak/lost banner action (onSignalAction)",
+     "target": "retry GPS / open settings — NO V1 equivalent",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "Permission denied screen (full-screen state, not modal)",
+     "present": true
+    },
+    {
+     "name": "GPS weak/lost Banner (in-card alert)",
+     "present": true
+    },
+    {
+     "name": "Auto-paused note line",
+     "present": true
+    }
+   ],
+   "feGaps": [
+    "PersonalRunTrackingScreen.tsx:152-194 — running-state overlay is inline V1 markup (StatTile row + TouchableOpacity controls), NOT RunTrackingView; RunStart/RunCountdown already migrated but tracking phase is not (incomplete migration)",
+    "PersonalRunTrackingScreen.tsx:169 — calories tile uses label 'kcal' as caption (V1) vs RunTrackingView's separate caloriesLabel+caloriesUnit; container must map caloriesLabel='Calories', caloriesUnit='kcal'",
+    "Cadence: RunTrackingView renders a cadence StatTile (stats.cadence) but V1 RunLiveStats has no cadence field — container must pass '—' or omit; cadence is not tracked",
+    "RunTrackingView.onSignalAction has no V1 handler — leave undefined (banner shows with no CTA) until a GPS-retry action exists",
+    "autoPaused prop: map from phase==='auto_paused' (controller exposes auto_paused phase); isPaused covers paused+auto_paused in V1"
+   ],
+   "beGaps": [
+    {
+     "desc": "Cadence (ppm) not captured by the GPS tracker / not in RunLiveStats or PersonalRunSavePayload. RunTrackingView shows a cadence tile. Either drop the tile in the container (recommended V1) or add accelerometer cadence capture + persist.",
+     "ticketNeeded": true,
+     "endpoint": "client GPS tracker + POST /activities/personal-runs (add cadence field)"
+    }
+   ],
+   "wiringPlan": "In PersonalRunTrackingScreen, gate the running/paused/auto_paused return block behind FEATURES.V2_UI: render <RunTrackingView mapSlot={mapNode} phase={isPaused?'paused':'running'} autoPaused={phase==='auto_paused'} signal={signal} stats={{distance:formatDistanceKm(stats.distanceM), distanceUnit:'km', duration:formatDuration(stats.durationS), pace:formatPace(stats.avgPaceSecPerKm), paceUnit:'/km', cadence:'—', calories:formatCalories(stats.caloriesEstimate), caloriesUnit:'kcal'}} onPause/onResume/onStop ...copy from useTranslation('v2RunTrackingView') /> keeping the inline V1 block as the else branch. mapNode (Mapbox) is already built and reusable as mapSlot. No new route — same screen.",
+   "safeAreaPlan": "RunTrackingView root is flex:1 black with an absolute map + an internal overlay using paddingTop:12/paddingBottom:20 but NO SafeArea. The V1 screen wraps the overlay in <SafeAreaView>. When wiring, wrap <RunTrackingView> in SafeAreaView edges={['top','bottom']} OR have the container pass safe-area padding — the component itself does not consume insets. gestureEnabled:false is set on the route (good — no accidental dismiss mid-run).",
+   "effort": "M"
+  },
+  {
+   "screen": "RunDetailView",
+   "lot": "Run-Activities",
+   "v1Screen": "NONE — no dedicated single-run detail screen exists. WorkoutHistoryCard rows (in PersonalRecordsScreen 'runs' tab) have an onPress prop but it is NOT wired to any detail navigation. NEW screen + route required.",
+   "wired": false,
+   "componentExists": true,
+   "consolidationFlag": "NONE",
+   "figmaHint": "s_detail (build_run_v2.py) — single run detail: hero map + 4 summary StatTiles + 'Splits par km' bars + Repartager/Supprimer",
+   "subScreens": [
+    "share→RunShareView (re-share)",
+    "delete→confirm dialog",
+    "close→goBack"
+   ],
+   "ctas": [
+    {
+     "label": "Repartager ce run (gradient primary)",
+     "target": "PersonalRunShare (re-share an existing run) OR native Share",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Header share icon",
+     "target": "same share intent",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Supprimer ce run (delete, danger)",
+     "target": "DELETE /activities/personal-runs/{id} — endpoint MISSING",
+     "status": "TARGET_MISSING"
+    },
+    {
+     "label": "Close (×)",
+     "target": "navigation.goBack()",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "Delete confirmation (Alert/confirm before destroying run)",
+     "present": false
+    }
+   ],
+   "feGaps": [
+    "No host screen: must create src/screens/activities/RunDetailScreen.tsx wiring RunDetailView (3-file rule: index.ts + types/index.ts MainStackParamList 'RunDetail': { sessionId/activityId } + MainNavigator.tsx Stack.Screen)",
+    "RunDetailView requires splits[] (km/pace/elevation/fillPct) — PersonalRunHistoryItem from listPersonalRuns has NO splits/elevation/calories/title; the list endpoint returns only distance/duration/avgPace/route. A get-by-id endpoint returning the full run (splits persisted at save time) is required",
+    "Delete confirmation popup is not part of the View — container must wrap onDelete in an Alert.alert confirm (destructive run deletion, directive: confirm before destroy)",
+    "WorkoutHistoryCard.onPress (component/activity/WorkoutHistoryCard.tsx:11,20) is defined but PersonalRecordsScreen renders it WITHOUT onPress — rows are dead taps; wire onPress→navigate('RunDetail',{sessionId})"
+   ],
+   "beGaps": [
+    {
+     "desc": "GET single personal run by id with full detail (splits array, elevation deltas, calories, title, route geojson). Only personal-runs-list.ts + personal-runs-create.ts exist; no get-by-id handler. RunDetailView splits bars cannot render without it.",
+     "ticketNeeded": true,
+     "endpoint": "GET /activities/personal-runs/{id} → new personal-runs-get.ts"
+    },
+    {
+     "desc": "DELETE a personal run (Supprimer ce run CTA). No delete handler exists.",
+     "ticketNeeded": true,
+     "endpoint": "DELETE /activities/personal-runs/{id} → new personal-runs-delete.ts"
+    },
+    {
+     "desc": "PersonalRunHistoryItem lacks title — RunDetail header title needs the run title persisted/returned (save accepts title but list/get don't return it).",
+     "ticketNeeded": true,
+     "endpoint": "GET /activities/personal-runs/{id} (include title field)"
+    }
+   ],
+   "wiringPlan": "1) Create RunDetailScreen.tsx: read route.params.sessionId, fetch via new getPersonalRun(id) (added to activitiesApi), map to RunDetailView props (stats=[distance,temps,allure,calories], splits from response.splits, mapNode=Mapbox route, onShare→navigate PersonalRunShare or Share, onDelete→Alert confirm→deletePersonalRun(id)+goBack). 2) 3-file wiring: activities/index.ts export, types/index.ts add RunDetail:{ sessionId:string }, MainNavigator.tsx Stack.Screen name='RunDetail'. 3) Wire WorkoutHistoryCard onPress in PersonalRecordsScreen + RunHistoryView onSelectRun → navigate('RunDetail',{sessionId}). Gate behind FEATURES.V2_UI is not needed (brand-new screen) but keep the View as the only renderer.",
+   "safeAreaPlan": "RunDetailView root is flex:1 surface with a header (paddingVertical:14) but NO SafeArea inset consumption. New host RunDetailScreen must wrap in SafeAreaView edges={['top','bottom']} or pass insets; header has no status-bar padding of its own. Present as slide_from_bottom (modal-ish) or slide_from_right per nav convention.",
+   "effort": "L"
+  },
+  {
+   "screen": "RunHistoryView",
+   "lot": "Run-Activities",
+   "v1Screen": "src/screens/activities/PersonalRecordsScreen.tsx ('runs' tab — currently FlatList of WorkoutHistoryCard, lines 155-175). RunHistoryView is the V2 'runs' body. (WeeklyStatsScreen is a SEPARATE weekly-trends surface, already V2-wired — not this.)",
+   "wired": false,
+   "componentExists": true,
+   "consolidationFlag": "NONE — RunHistoryView (history list, runs tab) and RunRecordsView (PRs, records tab) are the two tabs of the SAME PersonalRecordsScreen host; not duplicates of each other. Its docblock mentions WeeklyStatsScreen but that is a distinct weekly-trends screen already wired to WeeklyStatsView.",
+   "figmaHint": "s_history (build_run_v2.py) — 'Mes runs': Runs/Records tabs + weekly ActivityRing hero + past-run list",
+   "subScreens": [
+    "tab→records (RunRecordsView)",
+    "run row→RunDetail",
+    "empty CTA→start first run (PersonalRunTracking)"
+   ],
+   "ctas": [
+    {
+     "label": "Runs / Records segmented tabs",
+     "target": "setTab('runs'|'records') — local state swap",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Past run row tap (onSelectRun)",
+     "target": "RunDetail screen — MISSING route",
+     "status": "TARGET_MISSING"
+    },
+    {
+     "label": "Lancer mon premier run (empty-state CTA)",
+     "target": "PersonalRunTracking",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Back",
+     "target": "navigation.goBack()",
+     "status": "WIRED_OK"
+    }
+   ],
+   "popups": [
+    {
+     "name": "Empty state (no runs yet) — inline EmptyState, not modal",
+     "present": true
+    }
+   ],
+   "feGaps": [
+    "PersonalRecordsScreen.tsx:155-175 — runs tab renders FlatList<WorkoutHistoryCard>, not RunHistoryView; needs FEATURES.V2_UI early-return swapping to <RunHistoryView>",
+    "RunHistoryView shows a weekly ActivityRing hero (weeklyProgress/weeklyLabel/sideStats) — PersonalRecordsScreen does NOT fetch weekly stats; container must also call getWeeklyStats(1, undefined, true) (personal) to fill the ring + side stats (3 runs / 16,3 km / 1h30)",
+    "RunHistoryItem needs isPr flag per run + pre-formatted when/duration/pace — listPersonalRuns returns avgPaceSecPerKm/distanceMeters/durationSeconds (format client-side) but NO isPr flag per run",
+    "onSelectRun → RunDetail route does not exist yet (see RunDetailView)",
+    "RunHistoryView and RunRecordsView both render their OWN Runs/Records TabBar; the host must render ONE view per activeTab (not both) so two tab bars don't stack — drive activeTab from PersonalRecordsScreen's existing tab state"
+   ],
+   "beGaps": [
+    {
+     "desc": "Per-run isPr flag (was this run a personal record?) not in PersonalRunHistoryItem. RunHistoryView shows a 🏆 PR badge per row. Either derive client-side by cross-referencing getPersonalRecords sessionId, or add is_pr to the list response.",
+     "ticketNeeded": true,
+     "endpoint": "GET /activities/personal-runs (add is_pr per item) — or derive client-side from personal-records sessionId"
+    },
+    {
+     "desc": "Weekly personal run aggregate for the ring hero (km this week / target / runs count / time). getWeeklyStats exists but RunHistoryView needs the 'this week' single bucket + a configurable target (25km default per contract §5.4); target is not server-provided.",
+     "ticketNeeded": true,
+     "endpoint": "GET /activities/stats/weekly?personal=true (already exists) — confirm returns current-week bucket; weekly target km is client-default"
+    }
+   ],
+   "wiringPlan": "In PersonalRecordsScreen, when FEATURES.V2_UI: render <RunHistoryView> for the 'runs' tab and <RunRecordsView> for 'records' (share one activeTab state + onChangeTab). Map runs=listPersonalRuns().runs→RunHistoryItem (format distance/when/duration/pace, isPr from records cross-ref), sideStats+weekly ring from getWeeklyStats(personal=true), onSelectRun→navigate('RunDetail',{sessionId}), onStartFirstRun→navigate('PersonalRunTracking'). Strings from useTranslation('v2RunHistoryView'). Keep V1 FlatList as the !V2_UI branch.",
+   "safeAreaPlan": "RunHistoryView root flex:1 surface, header paddingTop:8 only — NO inset consumption. Host PersonalRecordsScreen already uses SafeAreaView + useSafeAreaInsets; render RunHistoryView INSIDE that existing SafeAreaView (don't double-wrap). Header back uses BackButton atom.",
+   "effort": "M"
+  },
+  {
+   "screen": "RunRecordsView",
+   "lot": "Run-Activities",
+   "v1Screen": "src/screens/activities/PersonalRecordsScreen.tsx ('records' tab — currently FlatList of PR rows, lines 127-153).",
+   "wired": false,
+   "componentExists": true,
+   "consolidationFlag": "NONE — same PersonalRecordsScreen host as RunHistoryView, but it is the 'records' (PRs) tab, a distinct surface. Not a duplicate.",
+   "figmaHint": "s_records (build_run_v2.py) — 'Records personnels': Runs/Records tabs + summary PR StatTile grid + full record list",
+   "subScreens": [
+    "tab→runs (RunHistoryView)",
+    "record row→RunDetail (open the run that set the PR)",
+    "empty CTA→start first run"
+   ],
+   "ctas": [
+    {
+     "label": "Runs / Records segmented tabs",
+     "target": "onTabChange — local state swap",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Record row tap (r.onPress)",
+     "target": "RunDetail (run that set the PR, via record.sessionId) — MISSING route",
+     "status": "TARGET_MISSING"
+    },
+    {
+     "label": "Lancer mon premier run (empty CTA)",
+     "target": "PersonalRunTracking",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Back",
+     "target": "navigation.goBack()",
+     "status": "WIRED_OK"
+    }
+   ],
+   "popups": [
+    {
+     "name": "Empty state (no records yet) — inline EmptyState",
+     "present": true
+    }
+   ],
+   "feGaps": [
+    "PersonalRecordsScreen.tsx:127-153 — records tab renders raw FlatList rows, not RunRecordsView; needs FEATURES.V2_UI early-return to <RunRecordsView>",
+    "RunRecordsView wants a summary[] grid of headline PRs (best 5k/10k/longest/fastest) + full records[] list — getPersonalRecords returns a flat record array with prType/value/unit; container must (a) format via existing formatValue, (b) pick the headline subset for the summary grid, (c) map icons per prType",
+    "Record row onPress should open the run that set the PR — getPersonalRecords returns sessionId per record (nullable); wire onPress→navigate('RunDetail',{sessionId}) only when sessionId!=null",
+    "Two-tab-bar stacking risk: render RunRecordsView XOR RunHistoryView per activeTab (each ships its own TabBar)"
+   ],
+   "beGaps": [
+    {
+     "desc": "RunDetail target needs a get-by-id endpoint (shared with RunDetailView). Record rows with sessionId can only navigate once GET /activities/personal-runs/{id} exists.",
+     "ticketNeeded": true,
+     "endpoint": "GET /activities/personal-runs/{id} (shared with RunDetailView)"
+    }
+   ],
+   "wiringPlan": "Same host as RunHistoryView. When FEATURES.V2_UI and activeTab==='records': render <RunRecordsView records={getPersonalRecords().records.map(...)} summary={headlinePRs} onTabChange={swap} onStartFirstRun={navigate PersonalRunTracking} record.onPress={sessionId?navigate('RunDetail',{sessionId}):undefined} />. Strings from useTranslation('v2RunRecordsView'). Keep V1 FlatList as !V2_UI branch.",
+   "safeAreaPlan": "RunRecordsView root flex:1 surface, header paddingTop:8 only — render inside PersonalRecordsScreen's existing SafeAreaView (shared with RunHistoryView). Back uses ghost Button with glyph.",
+   "effort": "M"
+  },
+  {
+   "screen": "RunShareView",
+   "lot": "Run-Activities",
+   "v1Screen": "src/screens/activities/PersonalRunShareScreen.tsx (post-run publish: title/desc inputs + stats + privacy radios + post/mapPin toggles + Save/SaveOnly/Discard).",
+   "wired": false,
+   "componentExists": true,
+   "consolidationFlag": "NONE",
+   "figmaHint": "s_share (build_run_v2.py) — 'Partager ton run': share-card preview + title/desc + résumé + visibilité + Partager/Plus tard/Supprimer",
+   "subScreens": [
+    "share→shared-terminal confirmation (in-View)",
+    "skip (save only)→goBack",
+    "discard→destroy+goBack"
+   ],
+   "ctas": [
+    {
+     "label": "Partager (gradient primary)",
+     "target": "controller.stopRunAndSave({privacy,title}) → publish",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Plus tard / Save only (skip)",
+     "target": "controller.stopRunAndSave (save no publish) → goBack",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Supprimer ce run (discard)",
+     "target": "controller.discardRun() → goBack",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Privacy radios (public/followers/private)",
+     "target": "setPrivacy",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Publier comme post / Épingler sur la carte toggles",
+     "target": "toggleTarget('post'|'mapPin')",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Done (shared-terminal)",
+     "target": "onDone → goBack",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Close (×)",
+     "target": "navigation.goBack()",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "Shared-terminal confirmation block (in-View, replaces form, no double-submit)",
+     "present": true
+    },
+    {
+     "name": "PR celebration banner (V1 PersonalRecordBadge shown on returned new PRs)",
+     "present": true
+    },
+    {
+     "name": "Discard confirmation (Alert before destroying)",
+     "present": false
+    }
+   ],
+   "feGaps": [
+    "PersonalRunShareScreen.tsx:56-121 — entire screen is inline V1 (TextInput/TouchableOpacity); needs FEATURES.V2_UI early-return to <RunShareView>",
+    "V1 has NO shareCardNode preview, NO shared-terminal state, NO sharedFanCount; container must either supply a share-card node (view-shot of the run) or omit it, and decide whether to use the shared-terminal flow vs V1's goBack-on-save",
+    "V1 'Save only' and 'Save and share' BOTH call handleSave (PersonalRunShareScreen.tsx:110-115 — secondaryBtn onPress=handleSave too) — RunShareView separates onShare (publish) vs onSkip (save-no-publish); the controller's stopRunAndSave currently always persists with the chosen privacy and does not branch publish-vs-save-only. Wire onSkip to save WITHOUT post/mapPin targets",
+    "RunShareView shareTargets toggles (post/mapPin) exist in V1 state but the controller's stopRunAndSave payload does NOT forward targets — V1 toggles are currently cosmetic/dead (targets never sent to BE). Real gap: publish-as-post and map-pin are not actually wired to a publish call",
+    "Discard has no confirm dialog — wrap onDiscard in Alert.alert (destructive)",
+    "isSharing/saving guard: V1 has `saving` state; map to isSharing",
+    "PR celebration: V1 shows PersonalRecordBadge from returned new PRs — RunShareView has no PR-banner slot; either keep PR celebration outside the View (navigate to a celebration) or add a banner prop"
+   ],
+   "beGaps": [
+    {
+     "desc": "Publish-as-post and map-pin targets are not sent to the backend — stopRunAndSave / savePersonalRun payload has no targets field, so 'Publier comme post' / 'Épingler sur la carte' do nothing server-side. Need the save/publish endpoint to accept share targets and create the post + map pin.",
+     "ticketNeeded": true,
+     "endpoint": "POST /activities/personal-runs (add shareTargets {post,mapPin}) or a separate POST /activities/personal-runs/{id}/publish"
+    },
+    {
+     "desc": "sharedFanCount for the shared-terminal body ('visible to your {{count}} fans') has no source — controller returns newPRs only, not a follower/fan count. Need fan count (from profile) or drop the {{count}} copy.",
+     "ticketNeeded": true,
+     "endpoint": "client profile fan count (already in profile data) OR GET fan count"
+    }
+   ],
+   "wiringPlan": "In PersonalRunShareScreen, FEATURES.V2_UI early-return <RunShareView>: title/onChangeTitle, description/onChangeDescription, stats=[distance,temps,allure,calories], privacy/privacyOptions(PRIVACIES)/onChangePrivacy, shareTargets={targets}/onToggleTarget, onShare→handleSave(publish=targets), onSkip→handleSave(no targets), onDiscard→Alert confirm→handleDiscard, isSharing={saving}. Map shared-terminal to the post-save success (use sharedFanCount from profile or omit). Strings from useTranslation('v2RunShareView'). Keep V1 as !V2_UI branch. ALSO fix the dead targets: forward shareTargets into the save payload (BE ticket).",
+   "safeAreaPlan": "RunShareView root flex:1 surface with its own header (paddingVertical:14) + footer (paddingBottom:28). NO inset consumption inside. Host (presented slide_from_bottom, gestureEnabled:false) must wrap in SafeAreaView edges={['top','bottom']} OR the footer paddingBottom:28 approximates the home-indicator — verify on device; prefer wrapping. ScrollView keyboardShouldPersistTaps for the inputs (V1 has it; ensure container/Input handles keyboard).",
+   "effort": "M"
+  },
+  {
+   "screen": "LivePreviewView",
+   "lot": "Live-Peaks",
+   "v1Screen": "src/screens/peaks/PeakViewScreen.tsx (mode='live-preview') is the real host — muted live HLS preview + 5s countdown then paywall. The standalone V1 chrome src/screens/peaks/components/LivePreviewOverlay.tsx is ORPHANED (referenced only inside its own file; no JSX consumer).",
+   "wired": false,
+   "componentExists": true,
+   "consolidationFlag": "NONE for V2. But flag V1 src/screens/peaks/components/LivePreviewOverlay.tsx as dead/orphaned (no consumer). Not a duplicate of an already-wired V2 view (ViewerLiveStreamView is the viewer broadcast surface, not the pre-join paywall preview).",
+   "figmaHint": "screen_live_preview (build_feeds_v5.py)",
+   "subScreens": [
+    "Free-preview countdown phase (muted live, 'Aperçu gratuit · 0:05')",
+    "Paywall sheet phase ('Aperçu terminé' -> subscribe)"
+   ],
+   "ctas": [
+    {
+     "label": "Fermer l'aperçu (close, top-right)",
+     "target": "PeakViewScreen goBack/navigateBackToOrigin",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "S'abonner · $9.99/mois (subscribe CTA)",
+     "target": "ChannelSubscription route (src/types/index.ts:854)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Plus tard (later/dismiss ghost)",
+     "target": "PeakViewScreen goBack",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Media tap (onMediaTap — pause/resume preview countdown)",
+     "target": "PeakViewScreen countdown pause logic (~line 1559-1575)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    }
+   ],
+   "popups": [
+    {
+     "name": "Paywall sheet (Card, paywallVisible)",
+     "present": true
+    },
+    {
+     "name": "Subscribe-in-flight loading (subscribeLoading spinner on CTA)",
+     "present": true
+    },
+    {
+     "name": "Confirm-leave/abandon-preview confirm",
+     "present": false
+    }
+   ],
+   "feGaps": [
+    "LivePreviewView NOT wired: PeakViewScreen.tsx mode='live-preview' (line 839) currently navigates AWAY to ChannelSubscription (line 1566) instead of rendering the inline LivePreviewView paywall sheet; the inline subscribe/later UX is unrealized.",
+    "Price string hardcoded FR default \"S'abonner · $9.99/mois\" in fixtures — host must inject real channel price from API (no live price source plumbed into preview).",
+    "V1 src/screens/peaks/components/LivePreviewOverlay.tsx is orphaned dead code that should be deleted on consolidation (directive #22)."
+   ],
+   "beGaps": [
+    {
+     "desc": "Channel subscription price for the preview paywall CTA — needs the creator's channel monthly price + currency to populate subscribeLabel instead of hardcoded $9.99. ChannelSubscription screen fetches it but PeakViewScreen preview does not.",
+     "endpoint": "GET /v2/channels/{creatorId}/subscription-price (or reuse the existing ChannelSubscription price fetch in the preview controller)",
+     "ticketNeeded": true
+    }
+   ],
+   "wiringPlan": "In PeakViewScreen mode='live-preview', behind FEATURES.V2_UI early-return, replace the V1 overlay + immediate navigate-to-ChannelSubscription with <LivePreviewView>: feed mediaSlot=the muted HLS player node, paywallVisible from the existing paywallShown state, onSubscribe -> navigation.navigate('ChannelSubscription',{creatorId,...}), onLater/onClose -> navigateBackToOrigin, onMediaTap -> existing countdown pause/resume. Inject subscribeLabel from fetched channel price. Then delete orphaned LivePreviewOverlay.tsx in the same commit.",
+   "safeAreaPlan": "Full-bleed over media. Wrap chrome with useSafeAreaInsets: top chrome (LIVE badge/preview tag/close) at insets.top+14; paywall sheet bottom padding += insets.bottom. PeakViewScreen already uses insets (18 sites). Component itself uses absolute positioning with fixed top:16/18 — pass insets from host or add edges offset in wiring layer.",
+   "effort": "M"
+  },
+  {
+   "screen": "LiveStreamingView",
+   "lot": "Live-Peaks",
+   "v1Screen": "src/screens/live/LiveStreamingScreen.tsx (broadcaster active-broadcast chrome). Registered at MainNavigator.tsx:414 (route 'LiveStreaming', types/index.ts:908).",
+   "wired": false,
+   "componentExists": true,
+   "consolidationFlag": "NONE. ViewerLiveStreamView is the VIEWER side; LiveStreamingView is the BROADCASTER (creator) side — distinct surfaces, not duplicates.",
+   "figmaHint": "screen_live_streaming (build_p2_v2.py)",
+   "subScreens": [
+    "Live (connectionState='live')",
+    "Reconnecting overlay",
+    "Ended overlay",
+    "Failed overlay"
+   ],
+   "ctas": [
+    {
+     "label": "Réduire le direct (close/minimize, top-right)",
+     "target": "LiveStreamingScreen minimize/back (does NOT end live)",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Partager (share rail)",
+     "target": "SharePostModal (already imported LiveStreamingScreen.tsx:4)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Couper le micro (mute toggle)",
+     "target": "toggleMute (useAgora, LiveStreamingScreen.tsx:95/480)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Changer de caméra (flip)",
+     "target": "switchCamera (LiveStreamingScreen.tsx:97/508)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Arrêter (STOP LIVE, destructive)",
+     "target": "endLiveStream -> mapApi.endLiveStream (LiveStreamingScreen.tsx:255) -> navigate LiveEnded",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    }
+   ],
+   "popups": [
+    {
+     "name": "SharePostModal",
+     "present": true
+    },
+    {
+     "name": "HostModerationSheet (moderation target sheet — exists in V1 LiveStreamingScreen.tsx:39/647)",
+     "present": false
+    },
+    {
+     "name": "Stop-live confirm dialog (irreversible end-broadcast — recommended per directive #18)",
+     "present": false
+    },
+    {
+     "name": "Connection-state overlay (reconnecting/ended/failed — built into the View)",
+     "present": true
+    },
+    {
+     "name": "Comment/reaction compose (V1 has sendComment/sendReaction; V2 correctly omits per directive #7)",
+     "present": false
+    }
+   ],
+   "feGaps": [
+    "LiveStreamingView NOT wired into LiveStreamingScreen.tsx (no V2_UI early-return, no import).",
+    "Component has NO close/minimize-to-PiP behavior defined beyond onClose callback — V1 'minimize' UX (background the live) is an ACTION_GAP to define in the wiring controller.",
+    "Component intentionally drops the V1 live comment feed + reaction stream + HostModerationSheet entry point. Per directive #7 comments stay in Agora layer, but the moderation sheet + reaction emojis present in V1 have NO surface in the V2 view — founder KEEP-EVERYTHING: need a moderation entry point added (e.g. long-press a viewer or a rail action) or explicit founder sign-off to drop.",
+    "connectionState must be derived from useAgora/useLiveStream reconnection state (directive #19) — host must map Agora connection events to the View's 'live'|'reconnecting'|'ended'|'failed' prop; that mapping does not exist yet."
+   ],
+   "beGaps": [
+    {
+     "desc": "No new endpoint required — end-live (mapApi.endLiveStream) and Agora token/connection already exist. Only client-side mapping of Agora connection events -> connectionState prop is missing.",
+     "ticketNeeded": false
+    }
+   ],
+   "wiringPlan": "Behind FEATURES.V2_UI early-return in LiveStreamingScreen.tsx, render <LiveStreamingView> with videoSlot=<LocalVideoView/>, title/viewerCount/elapsed from useLiveStream, likeCount/giftCount from live counters, connectionState mapped from useAgora connection state, onToggleMute=toggleMute, onFlipCamera=switchCamera, onShare=open SharePostModal, onStopLive=endLiveStream (guard with stopLoading + add a confirm), onClose=minimize. ADD a moderation entry point (rail/long-press) to preserve HostModerationSheet, or get founder sign-off to defer. Keep V1 path when flag off.",
+   "safeAreaPlan": "Full-bleed. Top chrome top:18 and bottom controls bottom:36/side rail bottom:132 are hardcoded — wrap with insets from host (top chrome += insets.top, controls += insets.bottom) since LiveStreamingScreen already uses useSafeAreaInsets (5 sites).",
+   "effort": "L"
+  },
+  {
+   "screen": "PeakCameraView",
+   "lot": "Live-Peaks",
+   "v1Screen": "src/screens/peaks/CreatePeakScreen.tsx (capture step). Has a FEATURES.V2_UI early-return at line 797 that renders V2 'pkc' chrome INLINE (styles.pkcTopbar/pkcCircle/pkcTimer) using CameraView+RecordButton+SpeedPicker — it does NOT use the PeakCameraView component.",
+   "wired": false,
+   "componentExists": true,
+   "consolidationFlag": "DUPLICATE IMPLEMENTATION: CreatePeakScreen.tsx (lines ~797-880) re-implements the peak-camera chrome inline behind V2_UI instead of importing PeakCameraView. The component and the inline pkc* chrome are two parallel implementations of the same maquette (violates directive #8). Consolidate onto PeakCameraView OR delete the unused component if founder prefers the inline version.",
+   "figmaHint": "screen_peak_camera (build_creator_config_v2.py)",
+   "subScreens": [
+    "Idle capture",
+    "Recording (rec badge + elapsed)"
+   ],
+   "ctas": [
+    {
+     "label": "Fermer (close, top-left)",
+     "target": "CreatePeakScreen handleClose (V2 -> gallery) line 817",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Ajouter son (add-sound pill)",
+     "target": "Sound picker / SoundUsageScreen",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Flash toggle",
+     "target": "CreatePeakScreen torchOn/setTorchOn (line 806 enableTorch)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Flip camera (right stack)",
+     "target": "CreatePeakScreen facing toggle",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Minuteur (timer side action)",
+     "target": "timer sheet",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Effets (effects side action)",
+     "target": "effects sheet",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Ajuster (adjust side action)",
+     "target": "adjust sheet",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Speed strip (slow..very-fast)",
+     "target": "SpeedPicker / setSelectedSpeed (CreatePeakScreen:847)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Duration chips (6/10/15/60s)",
+     "target": "selectedDuration state (CreatePeakScreen)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Record button",
+     "target": "RecordButton onRecordStart/End (CreatePeakScreen:876)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Galerie (library)",
+     "target": "handleGalleryPick / PeakVideoGallery (CreatePeakScreen)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Filtres",
+     "target": "filters sheet",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "Add-sound sheet",
+     "present": false
+    },
+    {
+     "name": "Timer sheet",
+     "present": false
+    },
+    {
+     "name": "Effects sheet",
+     "present": false
+    },
+    {
+     "name": "Adjust sheet",
+     "present": false
+    },
+    {
+     "name": "Filters sheet",
+     "present": false
+    },
+    {
+     "name": "Library/gallery picker (PeakVideoGallery / PeakGalleryV2 — exists in V1 flow)",
+     "present": true
+    },
+    {
+     "name": "Permission-denied gate",
+     "present": true
+    }
+   ],
+   "feGaps": [
+    "PeakCameraView component is unused — CreatePeakScreen V2_UI path duplicates the chrome inline (CreatePeakScreen.tsx ~797-880). Parallel implementation must be consolidated (directive #8/#22).",
+    "Add-sound / Timer / Effects / Adjust / Filters side actions have NO backing logic in CreatePeakScreen V2 path (comment at line 794-795 explicitly says 'Music/Effets/Ajuster/Filtres omitted (no logic)') — KEEP-EVERYTHING means these need backend/feature tickets, not silent drop.",
+    "Component speed strip uses generic options; CreatePeak uses its own SpeedPicker — needs option-shape adapter when consolidating."
+   ],
+   "beGaps": [
+    {
+     "desc": "Sound library (Add-sound) for peaks — no endpoint to list/attach licensed sounds to a peak capture. SoundUsageScreen exists for attribution but no sound-pick/attach API surfaced into capture.",
+     "endpoint": "GET /v2/sounds (browse/search) + attach soundId on peak create",
+     "ticketNeeded": true
+    },
+    {
+     "desc": "Camera effects / AR filters catalog — no endpoint/feature for effects+filters side actions.",
+     "endpoint": "GET /v2/peak-effects (or client-only filter set; needs product decision)",
+     "ticketNeeded": true
+    }
+   ],
+   "wiringPlan": "Consolidate: replace the inline pkc* JSX in CreatePeakScreen V2_UI capture branch (lines ~797-880) with <PeakCameraView>, mapping cameraSlot=<CameraView>, recording/elapsedTime from recording state, onClose=handleClose, onToggleFlash=torch toggle, onFlipCamera=facing toggle, speedOptions/onSelectSpeed from SpeedPicker model, durationOptions/onSelectDuration from selectedDuration, onRecord from RecordButton handlers, onOpenLibrary=handleGalleryPick. Gate Add-sound/Timer/Effects/Adjust/Filters behind feature tickets (render only when handlers provided — the View already hides absent actions). Remove the duplicated inline chrome in the same commit.",
+   "safeAreaPlan": "CreatePeakScreen already threads insets (18 sites: pkcTopbar top=insets.top+14, pkcTimer top=insets.top+16). PeakCameraView uses fixed top:16/bottom:38 — pass insets via wrapper or extend the View to accept insets; reuse the host's existing insets.top/bottom offsets.",
+   "effort": "L"
+  },
+  {
+   "screen": "VideoRecorderView",
+   "lot": "Live-Peaks",
+   "v1Screen": "src/screens/home/VideoRecorderScreen.tsx (segment-based video recorder, MAX_SEGMENT_DURATION=15). Route 'VideoRecorder' (CreateStack.tsx:19, types/index.ts:723), reached from CreatePostScreen.tsx:402.",
+   "wired": false,
+   "componentExists": true,
+   "consolidationFlag": "NONE. VideoRecorderView is the segment recorder for the POST/video flow; PeakCameraView is the peak capture flow. Distinct hosts (VideoRecorderScreen vs CreatePeakScreen) — not duplicates. (Note: the V2 component doc claims it is a restyle of VideoRecorderScreen, confirming 1:1 host mapping.)",
+   "figmaHint": "VideoRecorderScreen (V2 segment-recorder restyle; no Stitch maquette name — derived from V1 screen)",
+   "subScreens": [
+    "Permission loading",
+    "Permission denied gate",
+    "Granted: idle (hold-to-record hint)",
+    "Granted: recording (progress + REC badge)",
+    "Granted: segments saved (Done CTA)"
+   ],
+   "ctas": [
+    {
+     "label": "Fermer (close, top-left)",
+     "target": "VideoRecorderScreen close/goBack",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Flip camera",
+     "target": "toggleCameraFacing (VideoRecorderScreen.tsx:73/229)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Record (hold-to-record)",
+     "target": "startRecording/stopRecording (VideoRecorderScreen.tsx:77/133, onPressIn/Out:282)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Terminé (Done -> editor)",
+     "target": "handleDone -> navigate('CreatePeak') (VideoRecorderScreen.tsx:171/178)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Autoriser la caméra (permission allow)",
+     "target": "requestPermission",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    }
+   ],
+   "popups": [
+    {
+     "name": "Permission-denied gate (EmptyState with allow CTA)",
+     "present": true
+    },
+    {
+     "name": "Loading state",
+     "present": true
+    },
+    {
+     "name": "Empty state (no segments, idle)",
+     "present": true
+    },
+    {
+     "name": "Max-segments-reached / segment-limit toast",
+     "present": false
+    }
+   ],
+   "feGaps": [
+    "VideoRecorderView NOT wired into VideoRecorderScreen.tsx (no V2_UI early-return, no import).",
+    "Component field names already mirror V1 (isRecording/currentDuration/maxDuration/progress/segmentCount/onToggleCameraFacing/onStart/onStopRecording/onDone) so wiring is mechanical — main gap is just the missing early-return.",
+    "V1 segment auto-restart loop (line 117-121 increments segmentCount and re-calls startRecording) must keep driving the View's progress/segmentCount props; ensure host owns the interval (View is prop-driven, no effects)."
+   ],
+   "beGaps": [
+    {
+     "desc": "No new endpoint — recording is fully client-side (expo-camera) and Done navigates to CreatePeak. No backend gap.",
+     "ticketNeeded": false
+    }
+   ],
+   "wiringPlan": "Behind FEATURES.V2_UI early-return in VideoRecorderScreen.tsx, render <VideoRecorderView> with cameraSlot=<CameraView>, permissionState mapped from permission.granted/loading/denied, isRecording/currentDuration/maxDuration(15)/progress/segmentCount from existing state, onToggleCameraFacing=toggleCameraFacing, onStartRecording=startRecording, onStopRecording=stopRecording, onDone=handleDone, onRequestPermission=requestPermission, onClose=goBack. Field names already align 1:1. Keep V1 path when flag off.",
+   "safeAreaPlan": "VideoRecorderScreen uses useSafeAreaInsets (4 sites). VideoRecorderView top bar top:16 / bottom:40 are fixed — pass insets via wrapper (top += insets.top, bottom += insets.bottom). Permission gate is centered full-screen, safe-area-agnostic.",
+   "effort": "M"
+  },
+  {
+   "screen": "EditProfileView",
+   "lot": "Profile-Disputes-Other",
+   "v1Screen": "src/screens/settings/EditProfileScreen.tsx",
+   "componentExists": true,
+   "wired": false,
+   "consolidationFlag": "EditProfileScreen (inline V2) — the host already has a full V2 branch behind FEATURES.V2_UI (lines 474-565) that inlines V2Avatar/V2Input/V2ListRow/V2Button directly and does NOT use this EditProfileView component. EditProfileView is an ORPHANED parallel implementation (directive #8 violation) referenced ONLY in galleryRegistry.ts:509.",
+   "ctas": [
+    {
+     "label": "Back (chevron)",
+     "target": "navigation.goBack()",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Cover edit pill (Modifier)",
+     "target": "container onPressCover → image picker (V1 pickCover)",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Avatar camera badge",
+     "target": "container onPressAvatar → image picker (V1 showImagePicker)",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Link row (rows[])",
+     "target": "row.onPress → link editor (NO V1 equivalent — V1 has no link field)",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Location/Ville row (rows[])",
+     "target": "row.onPress → V1 detectBusinessLocation (business-only)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Enregistrer (Save)",
+     "target": "container onSave → V1 handleSave (profile update API)",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "DatePickerModal (date of birth)",
+     "present": false
+    },
+    {
+     "name": "GenderPickerModal",
+     "present": false
+    },
+    {
+     "name": "Image picker action sheet (avatar/cover source)",
+     "present": false
+    },
+    {
+     "name": "Unsaved-changes discard confirm",
+     "present": false
+    }
+   ],
+   "subScreens": [],
+   "feGaps": [
+    "DATA-MODEL MISMATCH (blocker): EditProfileView exposes a single `name` (display name) + `username` + `bio` + generic `rows[]` (link/location). V1 EditProfileScreen edits firstName/lastName (separate) + bio + dateOfBirth + gender + businessAddress(Ville) — EditProfileView/EditProfileView.tsx:126-163. Wiring this component would DROP first/last-name split, DOB and gender editing.",
+    "FOUNDER-RULE VIOLATION: EditProfileView.tsx:138-147 renders an editable `username` Input ('Nom d’utilisateur', @ glyph). feedback_never_show_username_jun21 forbids surfacing @username/handle app-wide; the already-wired inline V2 in EditProfileScreen.tsx:520-530 correctly omits username. EditProfileView must NOT be wired as-is.",
+    "EditProfileView has NO DatePickerModal/GenderPickerModal slots — the inline V2 host (EditProfileScreen.tsx:561-562) keeps both; the generic `rows[]` model cannot host the date/gender pickers with their current value formatting.",
+    "EditProfileView has no bio char-counter / maxLength=150 parity (it hardcodes maxLength=500 at EditProfileView.tsx:374); V1 inline uses 150 (EditProfileScreen.tsx:528).",
+    "No SafeArea handling inside EditProfileView (uses plain View, no insets) — host EditProfileScreen consumes useSafeAreaInsets; component would need a SafeArea wrapper at host."
+   ],
+   "beGaps": [],
+   "wiringPlan": "DO NOT wire EditProfileView. The Edit Profile V2 surface is ALREADY shipped via the inline V2 branch in EditProfileScreen.tsx (behind FEATURES.V2_UI, correct data model + pickers + never-show-username). Recommended consolidation (directive #22): either (a) DELETE EditProfileView + its fixtures + galleryRegistry entry (line 90-91,509) as a dead parallel impl, OR (b) refactor EditProfileView to the V1 data shape (firstName/lastName/DOB-row/gender-row/Ville-row, NO username) and replace the inline JSX in EditProfileScreen.tsx:477-564 with <EditProfileView/>. Option (b) is the canonical single-controller path; option (a) is faster. Founder decision needed. KEEP-EVERYTHING rule: do not silently drop — flag as duplicate, do not delete without sign-off.",
+   "safeAreaPlan": "Host owns SafeArea: EditProfileScreen already applies insets.top to header padding + insets.bottom to the sticky Save bar (EditProfileScreen.tsx:487,555). If EditProfileView is adopted, pass paddingTop=insets.top to header + render Save CTA inside a host-level View with paddingBottom=insets.bottom (component has no SafeArea of its own).",
+   "effort": "M",
+   "figmaHint": "p1_edit_profile_v2 (a.k.a. screen_edit_profile in build_p1_v2.py) — 'Modifier le profil'"
+  },
+  {
+   "screen": "PostSuccessView",
+   "lot": "Profile-Disputes-Other",
+   "v1Screen": "src/screens/home/PostSuccessScreen.tsx",
+   "componentExists": true,
+   "wired": false,
+   "consolidationFlag": "NONE (but BEHAVIOR-CONTRACT mismatch with the V1 host — see feGaps).",
+   "ctas": [
+    {
+     "label": "Voir ma publication (view post)",
+     "target": "container onViewPost → navigate to the published post detail (NO V1 equivalent — V1 auto-resets to Tabs, no view-post nav)",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Retour au fil (back to feed)",
+     "target": "container onBackToFeed → navigation.reset to Tabs (Feed) — maps to V1 auto-reset target",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [],
+   "subScreens": [],
+   "feGaps": [
+    "BEHAVIOR-CONTRACT mismatch: V1 PostSuccessScreen is a 3-second AUTO-REDIRECT full-screen-media celebration (checkmark spring + progress bar + setTimeout→navigation.reset to Tabs, PostSuccessScreen.tsx:62-102) with ZERO interactive CTAs. V2 PostSuccessView is a STATIC card-stack celebration with 'view post' + 'back to feed' Buttons and NO timer/auto-redirect (PostSuccessView.tsx:33-43 comment confirms 'animates nothing, owns no timer'). Wiring V2 changes the UX from auto-advance to tap-to-advance — founder UX decision required.",
+    "V1 renders the actual published media as a looping <Video>/Optimizedto background + thumbnail (PostSuccessScreen.tsx:111-179, peaks vs photo branch). V2 expects a caller `previewSlot` node for ONLY the front card — container must build the Video/Image media node + a multi-media count badge (V1 shows media.length indicator at :173-178; V2 has no count badge, only an optional online badge).",
+    "V1 receives route params { media[], postType, fromProfile } (PostSuccessScreen.tsx:33). V2 needs a freshly-published postId to power onViewPost — NOT currently passed in the PostSuccess route params (src/types/index.ts:725/804). Add postId to route params if onViewPost is wired.",
+    "V2 confetti/online-badge are new chrome not in V1; safe to add (DS-fill).",
+    "If auto-redirect is kept, V2 PostSuccessView cannot host the setTimeout (it's timer-free by contract) — the host container must own the timer + still render V2 as presentational, but then the CTAs are dead. Decide: auto-redirect (drop V2 CTAs) vs interactive (drop V1 timer)."
+   ],
+   "beGaps": [],
+   "wiringPlan": "Host PostSuccessScreen behind FEATURES.V2_UI early-return (after hooks). Resolve the behavior contract first: RECOMMENDED canonical (Instagram/TikTok) = interactive success with 'View post' + 'Back to feed', drop the 3s auto-reset. Container builds: previewSlot = the V1 conditional Video/OptimizedImage media node; onBackToFeed = the V1 navigation.reset({Tabs, fromProfile?Profile}) logic; onViewPost = navigate to the new post detail (requires postId in route params — add to MainStackParamList PostSuccess params at types/index.ts:725,804). Map i18n from existing v2PostSuccessView namespace (config.ts already registers it). Keep V1 analytics 'post published'. If founder prefers auto-redirect, keep V1 unchanged and DEFER V2 (component stays gallery-only).",
+   "safeAreaPlan": "PostSuccessView uses a ScrollView with paddingTop:56/paddingBottom:40 and no SafeArea. V1 host is full-bleed (full-screen media, no SafeAreaView). For V2 adoption wrap in SafeAreaView edges=['top','bottom'] OR pass host insets into the scroll content padding so the check hero clears the notch and the bottom CTA clears the home indicator.",
+   "effort": "M",
+   "figmaHint": "screen_post_success (build_creator_config_v2.py) — 'Publication en ligne 🎉'"
+  },
+  {
+   "screen": "DisputeDetailView",
+   "lot": "Profile-Disputes-Other",
+   "v1Screen": "src/screens/disputes/DisputeDetailScreen.tsx",
+   "componentExists": true,
+   "wired": false,
+   "consolidationFlag": "NONE",
+   "ctas": [
+    {
+     "label": "Back (‹)",
+     "target": "navigation.goBack()",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Répondre / Soumettre une preuve (respond, sticky)",
+     "target": "container onRespond → V1 handleEvidenceAction (image-picker + text-evidence Modal, DisputeDetailScreen.tsx:456,758-766)",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Faire appel (appeal, sticky)",
+     "target": "container onAppeal → NO V1 IMPLEMENTATION — V1 dispute has no appeal action (only the doc comment mentions it); AppealFormView/AppealFormScreen exists but is moderation suspension/ban-only, not dispute appeal",
+     "status": "TARGET_MISSING"
+    },
+    {
+     "label": "Réessayer (error Banner retry)",
+     "target": "container onRetry → V1 refetch (useDataFetch reload)",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Evidence media slots (per item)",
+     "target": "caller mediaSlot node → OptimizedImage/Video (V1 EvidenceCard)",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "Submit-evidence text Modal (V1 textEvidenceModalVisible, DisputeDetailScreen.tsx:779)",
+     "present": false
+    },
+    {
+     "name": "Image-picker action sheet (screenshot evidence, V1 handleEvidenceAction)",
+     "present": false
+    },
+    {
+     "name": "Accept-resolution confirm Alert (V1 handleAcceptResolution, DisputeDetailScreen.tsx:514-517)",
+     "present": false
+    }
+   ],
+   "subScreens": [],
+   "feGaps": [
+    "MISSING CTA: V1 bottom bar has 'Accepter la résolution' (handleAcceptResolution, shown when dispute.resolution set, DisputeDetailScreen.tsx:767-774). DisputeDetailView has NO accept-resolution CTA — only respond + appeal. Add an `onAcceptResolution`/`canAcceptResolution` affordance to the View or wire it as a secondary action, else accepting a resolution becomes unreachable in V2.",
+    "SPURIOUS CTA: DisputeDetailView's appeal CTA (DisputeDetailView.tsx:240-264, canAppeal/onAppeal/appealFiled) has no V1 counterpart — V1 disputes cannot be appealed. Either gate canAppeal=false at the container until a dispute-appeal flow exists, or ticket the backend (see beGaps).",
+    "DATA NOT SURFACED: V1 DisputeDetail carries autoVerification (Agora presence/duration/quality/recommendation, DisputeDetailScreen.tsx:92-108), respondentResponse, verificationLogs, session{scheduledAt,duration}, priority, evidenceDeadline, currency. V2 surfaces NONE of these (only parties/amount/description/timeline/evidence/resolution). KEEP-EVERYTHING: do not drop the auto-verification block — it is the core no-show/session-quality evidence. Either extend DisputeDetailView with an auto-verification card or keep V1 for this surface.",
+    "V2 timeline takes pre-formatted dateText + label; V1 timeline events are raw {eventType,eventData,createdAt} — container must format via formatShortDateTime/formatRelativeTime (V1 already imports these).",
+    "Avatar a11y labels & party names: V2 uses party.name (good, respects never-show-username) but the V1 DisputeDetail party object is {username,name?,avatar} — container must resolveDisplayName and NOT pass username (feedback_never_show_username_jun21)."
+   ],
+   "beGaps": [
+    {
+     "desc": "Dispute appeal flow: V2 DisputeDetailView exposes canAppeal/onAppeal/appealFiled but there is no backend endpoint or route to file an appeal AGAINST a resolved dispute (distinct from moderation suspension/ban appeals). Need POST to create a dispute appeal + GET appeal status to drive appealFiled. Until then keep canAppeal=false.",
+     "ticketNeeded": true,
+     "endpoint": "POST /v2/disputes/{disputeId}/appeal + GET /v2/disputes/{disputeId}/appeal-status"
+    },
+    {
+     "desc": "DisputeDetail GET should additionally return pre-computed canRespond/canAppeal booleans (V2 contract) so the client doesn't infer state from status+role; currently V1 infers isOpen && userRole!=='admin' client-side.",
+     "ticketNeeded": true,
+     "endpoint": "GET /v2/disputes/{disputeId} (add canRespond, canAppeal, appealFiled fields)"
+    }
+   ],
+   "wiringPlan": "Host DisputeDetailScreen behind FEATURES.V2_UI early-return (after hooks/useDataFetch). Map V1 DisputeDetail → DisputeDetailView props: titleTemplate+disputeNumber, status (open|under_review|evidence_requested|resolved|closed), complainant/respondent via resolveDisplayName (NO username), amountText/refundText (format with currency), descriptionText=complainantDescription, timeline (format dates), evidence[] with OptimizedImage/Video mediaSlot, resolution. SET canAppeal=false until the dispute-appeal backend exists (beGaps ticket). ADD an accept-resolution affordance (extend View or add to bottom bar) to preserve V1 handleAcceptResolution. onRespond → V1 handleEvidenceAction (keep its image-picker + text Modal at host). DEFER surfacing autoVerification or extend the View with an auto-verification card before declaring full parity. Map i18n to a new v2DisputeDetailView namespace.",
+   "safeAreaPlan": "DisputeDetailView uses a plain root View + sticky bottomBar with paddingBottom:20 (DisputeDetailView.tsx:1145-1150). V1 host wraps in SafeAreaView. For V2 adoption, render inside SafeAreaView edges=['top'] (header) and add insets.bottom to the sticky bottomBar padding so the respond/appeal CTA clears the home indicator.",
+   "effort": "L",
+   "figmaHint": "dispute_detail_v2 / screen_dispute_detail (Moderation group, 'Litige {{number}}')"
+  },
+  {
+   "screen": "SpotDetailView",
+   "lot": "Profile-Disputes-Other",
+   "v1Screen": "src/screens/spots/SpotDetailScreen.tsx",
+   "componentExists": true,
+   "wired": false,
+   "consolidationFlag": "NONE",
+   "ctas": [
+    {
+     "label": "Back (‹)",
+     "target": "navigation.goBack()",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Share (↗)",
+     "target": "container onShare → share spot (NO V1 equivalent — V1 SpotDetailScreen has no share button)",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Creator row (Suggéré par)",
+     "target": "container onOpenCreator → V1 navigate('ProfileStack',{screen:'UserProfile',params:{userId:creator_id}}) (SpotDetailScreen.tsx:242)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Review row (open reviewer)",
+     "target": "container onOpenReviewer(id) → reviewer profile (NO V1 equivalent — V1 review rows are non-tappable)",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Donner un avis (add review, sticky)",
+     "target": "container onAddReview → V1 setShowReviewSheet(true) → AddReviewSheet (SpotDetailScreen.tsx:303,340)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Itinéraire (directions, sticky)",
+     "target": "container onDirections → maps deep-link (NO V1 equivalent — V1 has no directions CTA)",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Réessayer (error retry)",
+     "target": "container onRetry → V1 loadData refetch",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "AddReviewSheet (V1 showReviewSheet, SpotDetailScreen.tsx:340-347)",
+     "present": false
+    }
+   ],
+   "subScreens": [],
+   "feGaps": [
+    "NEW CTAs not in V1: Itinéraire (directions) + Share (header ↗). V1 SpotDetailScreen has neither. Directions needs a maps deep-link helper (V1 imports formatDistance/formatDuration from mapbox-directions but does NOT build a directions intent). Either wire a new directions deep-link or hide the directions CTA (onDirections undefined) for V1 parity.",
+    "V1 review rows are NON-tappable (SpotDetailScreen.tsx:314-335). V2 onOpenReviewer makes them tappable to a reviewer profile — net-new affordance; reviewer object has no user_id surfaced in V1 SpotReview shape (only user.full_name/avatar). Need reviewer id from API to wire, else leave onOpenReviewer undefined.",
+    "Map hero: V2 takes a single caller mapSlot node (caller bakes marker+route line). V1 builds MapView+Camera+MarkerView+ShapeSource+LineLayer inline (SpotDetailScreen.tsx:20). Container must assemble the mapbox node and pass it as mapSlot — non-trivial (route geojson → LineLayer).",
+    "canReview gating: V1 = isVerified || PRO_CREATOR || PRO_BUSINESS (SpotDetailScreen.tsx:90). Container must pass that exact computed boolean to V2 canReview (per-account-type verification, project_branch_migration_nouss_ui3_jun22 rule).",
+    "Pre-formatting: V2 expects routeDistanceText/routeDurationText/ratingSummaryText pre-formatted; V1 has routeDistanceKm/routeDurationMin/rating_average/rating_count raw — container formats via formatDistance/formatDuration + a rating-summary string.",
+    "Difficulty: V1 DIFFICULTY_COLORS (easy=teal/medium=gold/hard=red/expert=purple) are GRAPHICS; V2 re-expresses as AA-safe per-mode constants (good) — map V1 difficulty string 1:1.",
+    "Reviews are UNBOUNDED FlatList in V2 with onRefresh/onEndReached; V1 loads a fixed 20 and renders inline in a ScrollView (no pagination). Container should add cursor pagination or pass onEndReached=undefined."
+   ],
+   "beGaps": [
+    {
+     "desc": "SpotReview API should return the reviewer's profile id so V2 onOpenReviewer can navigate to the reviewer profile (V1 SpotReview only exposes user.full_name/avatar_url, no id).",
+     "ticketNeeded": true,
+     "endpoint": "GET /spots/reviews (add reviewer user_id to each review)"
+    },
+    {
+     "desc": "Optional: a spot 'share' link/deeplink endpoint if share should produce a canonical spot URL (else use client-side Share with name only).",
+     "ticketNeeded": false,
+     "endpoint": "GET /spots/{id} (add shareUrl)"
+    }
+   ],
+   "wiringPlan": "Host SpotDetailScreen behind FEATURES.V2_UI early-return (after hooks + UUID guard + loadData). Map V1 SpotData/SpotReview → SpotDetailView props: title/spotName=name, ratingSummaryText from rating_average+rating_count, averageStars=Math.round(rating_average), categoryText=sport_type||category, creator row (resolveDisplayName, NO username) → onOpenCreator=V1 UserProfile nav, isRoute+routeStats (formatDistance/formatDuration)+difficulty, description, qualities[], reviews[] with AvatarImage reviewerAvatarSlot, canReview=V1 computed boolean, onAddReview=setShowReviewSheet(true) (keep AddReviewSheet at host), mapSlot=assembled mapbox node. Set onDirections + onShare + onOpenReviewer only if the new deep-link/share/reviewer-id are available — otherwise leave undefined for V1 parity (KEEP-EVERYTHING: do not drop, ticket the gaps). Map i18n to a new v2SpotDetailView namespace.",
+   "safeAreaPlan": "SpotDetailView uses a plain root View + FlatList + sticky bottomBar (paddingBottom:20). V1 host wraps in SafeAreaView. For V2 adoption render inside SafeAreaView edges=['top'] for the header and add insets.bottom to the sticky bottomBar so the directions/add-review CTAs clear the home indicator; the FlatList contentContainer already has paddingBottom:30.",
+   "effort": "L",
+   "figmaHint": "spot_detail_v2 / screen_spot_detail (Spots group) — 'Sentier du Mont-Royal' route detail"
+  }
+ ],
+ "beTickets": [
+  {
+   "screen": "RunTrackingView",
+   "desc": "Cadence (ppm) not captured by the GPS tracker / not in RunLiveStats or PersonalRunSavePayload. RunTrackingView shows a cadence tile. Either drop the tile in the container (recommended V1) or add accelerometer cadence capture + persist.",
+   "ticketNeeded": true,
+   "endpoint": "client GPS tracker + POST /activities/personal-runs (add cadence field)"
+  },
+  {
+   "screen": "RunDetailView",
+   "desc": "GET single personal run by id with full detail (splits array, elevation deltas, calories, title, route geojson). Only personal-runs-list.ts + personal-runs-create.ts exist; no get-by-id handler. RunDetailView splits bars cannot render without it.",
+   "ticketNeeded": true,
+   "endpoint": "GET /activities/personal-runs/{id} → new personal-runs-get.ts"
+  },
+  {
+   "screen": "RunDetailView",
+   "desc": "DELETE a personal run (Supprimer ce run CTA). No delete handler exists.",
+   "ticketNeeded": true,
+   "endpoint": "DELETE /activities/personal-runs/{id} → new personal-runs-delete.ts"
+  },
+  {
+   "screen": "RunDetailView",
+   "desc": "PersonalRunHistoryItem lacks title — RunDetail header title needs the run title persisted/returned (save accepts title but list/get don't return it).",
+   "ticketNeeded": true,
+   "endpoint": "GET /activities/personal-runs/{id} (include title field)"
+  },
+  {
+   "screen": "RunHistoryView",
+   "desc": "Per-run isPr flag (was this run a personal record?) not in PersonalRunHistoryItem. RunHistoryView shows a 🏆 PR badge per row. Either derive client-side by cross-referencing getPersonalRecords sessionId, or add is_pr to the list response.",
+   "ticketNeeded": true,
+   "endpoint": "GET /activities/personal-runs (add is_pr per item) — or derive client-side from personal-records sessionId"
+  },
+  {
+   "screen": "RunHistoryView",
+   "desc": "Weekly personal run aggregate for the ring hero (km this week / target / runs count / time). getWeeklyStats exists but RunHistoryView needs the 'this week' single bucket + a configurable target (25km default per contract §5.4); target is not server-provided.",
+   "ticketNeeded": true,
+   "endpoint": "GET /activities/stats/weekly?personal=true (already exists) — confirm returns current-week bucket; weekly target km is client-default"
+  },
+  {
+   "screen": "RunRecordsView",
+   "desc": "RunDetail target needs a get-by-id endpoint (shared with RunDetailView). Record rows with sessionId can only navigate once GET /activities/personal-runs/{id} exists.",
+   "ticketNeeded": true,
+   "endpoint": "GET /activities/personal-runs/{id} (shared with RunDetailView)"
+  },
+  {
+   "screen": "RunShareView",
+   "desc": "Publish-as-post and map-pin targets are not sent to the backend — stopRunAndSave / savePersonalRun payload has no targets field, so 'Publier comme post' / 'Épingler sur la carte' do nothing server-side. Need the save/publish endpoint to accept share targets and create the post + map pin.",
+   "ticketNeeded": true,
+   "endpoint": "POST /activities/personal-runs (add shareTargets {post,mapPin}) or a separate POST /activities/personal-runs/{id}/publish"
+  },
+  {
+   "screen": "RunShareView",
+   "desc": "sharedFanCount for the shared-terminal body ('visible to your {{count}} fans') has no source — controller returns newPRs only, not a follower/fan count. Need fan count (from profile) or drop the {{count}} copy.",
+   "ticketNeeded": true,
+   "endpoint": "client profile fan count (already in profile data) OR GET fan count"
+  },
+  {
+   "screen": "LivePreviewView",
+   "desc": "Channel subscription price for the preview paywall CTA — needs the creator's channel monthly price + currency to populate subscribeLabel instead of hardcoded $9.99. ChannelSubscription screen fetches it but PeakViewScreen preview does not.",
+   "endpoint": "GET /v2/channels/{creatorId}/subscription-price (or reuse the existing ChannelSubscription price fetch in the preview controller)",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "PeakCameraView",
+   "desc": "Sound library (Add-sound) for peaks — no endpoint to list/attach licensed sounds to a peak capture. SoundUsageScreen exists for attribution but no sound-pick/attach API surfaced into capture.",
+   "endpoint": "GET /v2/sounds (browse/search) + attach soundId on peak create",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "PeakCameraView",
+   "desc": "Camera effects / AR filters catalog — no endpoint/feature for effects+filters side actions.",
+   "endpoint": "GET /v2/peak-effects (or client-only filter set; needs product decision)",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "DisputeDetailView",
+   "desc": "Dispute appeal flow: V2 DisputeDetailView exposes canAppeal/onAppeal/appealFiled but there is no backend endpoint or route to file an appeal AGAINST a resolved dispute (distinct from moderation suspension/ban appeals). Need POST to create a dispute appeal + GET appeal status to drive appealFiled. Until then keep canAppeal=false.",
+   "ticketNeeded": true,
+   "endpoint": "POST /v2/disputes/{disputeId}/appeal + GET /v2/disputes/{disputeId}/appeal-status"
+  },
+  {
+   "screen": "DisputeDetailView",
+   "desc": "DisputeDetail GET should additionally return pre-computed canRespond/canAppeal booleans (V2 contract) so the client doesn't infer state from status+role; currently V1 infers isOpen && userRole!=='admin' client-side.",
+   "ticketNeeded": true,
+   "endpoint": "GET /v2/disputes/{disputeId} (add canRespond, canAppeal, appealFiled fields)"
+  },
+  {
+   "screen": "SpotDetailView",
+   "desc": "SpotReview API should return the reviewer's profile id so V2 onOpenReviewer can navigate to the reviewer profile (V1 SpotReview only exposes user.full_name/avatar_url, no id).",
+   "ticketNeeded": true,
+   "endpoint": "GET /spots/reviews (add reviewer user_id to each review)"
+  }
+ ],
+ "consolidations": [
+  {
+   "screen": "RunHistoryView",
+   "dup": "NONE — RunHistoryView (history list, runs tab) and RunRecordsView (PRs, records tab) are the two tabs of the SAME PersonalRecordsScreen host; not duplicates of each other. Its docblock mentions WeeklyStatsScreen but that is a distinct weekly-trends screen already wired to WeeklyStatsView."
+  },
+  {
+   "screen": "RunRecordsView",
+   "dup": "NONE — same PersonalRecordsScreen host as RunHistoryView, but it is the 'records' (PRs) tab, a distinct surface. Not a duplicate."
+  },
+  {
+   "screen": "LivePreviewView",
+   "dup": "NONE for V2. But flag V1 src/screens/peaks/components/LivePreviewOverlay.tsx as dead/orphaned (no consumer). Not a duplicate of an already-wired V2 view (ViewerLiveStreamView is the viewer broadcast surface, not the pre-join paywall preview)."
+  },
+  {
+   "screen": "LiveStreamingView",
+   "dup": "NONE. ViewerLiveStreamView is the VIEWER side; LiveStreamingView is the BROADCASTER (creator) side — distinct surfaces, not duplicates."
+  },
+  {
+   "screen": "PeakCameraView",
+   "dup": "DUPLICATE IMPLEMENTATION: CreatePeakScreen.tsx (lines ~797-880) re-implements the peak-camera chrome inline behind V2_UI instead of importing PeakCameraView. The component and the inline pkc* chrome are two parallel implementations of the same maquette (violates directive #8). Consolidate onto PeakCameraView OR delete the unused component if founder prefers the inline version."
+  },
+  {
+   "screen": "VideoRecorderView",
+   "dup": "NONE. VideoRecorderView is the segment recorder for the POST/video flow; PeakCameraView is the peak capture flow. Distinct hosts (VideoRecorderScreen vs CreatePeakScreen) — not duplicates. (Note: the V2 component doc claims it is a restyle of VideoRecorderScreen, confirming 1:1 host mapping.)"
+  },
+  {
+   "screen": "EditProfileView",
+   "dup": "EditProfileScreen (inline V2) — the host already has a full V2 branch behind FEATURES.V2_UI (lines 474-565) that inlines V2Avatar/V2Input/V2ListRow/V2Button directly and does NOT use this EditProfileView component. EditProfileView is an ORPHANED parallel implementation (directive #8 violation) referenced ONLY in galleryRegistry.ts:509."
+  },
+  {
+   "screen": "PostSuccessView",
+   "dup": "NONE (but BEHAVIOR-CONTRACT mismatch with the V1 host — see feGaps)."
+  }
+ ],
+ "newScreens": [
+  "RunDetailView"
+ ]
+}

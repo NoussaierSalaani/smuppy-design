@@ -1,0 +1,36 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smuppy V2 — Paiements (18 maquettes)</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a0c;color:#F1F4F6;font-family:'Plus Jakarta Sans',system-ui,sans-serif;padding:28px}
+h1{font-size:22px;font-weight:800;margin-bottom:4px}
+.sub{color:#8B8B95;font-size:13px;font-weight:500;margin-bottom:22px}
+.grp{font-size:13px;font-weight:800;color:#33A089;letter-spacing:.06em;text-transform:uppercase;margin:26px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px}
+.card{background:#14141A;border:1px solid rgba(255,255,255,.06);border-radius:18px;overflow:hidden}
+.card img{width:100%;display:block;background:#000}
+.card .cap{padding:9px 12px;font-size:11.5px;font-weight:700;color:#C9CdD2}
+.card .cap span{color:#6B6B75;font-weight:500}
+</style></head><body>
+<h1>Smuppy V2 — Surface paiement complète</h1>
+<div class="sub">20 maquettes · prix réels (iap-products.ts) · KYC company pour pro_business · jun03</div>
+<div id="root"></div>
+<script>
+const GROUPS={
+ "A · Acheter premium (IAP) — 1 plan / type de compte":[["premium_creator","Pro Creator · $99.99 (compte créateur)"],["premium_business","Pro Business · $49 (compte business)"],["premium_success_creator","Success créateur → KYC"],["premium_success_business","Success business → KYC company"],["verified_badge","Badge vérifié · $14.99/mo (add-on séparé)"]],
+ "B · Encaisser — KYC payout (Stripe Connect)":[["payout_start","#1 Non démarré"],["payout_pending","#1 En cours"],["payout_verified","#1 Vérifié + solde"],["payout_gate_sheet","#3 Gate inline"],["kyc_company","Business · company"]],
+};
+const root=document.getElementById('root');
+for(const[g,items]of Object.entries(GROUPS)){
+ const h=document.createElement('div');h.className='grp';h.textContent=g;root.appendChild(h);
+ const grid=document.createElement('div');grid.className='grid';
+ for(const[name,cap]of items)for(const th of['dark','light']){
+  const c=document.createElement('div');c.className='card';
+  c.innerHTML=`<img src="${name}_${th}.png" loading="lazy"><div class="cap">${cap} <span>· ${th}</span></div>`;
+  grid.appendChild(c);
+ }
+ root.appendChild(grid);
+}
+</script></body></html>

@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smuppy V2 - Tous les ecrans et maquettes locales</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070b10;
+      --panel: #101722;
+      --panel-2: #151f2e;
+      --line: rgba(226, 232, 240, 0.14);
+      --ink: #f8fafc;
+      --muted: #9aa7b8;
+      --mint: #33a089;
+      --warn: #f4c15d;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(180deg, rgba(51, 160, 137, 0.10), transparent 240px),
+        var(--bg);
+      color: var(--ink);
+    }
+
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--line);
+      background: rgba(7, 11, 16, 0.94);
+      backdrop-filter: blur(14px);
+    }
+
+    .top-inner {
+      width: min(1440px, calc(100vw - 28px));
+      margin: 0 auto;
+      padding: 16px 0;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 23px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .sub {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .status {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: rgba(255, 255, 255, 0.04);
+      white-space: nowrap;
+    }
+
+    .pill strong {
+      color: var(--ink);
+    }
+
+    .layout {
+      width: min(1440px, calc(100vw - 28px));
+      margin: 16px auto 28px;
+      display: grid;
+      grid-template-columns: minmax(330px, 430px) minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .sidebar,
+    .viewer {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(16, 23, 34, 0.90);
+      min-width: 0;
+    }
+
+    .sidebar {
+      max-height: calc(100vh - 110px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .controls {
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      gap: 10px;
+    }
+
+    input {
+      width: 100%;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel-2);
+      color: var(--ink);
+      padding: 0 12px;
+      font: inherit;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: rgba(51, 160, 137, 0.70);
+      box-shadow: 0 0 0 3px rgba(51, 160, 137, 0.12);
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    button,
+    a.quick {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--ink);
+      min-height: 38px;
+      padding: 8px 10px;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    button.active {
+      border-color: rgba(51, 160, 137, 0.8);
+      color: #eafff9;
+      background: rgba(51, 160, 137, 0.20);
+    }
+
+    .quick-links {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    a.quick:hover,
+    button:hover {
+      border-color: rgba(51, 160, 137, 0.55);
+    }
+
+    .list {
+      overflow: auto;
+      padding: 8px;
+    }
+
+    .item {
+      width: 100%;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      padding: 10px;
+      background: transparent;
+      color: var(--ink);
+      text-align: left;
+      display: grid;
+      gap: 5px;
+    }
+
+    .item + .item {
+      margin-top: 5px;
+    }
+
+    .item.active {
+      border-color: rgba(51, 160, 137, 0.75);
+      background: rgba(51, 160, 137, 0.12);
+    }
+
+    .item:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .item-title {
+      font-size: 13px;
+      font-weight: 850;
+      overflow-wrap: anywhere;
+    }
+
+    .item-path {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .tag {
+      color: var(--mint);
+      border: 1px solid rgba(51, 160, 137, 0.42);
+      border-radius: 999px;
+      padding: 2px 7px;
+      font-size: 10px;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .viewer {
+      min-height: calc(100vh - 110px);
+      overflow: hidden;
+    }
+
+    .viewer-head {
+      min-height: 60px;
+      border-bottom: 1px solid var(--line);
+      padding: 12px 14px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .viewer-title {
+      font-size: 15px;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+
+    .viewer-path {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+      overflow-wrap: anywhere;
+    }
+
+    .open-link {
+      color: #dcfff6;
+      border: 1px solid rgba(51, 160, 137, 0.55);
+      border-radius: 7px;
+      padding: 9px 11px;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 850;
+      background: rgba(51, 160, 137, 0.14);
+      white-space: nowrap;
+    }
+
+    .preview {
+      height: calc(100vh - 171px);
+      background: #030506;
+      display: grid;
+      place-items: stretch;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #fff;
+    }
+
+    .image-preview {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      overflow: auto;
+    }
+
+    .image-preview img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.36);
+    }
+
+    .empty {
+      padding: 28px;
+      color: var(--muted);
+      text-align: center;
+      align-self: center;
+    }
+
+    .warning {
+      color: var(--warn);
+    }
+
+    @media (max-width: 900px) {
+      .top-inner,
+      .layout {
+        width: min(100vw - 18px, 720px);
+      }
+
+      .top-inner,
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .status {
+        justify-content: flex-start;
+      }
+
+      .sidebar {
+        max-height: 48vh;
+      }
+
+      .viewer,
+      .preview {
+        min-height: 70vh;
+      }
+
+      .viewer-head {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="top-inner">
+      <div>
+        <h1>Tous les ecrans et maquettes locales</h1>
+        <p class="sub">Index complet de tous les HTML et images trouves sous <code>docs/design</code>. Sert a trier ce qui doit devenir canonique.</p>
+      </div>
+      <div class="status" aria-live="polite">
+        <span class="pill" id="crawlStatus">Chargement du manifeste local</span>
+        <span class="pill">HTML <strong id="htmlCount">0</strong></span>
+        <span class="pill">Images <strong id="imageCount">0</strong></span>
+        <span class="pill">Affiches <strong id="shownCount">0</strong></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <div class="controls">
+        <input id="search" type="search" placeholder="Rechercher: fan, profile, dark, light, creator, canonic..." autocomplete="off">
+        <div class="filters" aria-label="Filtres">
+          <button class="active" data-filter="all">Tout</button>
+          <button data-filter="html">HTML</button>
+          <button data-filter="image">Images</button>
+        </div>
+        <div class="quick-links">
+          <a class="quick" href="MASTER_V2_FLOW.html" target="_blank" rel="noreferrer">Master flow</a>
+          <a class="quick" href="PROTOTYPE.html" target="_blank" rel="noreferrer">Prototype</a>
+          <a class="quick" href="_ALL_SCREENS.html" target="_blank" rel="noreferrer">All screens</a>
+          <a class="quick" href="COMPARE.html" target="_blank" rel="noreferrer">Compare</a>
+        </div>
+      </div>
+      <div class="list" id="list">
+        <div class="empty">Scan en cours. Si rien ne s'affiche, verifie que la page est ouverte via <code>http://localhost:8900/</code>.</div>
+      </div>
+    </aside>
+
+    <section class="viewer">
+      <div class="viewer-head">
+        <div>
+          <div class="viewer-title" id="viewerTitle">Aucun element selectionne</div>
+          <div class="viewer-path" id="viewerPath">Le premier HTML trouve sera ouvert automatiquement apres le scan.</div>
+        </div>
+        <a class="open-link" id="openLink" href="#" target="_blank" rel="noreferrer">Ouvrir dans un nouvel onglet</a>
+      </div>
+      <div class="preview" id="preview">
+        <div class="empty">Preview en attente.</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const htmlExtensions = new Set([".html", ".htm"]);
+    const imageExtensions = new Set([".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"]);
+    const selfName = "ALL_FOUND_SCREENS_LOCAL.html";
+    const state = {
+      files: [],
+      filter: "all",
+      query: "",
+      selected: null,
+    };
+
+    const els = {
+      crawlStatus: document.getElementById("crawlStatus"),
+      htmlCount: document.getElementById("htmlCount"),
+      imageCount: document.getElementById("imageCount"),
+      shownCount: document.getElementById("shownCount"),
+      list: document.getElementById("list"),
+      search: document.getElementById("search"),
+      viewerTitle: document.getElementById("viewerTitle"),
+      viewerPath: document.getElementById("viewerPath"),
+      openLink: document.getElementById("openLink"),
+      preview: document.getElementById("preview"),
+    };
+
+    function extensionOf(path) {
+      const clean = path.split("?")[0].split("#")[0].toLowerCase();
+      const dot = clean.lastIndexOf(".");
+      return dot >= 0 ? clean.slice(dot) : "";
+    }
+
+    function typeFor(path) {
+      const ext = extensionOf(path);
+      if (htmlExtensions.has(ext)) return "html";
+      if (imageExtensions.has(ext)) return "image";
+      return "other";
+    }
+
+    function titleFor(path) {
+      const parts = path.split("/").filter(Boolean);
+      const file = parts[parts.length - 1] || path;
+      const parent = parts[parts.length - 2] || "";
+      if (file === "code.html" && parent) return parent.replaceAll("_", " ");
+      return file.replace(/\.(html|htm|png|jpg|jpeg|webp|gif|svg)$/i, "").replaceAll("_", " ");
+    }
+
+    function tagsFor(path, type) {
+      const tags = [type];
+      const low = path.toLowerCase();
+      if (low.includes("dark")) tags.push("dark");
+      if (low.includes("light")) tags.push("light");
+      if (low.includes("canonic")) tags.push("canonic");
+      if (low.includes("creator")) tags.push("creator");
+      if (low.includes("prototype")) tags.push("prototype");
+      if (low.includes("harmonized")) tags.push("harmonized");
+      if (low.includes("figma")) tags.push("figma");
+      return tags;
+    }
+
+    function normalizeHref(base, href) {
+      if (!href || href.startsWith("?") || href.startsWith("#")) return null;
+      if (href === "../") return null;
+      if (/^[a-z]+:/i.test(href)) return null;
+      const url = new URL(href, new URL(base, window.location.href));
+      if (url.origin !== window.location.origin) return null;
+      return decodeURIComponent(url.pathname.replace(/^\//, ""));
+    }
+
+    async function crawlDirectory(path, seenDirs) {
+      if (seenDirs.has(path)) return;
+      seenDirs.add(path);
+      const response = await fetch(path || "./");
+      if (!response.ok) return;
+      const html = await response.text();
+      const documentFragment = new DOMParser().parseFromString(html, "text/html");
+      const links = [...documentFragment.querySelectorAll("a[href]")];
+      const dirs = [];
+      const files = [];
+
+      for (const link of links) {
+        const normalized = normalizeHref(path || "./", link.getAttribute("href"));
+        if (!normalized) continue;
+        const relative = normalized.replace(/^docs\/design\//, "");
+        if (!relative || relative === selfName) continue;
+        if (relative.endsWith("/")) {
+          dirs.push(relative);
+          continue;
+        }
+        const type = typeFor(relative);
+        if (type === "html" || type === "image") {
+          files.push({
+            path: relative,
+            type,
+            title: titleFor(relative),
+            tags: tagsFor(relative, type),
+          });
+        }
+      }
+
+      state.files.push(...files);
+      render();
+
+      dirs.sort((a, b) => a.localeCompare(b));
+      for (const dir of dirs) {
+        await crawlDirectory(dir, seenDirs);
+      }
+    }
+
+    function filteredFiles() {
+      const query = state.query.trim().toLowerCase();
+      return state.files
+        .filter((file) => state.filter === "all" || file.type === state.filter)
+        .filter((file) => !query || `${file.title} ${file.path} ${file.tags.join(" ")}`.toLowerCase().includes(query))
+        .sort((a, b) => {
+          const priority = (file) => {
+            if (file.path === "MASTER_V2_FLOW.html") return 0;
+            if (file.path === "PROTOTYPE.html") return 1;
+            if (file.path.includes("canonic/harmonized")) return 2;
+            if (file.type === "html") return 3;
+            return 4;
+          };
+          return priority(a) - priority(b) || a.path.localeCompare(b.path);
+        });
+    }
+
+    function render() {
+      const htmlCount = state.files.filter((file) => file.type === "html").length;
+      const imageCount = state.files.filter((file) => file.type === "image").length;
+      const files = filteredFiles();
+      els.htmlCount.textContent = String(htmlCount);
+      els.imageCount.textContent = String(imageCount);
+      els.shownCount.textContent = String(files.length);
+
+      if (!files.length) {
+        els.list.innerHTML = '<div class="empty">Aucun resultat pour ce filtre.</div>';
+        return;
+      }
+
+      const selectedPath = state.selected?.path;
+      els.list.innerHTML = files.map((file) => `
+        <button class="item ${file.path === selectedPath ? "active" : ""}" data-path="${file.path}">
+          <span class="item-title">${escapeHtml(file.title)}</span>
+          <span class="item-path">${escapeHtml(file.path)}</span>
+          <span class="tag-row">${file.tags.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}</span>
+        </button>
+      `).join("");
+    }
+
+    function selectFile(file) {
+      state.selected = file;
+      els.viewerTitle.textContent = file.title;
+      els.viewerPath.textContent = file.path;
+      els.openLink.href = file.path;
+      if (file.type === "html") {
+        els.preview.innerHTML = `<iframe src="${encodeURI(file.path)}" title="${escapeHtml(file.title)}"></iframe>`;
+      } else {
+        els.preview.innerHTML = `<div class="image-preview"><img src="${encodeURI(file.path)}" alt="${escapeHtml(file.title)}"></div>`;
+      }
+      render();
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    document.querySelectorAll("[data-filter]").forEach((button) => {
+      button.addEventListener("click", () => {
+        state.filter = button.dataset.filter;
+        document.querySelectorAll("[data-filter]").forEach((other) => other.classList.toggle("active", other === button));
+        render();
+      });
+    });
+
+    els.search.addEventListener("input", () => {
+      state.query = els.search.value;
+      render();
+    });
+
+    els.list.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-path]");
+      if (!button) return;
+      const file = state.files.find((candidate) => candidate.path === button.dataset.path);
+      if (file) selectFile(file);
+    });
+
+    (async function boot() {
+      try {
+        const manifestResponse = await fetch("ALL_FOUND_SCREENS_MANIFEST_LOCAL.json");
+        if (manifestResponse.ok) {
+          const manifest = await manifestResponse.json();
+          state.files = manifest.files.map((path) => {
+            const type = typeFor(path);
+            return {
+              path,
+              type,
+              title: titleFor(path),
+              tags: tagsFor(path, type),
+            };
+          });
+          els.crawlStatus.textContent = "Manifeste charge";
+        } else {
+          await crawlDirectory("./", new Set());
+          const unique = new Map();
+          for (const file of state.files) unique.set(file.path, file);
+          state.files = [...unique.values()];
+          els.crawlStatus.textContent = "Scan termine";
+        }
+        const first = state.files.find((file) => file.path === "MASTER_V2_FLOW.html")
+          || state.files.find((file) => file.type === "html")
+          || state.files[0];
+        if (first) selectFile(first);
+        render();
+      } catch (error) {
+        els.crawlStatus.innerHTML = '<span class="warning">Scan impossible</span>';
+        els.list.innerHTML = '<div class="empty">Impossible de crawler le dossier. Ouvre cette page via le serveur local Python, pas en file://.</div>';
+      }
+    })();
+  </script>
+</body>
+</html>

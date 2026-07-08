@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Smuppy - Fan Feed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#005143",
+                        "surface-container-highest": "#dde4e0",
+                        "surface-tint": "#006b59",
+                        "on-surface-variant": "#3c4a45",
+                        "primary": "#006b59",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#f4fbf7",
+                        "surface": "#f4fbf7",
+                        "outline": "#6c7a75",
+                        "tertiary-fixed-dim": "#83d6c0",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#006875",
+                        "inverse-primary": "#4edcbe",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#4ed8ec",
+                        "on-secondary-fixed": "#001f24",
+                        "on-primary-container": "#00493d",
+                        "inverse-surface": "#2b322f",
+                        "on-primary-fixed-variant": "#005143",
+                        "tertiary-container": "#68bba6",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#006773",
+                        "surface-dim": "#d5dcd8",
+                        "on-secondary-fixed-variant": "#004f58",
+                        "surface-container-low": "#eef5f1",
+                        "secondary-container": "#63e9fe",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#161d1b",
+                        "tertiary": "#006b59",
+                        "on-tertiary-container": "#00493c",
+                        "surface-variant": "#dde4e0",
+                        "on-primary-fixed": "#00201a",
+                        "on-background": "#161d1b",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed": "#002019",
+                        "background": "#f4fbf7",
+                        "surface-container": "#e9efeb",
+                        "secondary-fixed": "#9af0ff",
+                        "outline-variant": "#bbcac4",
+                        "primary-fixed-dim": "#4edcbe",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#26c1a4",
+                        "primary-fixed": "#70f9da",
+                        "inverse-on-surface": "#ebf2ee",
+                        "surface-container-high": "#e3eae6",
+                        "tertiary-fixed": "#9ef3db"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px",
+                        "container-max-width": "1280px",
+                        "margin-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "label-lg": ["Plus Jakarta Sans"],
+                        "display-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "label-lg": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "600" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "letterSpacing": "0.04em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .snap-x-mandatory {
+            scroll-snap-type: x mandatory;
+        }
+        .snap-center {
+            scroll-snap-align: center;
+        }
+        .glow-icon {
+            filter: drop-shadow(0 0 8px rgba(38, 193, 164, 0.4));
+        }
+        .active-pill-shadow {
+            box-shadow: 0 4px 12px rgba(38, 193, 164, 0.2);
+        }
+    .pill-active-light { background: #ffffff; color: #26C1A4; box-shadow: 0 4px 12px rgba(38, 193, 164, 0.20); }
+.pill-active-dark { background: #334155; color: #26C1A4; box-shadow: 0 4px 12px rgba(38, 193, 164, 0.30); outline: 1px solid rgba(38, 193, 164, 0.15); }
+.icon-active-glow { filter: drop-shadow(0 0 6px rgba(38, 193, 164, 0.55)); }
+.active-bar { position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 24px; height: 3px; border-radius: 999px; background: #26C1A4; box-shadow: 0 0 8px rgba(38, 193, 164, 0.6); }
+.profile-avatar-active { border-radius: 12px; outline: 2px solid #26C1A4; outline-offset: 2px; box-shadow: 0 0 8px rgba(38, 193, 164, 0.45); }
+.profile-avatar-inactive { border-radius: 12px; outline: 1.5px solid transparent; }
+.hero-gradient::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 22%; background: linear-gradient(to bottom, transparent 0%, white 100%); pointer-events: none; }
+.hero-gradient-dark::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 22%; background: linear-gradient(to bottom, transparent 0%, #0f172a 100%); pointer-events: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-[0px_4px_20px_rgba(0,0,0,0.05)]">
+<div class="flex items-center justify-between px-margin-mobile h-16 w-full">
+<button aria-label="Search" class="text-slate-400 dark:text-slate-500 hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<svg width="104" height="22" viewBox="0 0 215 46" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Smuppy" role="img"><defs><linearGradient id="hfSmuppyTextL" x1="-87.1345" y1="22.9746" x2="177.596" y2="-13.1995" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#134456"/><stop offset="0.701923" stop-color="#0A252F"/></linearGradient></defs><path d="M184.138 6.12109C185.812 4.4176 191.327 5.23915 191.354 5.24316C193.846 5.73812 195.303 6.79708 196.473 8.14844C197.331 9.15283 197.485 10.7833 197.723 12.7188C197.723 16.0413 197.514 18.9589 197.514 22.2275V22.8584C197.514 23.1504 197.523 23.3605 197.541 23.4883C197.724 23.5796 197.925 23.625 198.145 23.625C198.674 23.6249 198.939 23.2231 198.939 22.4199C198.939 19.7356 199.086 16.9506 199.378 14.0654C199.689 11.1618 200.017 8.92401 200.364 7.35352C201.844 6.27611 203.818 5.7373 206.285 5.7373C208.752 5.73733 210.652 6.22161 211.986 7.18945C213.338 8.13897 214.015 9.28943 214.015 10.6406C214.015 11.2067 213.676 13.5445 213 17.6533C212.251 21.8352 211.292 26.2363 210.122 30.8564C209.885 31.7878 209.455 33.0934 208.834 34.7734C208.231 36.4535 207.582 37.8509 206.888 38.9648C204.713 42.416 198.705 44.5522 195.507 45.374C194.009 45.7575 192.501 45.9492 190.984 45.9492C188.043 45.9492 185.767 45.2195 184.159 43.7588C182.679 42.444 183.721 40.0914 184.432 37.6396C185.262 34.774 187.695 33.1549 188.496 33.2666C189.227 33.2666 190.141 33.3584 191.237 33.541C194.269 34.1067 195.812 34.3893 195.869 34.3896C195.997 34.4079 196.134 34.4361 196.28 34.4727C196.445 34.4909 196.655 34.5 196.911 34.5C197.167 34.4999 197.386 34.4263 197.568 34.2803C197.751 34.1342 197.843 33.8424 197.843 33.4043L191.374 32.1709C189.784 31.5135 188.405 30.1351 187.235 28.0352C185.792 25.4421 185.231 21.8585 184.303 17.4893C183.647 14.3302 182.46 7.82877 184.138 6.12109ZM134.474 5.51172C136.557 5.51174 138.457 5.84073 140.175 6.49805C142.532 7.42939 144.396 8.92673 145.767 10.9902C147.484 13.6016 148.344 17.0261 148.344 21.2627C148.344 26.0287 147.064 29.736 144.506 32.3838C141.966 35.0133 138.439 36.3281 133.926 36.3281C131.404 36.3281 130.547 36.0174 129.14 35.3965C129.012 35.4696 128.948 35.6251 128.948 35.8623C128.948 36.369 128.931 36.7663 128.929 37.6992L128.928 41.5078C128.927 43.9389 126.474 45.9382 124.043 45.9385C121.612 45.9385 119.015 43.9391 119.015 41.5078L119.016 39.9619C119.015 39.9287 119.015 39.8948 119.015 39.8613V17.8105C117.937 16.2949 117.397 14.414 117.397 12.168C117.397 11.255 117.544 10.2599 117.836 9.18262C118.128 8.1052 118.521 7.18201 119.015 6.41504H122.907C124.497 6.41507 125.711 6.63514 126.552 7.07324C125.054 8.18703 124.305 9.08221 124.305 9.75781C124.305 10.3053 124.625 10.579 125.264 10.5791C126.36 8.86258 127.649 7.59324 129.129 6.77148C130.609 5.93158 132.391 5.51178 134.474 5.51172ZM167.702 5.51172C169.785 5.51174 171.686 5.84073 173.403 6.49805C175.76 7.42939 177.625 8.92673 178.995 10.9902C180.713 13.6016 181.572 17.0261 181.572 21.2627C181.572 26.0287 180.293 29.736 177.734 32.3838C175.194 35.0133 171.668 36.3281 167.154 36.3281C164.633 36.3281 163.775 36.0174 162.368 35.3965C162.24 35.4696 162.177 35.6251 162.177 35.8623C162.177 36.369 162.16 36.7663 162.157 37.6992L162.156 41.5078C162.156 43.9389 159.703 45.9382 157.271 45.9385C154.84 45.9385 152.243 43.9391 152.243 41.5078L152.244 39.9619C152.244 39.9287 152.243 39.8948 152.243 39.8613V17.8105C151.165 16.2949 150.626 14.414 150.626 12.168C150.626 11.255 150.772 10.2599 151.064 9.18262C151.357 8.1052 151.75 7.18201 152.243 6.41504H156.136C157.725 6.41507 158.94 6.63514 159.78 7.07324C158.282 8.18703 157.533 9.08221 157.533 9.75781C157.533 10.3053 157.853 10.579 158.492 10.5791C159.589 8.86258 160.877 7.59324 162.357 6.77148C163.837 5.93158 165.619 5.51178 167.702 5.51172ZM16.4189 0C19.708 1.53782e-05 22.4761 0.356209 24.7236 1.06836C26.9712 1.7623 28.8081 2.65724 30.2334 3.75293C30.6535 4.95795 30.8632 6.20859 30.8633 7.50488C30.8633 8.80145 30.69 9.97989 30.3428 11.0391C29.9956 12.0981 29.4928 12.9468 28.835 13.5859C28.2136 13.1295 27.0898 12.6641 25.4639 12.1895C23.8376 11.7147 22.3574 11.4775 21.0234 11.4775C19.69 11.4775 18.7948 11.5594 18.3379 11.7236C17.8995 11.8879 17.6799 12.1435 17.6797 12.4902C17.6797 12.6545 17.707 12.81 17.7617 12.9561C18.4012 12.7917 19.2236 12.71 20.2285 12.71C23.7918 12.71 26.6977 13.5494 28.9453 15.2295C31.5949 17.2383 32.9199 20.252 32.9199 24.2695C32.9199 27.8122 31.4851 30.7524 28.6162 33.0898C25.5098 35.5917 21.3342 36.8428 16.0898 36.8428C13.2027 36.8428 10.6988 36.6228 8.5791 36.1846C6.45958 35.7645 4.39467 35.0158 2.38477 33.9385C1.01442 31.9481 0.329102 29.93 0.329102 27.8848C0.329188 25.8214 1.03257 24.114 2.43945 22.7627C3.84648 21.4114 5.57354 20.7354 7.62012 20.7354C9.68499 20.7354 11.3667 21.1561 12.6641 21.9961C13.9795 22.8361 14.9481 24.2055 15.5693 26.1045C16.1719 25.9949 16.4734 25.6939 16.4736 25.2012C16.4736 24.6898 16.3094 24.1228 15.9805 23.502C15.6698 22.8629 15.2032 22.2604 14.582 21.6943C12.9557 20.2335 10.7539 19.5029 7.97656 19.5029C6.60607 19.5029 5.32643 19.731 4.13867 20.1875C2.87809 19.5483 1.87312 18.5351 1.12402 17.1475C0.374862 15.7597 4.05272e-05 14.2622 0 12.6553C0 8.45517 1.75433 5.21335 5.2627 2.93066C8.27778 0.976678 11.9968 0 16.4189 0ZM41.2266 5.51172C44.0105 5.51192 46.2861 7.68267 46.4561 10.4238C46.7316 10.4581 47.054 10.4512 47.332 10.4512C48.1358 9.06341 47.636 7.78265 49.043 6.96094C50.6874 6.02979 52.6153 5.56446 54.8262 5.56445C56.5071 5.56451 57.9785 5.91974 59.2393 6.63184C60.5182 7.344 61.4686 8.16639 62.0898 9.09766C62.9486 7.92905 64.0632 7.05211 65.4336 6.46777C66.8223 5.86524 68.2664 5.56445 69.7646 5.56445C73.0719 5.56455 75.6396 6.58665 77.4668 8.63184C79.2574 10.677 80.1533 13.4803 80.1533 17.041L80.043 22.4922C80.043 23.8251 80.1891 24.912 80.4814 25.752C80.7738 26.5919 81.2857 27.2407 82.0166 27.6973C82.0348 27.7886 82.0439 27.9442 82.0439 28.1631V28.5732C82.0439 31.0749 81.3132 33.0294 79.8516 34.4355C78.3898 35.8416 76.4982 36.5448 74.1777 36.5449C71.8754 36.5449 70.0203 35.9142 68.6133 34.6543C66.9506 33.1934 66.1191 30.9564 66.1191 27.9434V19.2871C66.119 18.0641 65.7167 17.4524 64.9131 17.4521C64.6027 17.4521 64.3555 17.525 64.1729 17.6709L64.666 21.7529V27.9434C64.666 30.4266 65.0773 32.3076 65.8994 33.5859C65.0224 34.5172 63.9259 35.2478 62.6104 35.7773C61.3131 36.2886 59.9878 36.5449 58.6357 36.5449C56.4434 36.5449 54.744 36.0149 53.5381 34.9561C52.0762 33.6778 51.3447 31.6598 51.3447 28.9023V19.2871C51.3446 18.0641 50.9423 17.4523 50.1387 17.4521C49.8286 17.4522 49.582 17.5252 49.3994 17.6709L49.8926 21.7529V29.0117C49.8926 31.057 50.1666 32.637 50.7148 33.751C48.9241 35.5953 46.4109 36.5175 43.1768 36.5176C41.2583 36.5175 39.6408 36.0331 38.3252 35.0654C36.8087 33.9515 36.0508 32.4541 36.0508 30.5732V19.3564H36.0498L35.9854 10.792C35.9637 7.88223 38.3167 5.51182 41.2266 5.51172ZM86.665 6.0332C88.8183 5.15866 91.3105 5.64941 91.3105 5.64941C94.0343 6.15948 95.1166 6.57124 96.3955 7.64844C97.6929 8.70756 98.3417 10.3241 98.3418 12.4971V21.3721C98.3418 23.1431 98.6796 24.0289 99.3555 24.0293C99.5747 24.0293 99.8126 23.9384 100.068 23.7559V20.9414C100.068 20.9414 99.3564 8.90892 99.7949 7.40234C100.234 5.8959 104.062 5.64941 106.784 5.64941C111.41 5.64946 113.188 7.14678 113.499 7.89551C114.09 8.97147 113.499 22.167 113.499 22.167C113.499 24.8879 114.157 26.6597 115.473 27.4814C115.491 27.5728 115.5 27.7459 115.5 28.001V28.4941C115.5 31.1603 114.797 33.1782 113.39 34.5479C112.111 35.8262 110.347 36.4658 108.1 36.4658C106.693 36.4658 105.414 36.1459 104.263 35.5068C103.13 34.8677 102.279 33.9364 101.713 32.7129C101.092 32.713 100.781 33.0146 100.781 33.6172C100.781 34.0371 100.992 34.4571 101.412 34.877C100.827 35.3518 100.123 35.7352 99.3008 36.0273C98.4785 36.3195 97.2632 36.4658 95.6553 36.4658C94.0657 36.4658 92.5126 36.1368 90.9961 35.4795C89.114 34.676 87.6701 33.4431 86.665 31.7812C85.4409 29.8091 84.8291 27.5866 84.8291 24.2764V17.4004C84.6652 10.6963 84.5121 6.90793 86.665 6.0332ZM133.46 16.9346C133.204 16.9346 132.984 17.0255 132.802 17.208C132.966 19.0158 133.049 20.4678 133.049 21.5635V25.2344C133.177 25.362 133.387 25.4257 133.679 25.4258C133.971 25.4258 134.182 25.3257 134.31 25.125C134.437 24.9242 134.501 24.5768 134.501 24.084V21.29C134.501 19.5369 134.428 18.3767 134.282 17.8105C134.136 17.2266 133.862 16.9348 133.46 16.9346ZM166.688 16.9346C166.433 16.9346 166.213 17.0255 166.03 17.208C166.195 19.0158 166.277 20.4678 166.277 21.5635V25.2344C166.405 25.362 166.615 25.4257 166.907 25.4258C167.199 25.4258 167.41 25.3257 167.538 25.125C167.666 24.9242 167.729 24.5768 167.729 24.084V21.29C167.729 19.5369 167.657 18.3767 167.511 17.8105C167.365 17.2266 167.09 16.9348 166.688 16.9346Z" fill="url(#hfSmuppyTextL)"/></svg>
+<button aria-label="Notifications" class="text-slate-400 dark:text-slate-500 hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<main class="pt-20 px-4 md:px-margin-desktop max-w-container-max-width mx-auto">
+<!-- NavigationDrawer (Tab Pills) -->
+<div class="px-margin-mobile mt-4 mb-6">
+<div class="bg-surface-container-low p-1 rounded-full flex gap-1">
+<button class="flex-1 py-2 rounded-full bg-white text-[#26C1A4] font-label-lg active-pill-shadow transition-all font-bold">
+<span class="material-symbols-outlined align-middle mr-1 text-sm" data-icon="favorite">favorite</span> Fan
+                </button>
+<button class="flex-1 py-2 rounded-full text-on-surface-variant font-label-lg hover:bg-white/50 transition-all">
+<span class="material-symbols-outlined align-middle mr-1 text-sm" data-icon="mood">mood</span> Vibes
+                </button>
+<button class="flex-1 py-2 rounded-full text-on-surface-variant font-label-lg hover:bg-white/50 transition-all">
+<span class="material-symbols-outlined align-middle mr-1 text-sm" data-icon="explore">explore</span> Xplorer
+                </button>
+</div>
+</div>
+<!-- Section: Peaks & Live -->
+<section class="mb-8">
+<h2 class="font-headline-md text-headline-md mb-4 text-[#26C1A4]">Peaks &amp; Live</h2>
+<div class="flex overflow-x-auto no-scrollbar space-x-4 pb-4">
+<!-- Live Card -->
+<div class="relative w-28 h-40 flex-shrink-0 rounded-[32px] overflow-hidden p-1 border-2 border-primary-container shadow-[0_10px_30px_rgba(0,107,89,0.08)]">
+<img alt="Yoga" class="w-full h-full object-cover rounded-[28px]" data-alt="A serene sunrise yoga session on a pristine beach, captured in high-resolution with crisp natural lighting. The vibrant morning colors reflect a holistic wellness aesthetic. The bright, premium light-mode vibe highlights professional reliability and aspirational fitness goals. Deep teal accents subtly frame the warm, glowing composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVGjAaTQjvh3GscWLLRpul7lV3C7WSn56k-ABejz0JSlXyj8LSoXUhV8yp8rO0wNtfeegPKeu03fni_WqFapQEFQmE2iqLSV1XnQntCaIxbgsZ0DQ53dzq2WTLzZ9iKm8xV_mLADW4TWdABgpNhRR1GS35CDMJWRT6nbr8jA5wNUWyixwh6hAwR7oITekM3kOeSYtPtHTupG5tuJnBNvk9qseY3RTIUqSBuOzAKZcg2jvrVNx9WvsOQlSdQ13DO6ZK-AJ51ZoQKKQ"/>
+<div class="absolute top-3 left-3 bg-error text-on-error font-label-sm text-[10px] uppercase font-bold px-2 py-0.5 rounded-full animate-pulse">LIVE</div>
+<div class="absolute bottom-3 left-3 right-3 text-white font-label-sm text-label-sm text-shadow">Sunrise Yoga</div>
+</div>
+<!-- Peak Cards -->
+<div class="w-28 h-40 flex-shrink-0 rounded-[32px] overflow-hidden shadow-[0_10px_30px_rgba(0,107,89,0.08)]">
+<img alt="Gym" class="w-full h-full object-cover" data-alt="An intense, high-performance gym workout scene featuring crisp, modern photography. A focused athlete lifts weights in a well-lit, contemporary fitness studio. The atmosphere is energetic and clear, matching a sophisticated editorial aesthetic with a light-mode layout. Subtle deep teal tones provide depth and structural contrast." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_kbu5cWlQTWWPjomJd_PpcCet0L8mbjK1Tq2KJEb5nLZaxKENr46M4qcmQaooz_eoYdYzyMDP0d-MIGwvKKP8CI3_ubkuyDeRwCUHlXm_quYpV5QRKCeNNcpn0cV3xOFdxywX6532Ms3VL18bXgtJFe8cJXH6CXPa-YYtJxHjFi5ayjNC3TiuuAH2uJtiSK7BBILFLS6aKehpKWZwuSC-8684BLxV-sWd-p3jO4iafNdTxcAXZEifQ03XptghpXoBJZ9kzmvd9hk"/>
+</div>
+<div class="w-28 h-40 flex-shrink-0 rounded-[32px] overflow-hidden shadow-[0_10px_30px_rgba(0,107,89,0.08)]">
+<img alt="Running" class="w-full h-full object-cover" data-alt="A dynamic shot of a runner sprinting along an urban trail during golden hour. The high-quality imagery captures fluid human movement in a natural environment. The composition feels open and aspirational, tailored for a professional wellness application in light mode. Ambient light casts soft, tinted shadows over the scene." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAB3Ri82I_wqbN-gYWtuJ6s6CTCC1lDv8yYHkYFoRbYl_SkZI79gg9dxCuxJu-NjNtglL04JtZ2uzISiMOTLsBFE764o1CyaV7PLs2uCtRjkjvI23X1rJp8CC1OnalDpaSXlMox2Iab2v3DJmiEdN3t6zFMLCmg1pXwkbU2aMvCqj0C4vjfe-2Nc9GFZFqCZ1_3vM7L2VJTIXw8_D8y4N5quTqXahSfMshspIg5Wg9Cqh77Nq6oyglR9UC0YJD-5j0EkKkC_4LnRgs"/>
+</div>
+<div class="w-28 h-40 flex-shrink-0 rounded-[32px] overflow-hidden shadow-[0_10px_30px_rgba(0,107,89,0.08)]">
+<img alt="Boxing" class="w-full h-full object-cover" data-alt="A focused close-up of a boxer wrapping hands in a high-end, brightly lit training facility. The aesthetic is clean, professional, and authentic, avoiding gamified tropes. The lighting enhances the crisp textures of the wraps and athletic gear, aligning with a premium light-mode interface. Hints of deep teal are visible in the background equipment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdYpb-uq7mb7zmyBIyK1qFH-f_1OAav9j33S5HLPCRcsSbXUJMzVrJx0ttruPA2VXGPQe5OMc_VB7a97EozlSj96uA9SU-vutExkiCs5wsXLCfQzIKnBIUMK6MeY4KstFxdGXCy7N_dui92N88SWgOGVi0qLgAcYaRhiSyW3UtUIOjZUX2EKheOARhF80EM2UeD6oN9L-kGtFGWEYZxTnOZf43PSaseyq2nY3vs3qiAPKjrQVf56imAs9lY7bfwE3ADLYJcB-G_7Y"/>
+</div>
+</div>
+</section>
+<!-- Section: Suggestions for you -->
+<section class="mb-10">
+<h2 class="font-headline-md text-headline-md mb-4 text-[#26C1A4]">Suggestions for you</h2>
+<div class="flex overflow-x-auto no-scrollbar space-x-4 pb-4">
+<!-- Creator Card -->
+<div class="w-36 flex-shrink-0 bg-white/70 backdrop-blur-md rounded-[32px] p-4 flex flex-col items-center border border-white shadow-[0_10px_30px_rgba(0,107,89,0.08)]">
+<div class="relative mb-3">
+<img alt="User" class="w-16 h-16 rounded-full object-cover ring-2 ring-[#26C1A4] p-0.5" data-alt="A vibrant, professional headshot of a fitness creator in a bright, modern studio. The crisp photography emphasizes natural light and a welcoming, authentic persona. Set against a clean background, the image fits seamlessly into a high-end wellness app's light mode. The overall tone is aspirational and community-driven." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCS9lGlSLFT2skpN0PwkE8GycDz-wBARf9D8mOMds_StsVdHdbOIs1HFxYZ1OuBnKjgeDKdtJPGuDfqsVdG2MghzEoNySQTE4GSjUZe05Uc2XMIrDOr8iXpA5ItGEmQGBaxnzOX-V2z8imBGZCC2VoCtO7r74ghJGNn9nDLIlRk1AJqTn51mA5w06_UK1PIiA7Y_1tkhH-tO0yTgKvOqmatp9Vw97LXPbdS6uH8GarXstK_eEWcu2GG_D8JChVwiqmAIv-ivCc_xPU"/>
+</div>
+<div class="flex items-center space-x-1 mb-1 text-center w-full justify-center">
+<span class="font-label-lg text-label-lg text-on-surface truncate">Alex Rivera</span>
+<span class="material-symbols-outlined text-[#26C1A4] text-[14px]" data-icon="verified">verified</span>
+</div>
+<button class="mt-2 w-full bg-gradient-to-r from-[#26C1A4] to-[#1DA88F] text-white font-label-sm text-label-sm py-2 rounded-full shadow-md hover:opacity-90 transition-opacity">Fan</button>
+</div>
+<!-- Creator Card -->
+<div class="w-36 flex-shrink-0 bg-white/70 backdrop-blur-md rounded-[32px] p-4 flex flex-col items-center border border-white shadow-[0_10px_30px_rgba(0,107,89,0.08)]">
+<div class="relative mb-3">
+<img alt="User" class="w-16 h-16 rounded-full object-cover ring-2 ring-[#26C1A4] p-0.5" data-alt="A sharp, authentic portrait of a male athlete outdoors on a sunny day. The clear, natural lighting highlights a professional and approachable demeanor. This high-resolution photo is intended for a sophisticated social fitness platform, complementing a light-mode aesthetic. Subtle deep teal environmental elements are visible in the soft-focus background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3IS0wLEvo4pXfDJ7lt5zoSi19U9xsq3D0g6FLV07iebQGxhqa6vPgScIJfJW3oWUXjj0E7l0vKunjr-kjDEsDXENteSllqsCF8JcjBgabp_1NDgg4df58pl65hr9Vl2erq4z-oH2ybXHx7YfGah8a-5oN3FAfhBhwUxY_6cyEZ0MDvNatBlDWjCJlkJ8CT2PVD-NAVbcB8jzhDuHKoS9kYIFUquD0agO6mLGJfuS226ugGq9tO3Dd-oDdfOVpYC3mzusEKrDpYlg"/>
+</div>
+<div class="flex items-center space-x-1 mb-1 text-center w-full justify-center">
+<span class="font-label-lg text-label-lg text-on-surface truncate">Sam Chen</span>
+<span class="material-symbols-outlined text-[#26C1A4] text-[14px]" data-icon="verified">verified</span>
+</div>
+<button class="mt-2 w-full bg-gradient-to-r from-[#26C1A4] to-[#1DA88F] text-white font-label-sm text-label-sm py-2 rounded-full shadow-md hover:opacity-90 transition-opacity">Fan</button>
+</div>
+<!-- Creator Card -->
+<div class="w-36 flex-shrink-0 bg-white/70 backdrop-blur-md rounded-[32px] p-4 flex flex-col items-center border border-white shadow-[0_10px_30px_rgba(0,107,89,0.08)]">
+<div class="relative mb-3">
+<img alt="User" class="w-16 h-16 rounded-full object-cover ring-2 ring-[#26C1A4] p-0.5" data-alt="A professional, clear headshot of a wellness coach in a bright indoor setting. The imagery is crisp and realistic, prioritizing human connection over artificial styling. The lighting is soft and flattering, suitable for a premium light-mode interface. The clean background ensures the subject stands out vibrantly." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeDRzP18Yp-S_Ni0oz1YrBfNfVn-lcTLWRdT_A-pZO9fCvi3L7-xXBGC-v63ZyPmNB6bmJ9Z3XeFdBF2DvpVFZcovscBNjiLbnoK2Vlq6lm7mAbI579tHLBZ-iByvfj59PACgbAZ-zZCvWDXJS3wIGBE4hl3DzptUgw4xAH_xDSg9qcxOHh8ApJC5k0nAx1OPFpww-DM41ifeY6Nk9-GKsfuaVCb7N09Hffi2vghCK07bebzEwIGI7YaRJSVAgDVz9Vxuzw_F2c4Q"/>
+</div>
+<div class="flex items-center space-x-1 mb-1 text-center w-full justify-center">
+<span class="font-label-lg text-label-lg text-on-surface truncate">Jordan Lee</span>
+</div>
+<button class="mt-2 w-full bg-gradient-to-r from-[#26C1A4] to-[#1DA88F] text-white font-label-sm text-label-sm py-2 rounded-full shadow-md hover:opacity-90 transition-opacity">Fan</button>
+</div>
+</div>
+</section>
+<!-- Feed Posts -->
+<div class="space-y-8">
+<!-- Post 1: Single Image -->
+<article class="bg-white/70 backdrop-blur-xl rounded-[32px] p-4 shadow-[0_10px_30px_rgba(0,107,89,0.08)] border border-white/50">
+<!-- Header -->
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center space-x-3">
+<img alt="User" class="w-10 h-10 rounded-full object-cover" data-alt="A close-up portrait of an active young woman smiling brightly. The high-fidelity photography captures realistic textures and natural daylight, suitable for a sophisticated social network profile. The clear, crisp composition aligns with a light-mode editorial aesthetic. The mood is authentic and aspirational." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvtvMp0u40W8cmUL1TRvSD42NhyYB52V7gsUtZ3pa6tBSSrsvDlSf9qkUMegDwjxAHw8HJQwDyjqGY8qgbE1bc5OfEFAyv9LL1614Pa2jDQ0-DbKSvDXweNZsC3uUdYEWCwtnXXKxpqWOQ7RLHB452TPjpqAWCVLspB1dCTe0-GWc9ynKiJKANKtpMrDxDStEGKolYT2MQBcN8GvupCisxndF3H4Gx8vSy5U30Te8RkiAy-mRY3myIVep0J-gc2sVUEVBJLuVfxAE"/>
+<div>
+<h3 class="font-label-lg text-label-lg text-on-surface">Mia Wong</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Central Park • 2h</p>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-[#26C1A4] transition-colors">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+</button>
+</div>
+<!-- Caption -->
+<p class="font-body-md text-body-md text-on-surface mb-4">Morning miles done! The weather was absolutely perfect today. Pushing for that new PB... <span class="text-on-surface-variant font-medium cursor-pointer hover:text-[#26C1A4]">see more</span><br/>
+<span class="text-[#26C1A4] font-label-lg">#running #morningmotivation #fitness</span></p>
+<!-- Media Variant 1: Single Image -->
+<div class="overflow-hidden bg-surface-container-low mb-4 relative aspect-[4/5] rounded-[3rem]">
+<img alt="Running" class="w-full h-full object-cover" data-alt="A stunning, high-resolution shot of a runner on an empty path surrounded by lush green trees. The natural morning light creates a vibrant, optimistic atmosphere. The crisp, realistic photography avoids gamified styles, leaning into a premium, editorial wellness look. Deep teal shadows subtly ground the bright, energetic composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDL6B79kWEP8Fs-ZjdTwKN5poz_SpSdX_qviYCTGCsa-MU4Z-pwlEN9PAKoVTfdOsuOLB8hvm4yoDFga4mAFDAGADlZQUy6w_TAOzLjKiWXUfMVnaaKz54ovNwAPte6poJGfwr94Bz5rloxt03ua-G8sUkuUN5jWz1Zp5g6ll6YH_-mnnSpHIquqp_9Plm1n_1yyEmKNMlCOEzFj3fe_9v7uOMvfRfhwEYB_uTxjBbrj5wYexpAgmDMb1OmLLeEmFeoeImjyQWWYRk"/>
+</div>
+<!-- Engagement -->
+<div class="flex items-center justify-between px-2">
+<div class="flex items-center space-x-2">
+<button class="flex items-center group">
+<span class="material-symbols-outlined text-[28px] text-rose-500 group-hover:scale-110 transition-transform" data-icon="favorite" data-weight="fill" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="ml-1 font-label-lg text-label-lg text-on-surface-variant group-hover:text-[#26C1A4] transition-colors">1.2k</span>
+</button>
+</div>
+<button class="text-on-surface-variant hover:text-[#26C1A4] transition-colors group">
+<span class="material-symbols-outlined text-[28px] group-hover:scale-110 transition-transform" data-icon="share">share</span>
+</button>
+</div>
+</article>
+<!-- Post 2: Video -->
+<article class="bg-white/70 backdrop-blur-xl rounded-[32px] p-4 shadow-[0_10px_30px_rgba(0,107,89,0.08)] border border-white/50">
+<!-- Header -->
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center space-x-3">
+<img alt="User" class="w-10 h-10 rounded-full object-cover" data-alt="A sharp portrait of a male athlete." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3IS0wLEvo4pXfDJ7lt5zoSi19U9xsq3D0g6FLV07iebQGxhqa6vPgScIJfJW3oWUXjj0E7l0vKunjr-kjDEsDXENteSllqsCF8JcjBgabp_1NDgg4df58pl65hr9Vl2erq4z-oH2ybXHx7YfGah8a-5oN3FAfhBhwUxY_6cyEZ0MDvNatBlDWjCJlkJ8CT2PVD-NAVbcB8jzhDuHKoS9kYIFUquD0agO6mLGJfuS226ugGq9tO3Dd-oDdfOVpYC3mzusEKrDpYlg"/>
+<div>
+<h3 class="font-label-lg text-label-lg text-on-surface">Sam Chen</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Gym • 4h</p>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-[#26C1A4] transition-colors">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+</button>
+</div>
+<!-- Caption -->
+<p class="font-body-md text-body-md text-on-surface mb-4">Focus on form. <span class="text-[#26C1A4] font-label-lg">#lifting #gains</span></p>
+<!-- Media Variant 2: Video -->
+<div class="overflow-hidden bg-surface-container-low mb-4 relative aspect-[16/9] rounded-[2rem]">
+<img alt="Gym" class="w-full h-full object-cover" data-alt="Gym workout scene." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_kbu5cWlQTWWPjomJd_PpcCet0L8mbjK1Tq2KJEb5nLZaxKENr46M4qcmQaooz_eoYdYzyMDP0d-MIGwvKKP8CI3_ubkuyDeRwCUHlXm_quYpV5QRKCeNNcpn0cV3xOFdxywX6532Ms3VL18bXgtJFe8cJXH6CXPa-YYtJxHjFi5ayjNC3TiuuAH2uJtiSK7BBILFLS6aKehpKWZwuSC-8684BLxV-sWd-p3jO4iafNdTxcAXZEifQ03XptghpXoBJZ9kzmvd9hk"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<button class="w-[64px] h-[64px] bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[#26C1A4] text-3xl" data-icon="play_arrow">play_arrow</span>
+</button>
+</div>
+<div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur text-white font-label-sm px-2 py-1 rounded-md">0:15</div>
+</div>
+<!-- Engagement -->
+<div class="flex items-center justify-between px-2">
+<div class="flex items-center space-x-2">
+<button class="flex items-center group">
+<span class="material-symbols-outlined text-[28px] text-on-surface-variant group-hover:scale-110 transition-transform" data-icon="favorite">favorite</span>
+<span class="ml-1 font-label-lg text-label-lg text-on-surface-variant group-hover:text-[#26C1A4] transition-colors">856</span>
+</button>
+</div>
+<button class="text-on-surface-variant hover:text-[#26C1A4] transition-colors group">
+<span class="material-symbols-outlined text-[28px] group-hover:scale-110 transition-transform" data-icon="share">share</span>
+</button>
+</div>
+</article>
+<!-- Post 3: 2 Images -->
+<article class="bg-white/70 backdrop-blur-xl rounded-[32px] p-4 shadow-[0_10px_30px_rgba(0,107,89,0.08)] border border-white/50">
+<!-- Header -->
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center space-x-3">
+<img alt="User" class="w-10 h-10 rounded-full object-cover" data-alt="Wellness coach headshot." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeDRzP18Yp-S_Ni0oz1YrBfNfVn-lcTLWRdT_A-pZO9fCvi3L7-xXBGC-v63ZyPmNB6bmJ9Z3XeFdBF2DvpVFZcovscBNjiLbnoK2Vlq6lm7mAbI579tHLBZ-iByvfj59PACgbAZ-zZCvWDXJS3wIGBE4hl3DzptUgw4xAH_xDSg9qcxOHh8ApJC5k0nAx1OPFpww-DM41ifeY6Nk9-GKsfuaVCb7N09Hffi2vghCK07bebzEwIGI7YaRJSVAgDVz9Vxuzw_F2c4Q"/>
+<div>
+<h3 class="font-label-lg text-label-lg text-on-surface">Jordan Lee</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Studio • 5h</p>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-[#26C1A4] transition-colors">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+</button>
+</div>
+<!-- Caption -->
+<p class="font-body-md text-body-md text-on-surface mb-4">Balance is key. <span class="text-[#26C1A4] font-label-lg">#yoga #mindfulness</span></p>
+<!-- Media Variant 3: 2 Images -->
+<div class="grid grid-cols-2 gap-1 mb-4 rounded-[2.5rem] overflow-hidden group">
+<div class="aspect-square bg-surface-container-low">
+<img alt="Yoga Pose 1" class="w-full h-full object-cover" data-alt="Yoga pose 1." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEPF9Cv3EQfc5IEB01MDRCo7DB8wOSxnBnw5UUtn0lODiv9yICqOjK7HIreAQaNor-1h_gLfDFnjB5hjZ_8mtfXDsuex9Ai-Gq-eXNv3SpsUnNbPCzzIiYWimTAOgFg4L_nDzlXfX5oogAtvZIXbs8ZV45hXr6EVbu88lPvL7bK7NigwQUP2Xl20MUIq9fQmP3vG_Prm6L7OjstpVjfUAZOEc-i1N4xmFXzXKvgTMuR8YN34o3lic4hQos-O3ZEV5l2tkpBVj4sEs"/>
+</div>
+<div class="aspect-square bg-surface-container-low">
+<img alt="Yoga Pose 2" class="w-full h-full object-cover" data-alt="Yoga pose 2." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIyeQSj9Ft5-a_SKHWm3dPi17mVLODJ42b2yya8xGDRwk6xWOqix114JDP7dxpM6ZZnZY7yBqwx_fougM9X16fXpChNs9B9vQ8gFon9CK7o4wQCk4KisxzR8JMJloAiUgMRmV5bYGrC6O3JNR9XiosQi2Z5jQ7cJIEnLit6jIiwYr-QKPVsz7psb3LpjF-47BYa1Vg0cj5Olw8a8E2UhyXdT8_pj0x1YtHrJoDGCMkx6zDYbBjZbg2DeVZ0EWCS4E98s5x8B6qNLE"/>
+</div>
+</div>
+<!-- Engagement -->
+<div class="flex items-center justify-between px-2">
+<div class="flex items-center space-x-2">
+<button class="flex items-center group">
+<span class="material-symbols-outlined text-[28px] text-on-surface-variant group-hover:scale-110 transition-transform" data-icon="favorite">favorite</span>
+<span class="ml-1 font-label-lg text-label-lg text-on-surface-variant group-hover:text-[#26C1A4] transition-colors">432</span>
+</button>
+</div>
+<button class="text-on-surface-variant hover:text-[#26C1A4] transition-colors group">
+<span class="material-symbols-outlined text-[28px] group-hover:scale-110 transition-transform" data-icon="share">share</span>
+</button>
+</div>
+</article>
+<!-- Post 4: Carousel -->
+<article class="bg-white/70 backdrop-blur-xl rounded-[32px] p-4 shadow-[0_10px_30px_rgba(0,107,89,0.08)] border border-white/50">
+<!-- Header -->
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center space-x-3">
+<img alt="User" class="w-10 h-10 rounded-full object-cover" data-alt="Professional portrait." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjP5Nigc3QX0yshvYPUzxM7vxyRz8Y42he3n6PDG5sw4z2YZhwSEoqM0Og_wt2CE1weYfkk2Xuz3jzf-XUWJMWzigy40zHSElEZt9F-6wUM07bbQKx9SHgZUtzq20pYCkTdZCAf_S_cjp-T6FP9DxKlC35ozaac4R73XMmnRRrkhvbemN4r1YherksV6vbJR-hF3hpSWv3GSYayeiQGTcLQpbCweLXc1YuKGDWzp-GYmUjiRdUTdxqTMJR8tMOyiAqSWGA9YPBhjY"/>
+<div>
+<h3 class="font-label-lg text-label-lg text-on-surface">Sara Khan</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Montreal • 8h</p>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-[#26C1A4] transition-colors">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+</button>
+</div>
+<!-- Caption -->
+<p class="font-body-md text-body-md text-on-surface mb-4">Healthy eats to start the week right. <span class="text-[#26C1A4] font-label-lg">#healthyfood #wellness</span></p>
+<!-- Media Variant 4/5: Carousel -->
+<div class="relative mb-4">
+<div class="flex overflow-x-auto snap-x-mandatory no-scrollbar rounded-[3rem]">
+<div class="flex-none w-full aspect-[4/5] snap-center bg-surface-container-low">
+<img alt="Food 1" class="w-full h-full object-cover" data-alt="Smoothie bowl." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUImwlkzv9FoPY23a5lX20PHaqrYonZxjuuagH6IFhhYfxgJJQww6oki952UJouWg04C_pn3xv3_ysSLHbMUVfwbWQVcc0GSwwJaAYa38Cppq7DZdt91QFW-dj0emYiN1_AiAsWlFGLK21wUY9I5sjFWJb8Ex8fbGiBaU9h9s78snFJIe-3FdQnzFzucicankfvLmcw7X20BwdAvRFje8ly5VULuFoU0qQNdCEEnqj7DJeTgmbQ2RKfCq1jL__eeH_jhjkQXh3_KI"/>
+</div>
+<div class="flex-none w-full aspect-[4/5] snap-center bg-surface-container-low">
+<img alt="Food 2" class="w-full h-full object-cover" data-alt="Healthy meal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6W9Fj4O0SRHWoixmA1mLuSP0-tzlAvnauwKJVLzPzZwj-JFPF9IRn1sCDlKuqAUkCBHaFGVrSnPaIURPLmAR7izita0B6q9DcpFJ8_fWJxC4u2YeUOAINOF-ZLrOlKZHqxsL1WdlyvE1wPeck489t1KdsI4Za50sjIP9rOsACt-25SwI9F2i3ePv89n3pZRgHVFIbonVIF2ecjhFCGeiRG8Io516rKdLPksq4Yg7u4mIt0be3UFtqq1DIVw2gmPMty9r-OdK9NOE"/>
+</div>
+</div>
+<div class="absolute top-4 right-4 bg-black/60 backdrop-blur text-white font-label-sm px-2 py-1 rounded-full">1/2</div>
+<div class="flex justify-center space-x-1.5 mt-3">
+<div class="w-1.5 h-1.5 rounded-full bg-[#26C1A4]"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
+</div>
+</div>
+<!-- Engagement -->
+<div class="flex items-center justify-between px-2">
+<div class="flex items-center space-x-2">
+<button class="flex items-center group">
+<span class="material-symbols-outlined text-[28px] text-on-surface-variant group-hover:scale-110 transition-transform" data-icon="favorite">favorite</span>
+<span class="ml-1 font-label-lg text-label-lg text-on-surface-variant group-hover:text-[#26C1A4] transition-colors">2.1k</span>
+</button>
+</div>
+<button class="text-on-surface-variant hover:text-[#26C1A4] transition-colors group">
+<span class="material-symbols-outlined text-[28px] group-hover:scale-110 transition-transform" data-icon="share">share</span>
+</button>
+</div>
+</article>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-white border-t border-slate-100 shadow-[0px_-4px_24px_rgba(0,0,0,0.06)] rounded-t-[28px] pt-4 pb-5 flex justify-around items-center px-6">
+<button class="relative flex items-center justify-center w-12 h-12 icon-active-glow"><svg width="26" height="26" viewBox="0 0 20 21" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.5601 3.3893C5.0178 5.277 3.7466 6.2209 3.2474 7.6151C3.2073 7.727 3.1713 7.8403 3.1394 7.9548C2.7414 9.3827 3.227 10.9099 4.198 13.9643C5.1691 17.0187 5.6546 18.5459 6.7978 19.462C6.8895 19.5355 6.9838 19.6055 7.0805 19.672C8.2863 20.5 9.8575 20.5 13 20.5C16.1425 20.5 17.7137 20.5 18.9195 19.672C19.0162 19.6055 19.1105 19.5355 19.2022 19.462C20.3454 18.5459 20.8309 17.0187 21.802 13.9643C22.773 10.9099 23.2586 9.3827 22.8606 7.9548C22.8287 7.8403 22.7927 7.727 22.7526 7.6151C22.2534 6.2209 20.9822 5.277 18.4399 3.3893C15.8976 1.5016 14.6265 0.5577 13.1747 0.5033C13.0583 0.4989 12.9417 0.4989 12.8253 0.5033C11.3735 0.5577 10.1024 1.5016 7.5601 3.3893ZM11.0934 15.1821C10.6985 15.1821 10.3784 15.5093 10.3784 15.9129C10.3784 16.3164 10.6985 16.6436 11.0934 16.6436H14.9066C15.3015 16.6436 15.6216 16.3164 15.6216 15.9129C15.6216 15.5093 15.3015 15.1821 14.9066 15.1821H11.0934Z" fill="#26C1A4" transform="translate(-3, 0)"/></svg><div class="active-bar"></div></button>
+<button class="flex items-center justify-center w-12 h-12"><svg width="26" height="26" viewBox="0 0 21 20" fill="none"><path d="M15.7 19.335C14.528 19.5 13 19.5 10.95 19.5H9.05C5.019 19.5 3.004 19.5 1.752 18.248C0.5 16.996 0.5 14.981 0.5 10.95V9.05C0.5 5.019 0.5 3.004 1.752 1.752C3.004 0.5 5.019 0.5 9.05 0.5H10.95C14.981 0.5 16.996 0.5 18.248 1.752C19.5 3.004 19.5 5.019 19.5 9.05V10.95C19.5 12.158 19.5 13.185 19.466 14.065C19.439 14.77 19.426 15.123 19.159 15.254C18.892 15.386 18.593 15.175 17.996 14.752L16.65 13.8" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M12.945 10.395C12.769 11.021 11.933 11.464 10.263 12.35C8.648 13.206 7.841 13.635 7.19 13.462C6.921 13.391 6.676 13.256 6.478 13.07C6 12.62 6 11.746 6 10C6 8.253 6 7.38 6.478 6.93C6.676 6.744 6.921 6.609 7.19 6.538C7.841 6.365 8.648 6.794 10.263 7.65C11.933 8.536 12.769 8.978 12.945 9.605C13.018 9.864 13.018 10.136 12.945 10.395Z" stroke="#94a3b8" stroke-width="1.8" stroke-linejoin="round" fill="none"/></svg></button>
+<button class="w-12 h-12 rounded-full pill-active-light flex items-center justify-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5V19M5 12H19" stroke="#26C1A4" stroke-width="2.5" stroke-linecap="round"/></svg></button>
+<button class="flex items-center justify-center w-12 h-12"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 3C7.029 3 3 7.029 3 12C3 13.689 3.466 15.274 4.287 16.628L3.016 19.832C2.76 20.478 3.303 21.14 3.985 20.994L7.789 20.158C9.05 20.693 10.447 21 12 21C16.971 21 21 16.971 21 12C21 7.029 16.971 3 12 3Z" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button>
+<button class="flex items-center justify-center w-12 h-12"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt="me" class="w-8 h-8 object-cover profile-avatar-inactive opacity-70"/></button>
+</nav>
+
+<style>
+  .scroll-hide-top { transition: transform 0.32s cubic-bezier(0.4,0,0.2,1); will-change: transform; }
+  .scroll-hide-top.hidden-top { transform: translateY(-100%); }
+  .scroll-hide-bottom { transition: transform 0.32s cubic-bezier(0.4,0,0.2,1); will-change: transform; }
+  .scroll-hide-bottom.hidden-bottom { transform: translateY(100%); }
+</style>
+<script>
+(function(){
+  const header = document.querySelector('header');
+  const nav = document.querySelector('nav.fixed.bottom-0, .bottom-nav, nav[class*="bottom-0"]');
+  if (header) header.classList.add('scroll-hide-top');
+  if (nav) nav.classList.add('scroll-hide-bottom');
+  let lastY = 0, ticking = false, hidden = false;
+  function show(){ if(!hidden) return; hidden=false; if(header) header.classList.remove('hidden-top'); if(nav) nav.classList.remove('hidden-bottom'); }
+  function hide(){ if(hidden) return; hidden=true; if(header) header.classList.add('hidden-top'); if(nav) nav.classList.add('hidden-bottom'); }
+  window.addEventListener('scroll', function(){
+    if (ticking) return; ticking = true;
+    requestAnimationFrame(function(){
+      const y = window.scrollY;
+      const dy = y - lastY;
+      if (y < 80) show();
+      else if (dy > 6) hide();
+      else if (dy < -6) show();
+      lastY = y; ticking = false;
+    });
+  }, { passive: true });
+  // Tab buttons : tap-to-top + visual refresh (scrolls smoothly to top, shows header/nav)
+  const tabs = document.querySelectorAll('.bg-surface-container-low button, [class*="tab-active"], [class*="tab-inactive"]');
+  tabs.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      show();
+    });
+  });
+})();
+</script>
+
+</body></html>

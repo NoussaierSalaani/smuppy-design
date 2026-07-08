@@ -1,0 +1,834 @@
+{
+ "count": 10,
+ "screens": [
+  {
+   "screen": "ChannelDetailView",
+   "componentExists": true,
+   "v1Screen": "NONE (needs new screen — a functional equivalent already exists at src/screens/payments/ChannelSubscriptionScreen.tsx route 'ChannelSubscription', but it is wired to a DIFFERENT V2 view: ChannelSubscriptionView, NOT ChannelDetailView). ChannelDetailView is a parallel fan-facing channel-purchase full screen with no host.",
+   "effort": "M",
+   "subScreens": [
+    "ManageSubscription (route exists, src/types/index.ts:713/860) — reached via onManage when subscribed",
+    "WebView (Stripe checkout, route exists src/types/index.ts) — reached by the subscribe round-trip on non-IAP",
+    "App Store native subscriptions sheet (IAP) — opened by subscribe on iOS via useIAPCheckout"
+   ],
+   "ctas": [
+    {
+     "label": "Subscribe (onSubscribe, gradient CTA — money)",
+     "target": "open IAP sheet (iOS via useIAPCheckout/getChannelSubProductId) OR Stripe PaymentSheet/WebView (non-IAP)",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Gérer mon abonnement (onManage, shown when subscribed)",
+     "target": "navigate(ManageSubscription)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Back (onBack)",
+     "target": "navigation.goBack()",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "IAP confirm / App Store subscribe sheet",
+     "present": true,
+     "note": "IapConfirmSheet + PaymentLoadingSheet atoms exist (src/components/v2/IapConfirmSheet, PaymentLoadingSheet); ChannelSubscriptionScreen already drives them via useIAPCheckout — reuse that wiring, do not rebuild"
+    },
+    {
+     "name": "3DS / Stripe PaymentSheet (non-IAP path)",
+     "present": true,
+     "note": "usePaymentSheetCheckout already used by ChannelSubscriptionScreen.tsx — reuse"
+    },
+    {
+     "name": "subscribe-success sheet",
+     "present": true,
+     "note": "FlowSuccessSheet / PackPurchaseSuccessView atoms exist; ChannelDetailView itself only shows the subscribed status Banner inline — success toast/sheet must be driven by the container"
+    },
+    {
+     "name": "subscribe-error",
+     "present": true,
+     "note": "ChannelDetailView has built-in danger Banner via errorTitle/errorMessage props (ChannelDetailView.tsx:223-232) — no separate popup needed"
+    }
+   ],
+   "feGaps": [
+    "No container/host screen exists — ChannelDetailView.tsx is rendered nowhere (grep src/ outside its own dir + tests = 0 hits). Needs a container mapping getChannelInfo(creatorId) + getChannelSubscriptionStatus(creatorId) + useIAPCheckout onto its props.",
+    "Decision gap: ChannelSubscriptionScreen.tsx:35,205-276 already implements the fan channel-purchase flow with ChannelSubscriptionView behind FEATURES.V2_UI. ChannelDetailView duplicates that surface. FE gap = pick ONE (either swap ChannelSubscriptionView→ChannelDetailView in that screen, or leave ChannelDetailView orphaned). Shipping both = two parallel implementations (violates directive #8 single controller).",
+    "No loading state for the INITIAL channel-info fetch — ChannelDetailView assumes data is already present (all strings are required props); container must render an ActivityIndicator/skeleton while getChannelInfo resolves (pattern: ChannelSubscriptionScreen.tsx ~ initialLoaded guard).",
+    "Empty/unavailable-channel state not handled by the component (e.g. creator turned channel off / price=0) — container must branch before rendering.",
+    "cancelNoteLabel legal micro-copy is optional and currently only fed by fixture — container must pass the real i18n string (App Store auto-renew disclosure required for IAP).",
+    "safe-area: component has NO top inset handling (ChannelDetailView.tsx:404 header uses paddingTop:8 only) and ScrollView paddingBottom:40 (line 407) ignores the home-indicator inset — see safeAreaPlan."
+   ],
+   "beGaps": [
+    {
+     "desc": "Fan-side channel detail data is fully covered by getChannelInfo(creatorId) (subscriptionsApi.ts:165) + getChannelSubscriptionStatus(creatorId) (subscriptionsApi.ts:93). No new endpoint needed for read.",
+     "endpoint": "GET channel-info / channel-subscription status (exist)",
+     "ticketNeeded": false
+    },
+    {
+     "desc": "Perks: backend has no structured perks column — perks are serialized into the channel description field (ChannelSetupScreen.tsx:50-64 joins with ' · '). ChannelDetailView.perks must be parsed from description on the fan side too; a real perks model is a known gap (docs/backend/V2_BACKEND_GAPS_FOR_HAMZA.md).",
+     "endpoint": "channel perks structured field",
+     "ticketNeeded": true
+    }
+   ],
+   "wiringPlan": "Create a thin container (either replace ChannelSubscriptionView inside src/screens/payments/ChannelSubscriptionScreen.tsx behind FEATURES.V2_UI, OR a new ChannelDetailScreen). Fetch getChannelInfo(creatorId)+getChannelSubscriptionStatus(creatorId); show loading guard until both resolve. Map channelName/tagline/price/perks (parse description) → props; wire onSubscribe to the EXISTING useIAPCheckout/usePaymentSheetCheckout flow already in ChannelSubscriptionScreen (do NOT rebuild payments); set subscribeLoading from that hook; on subscribed=true wire onManage→navigate('ManageSubscription'); feed errorTitle/errorMessage from the catch path; pass cancelNoteLabel from i18n. Strongly recommend consolidating onto ONE fan channel view to avoid a parallel impl.",
+   "safeAreaPlan": "Wrap in SafeAreaView edges=['top'] OR pass insets.top into the header paddingTop (component currently hardcodes paddingTop:8 at ChannelDetailView.tsx:404). Add insets.bottom to the ScrollView contentContainerStyle paddingBottom (currently flat 40 at line 407) so the gradient subscribe CTA + cancel note clear the home indicator. Mirror the topInset prop pattern CreatorChannelSetupView already exposes."
+  },
+  {
+   "screen": "ChannelOwnerView",
+   "componentExists": true,
+   "v1Screen": "NONE (needs new screen). Host hint was src/screens/settings/ChannelSetupScreen.tsx, but that screen hosts CreatorChannelSetupView (the channel CONFIG/edit form), NOT ChannelOwnerView. ChannelOwnerView is the owner's full-screen channel DASHBOARD (status + stats + perk preview + Manage/Edit/Configure/Share) — distinct surface, currently rendered nowhere.",
+   "effort": "M",
+   "subScreens": [
+    "ChannelSetup (route 'ChannelSetup' in SettingsStack, src/types/index.ts:712/856) — Configure/Edit destination",
+    "ChannelMembers (route 'ChannelMembers', src/types/index.ts:858) — manage/ban subscribers (likely Manage target)",
+    "CreatorEarnings (route exists, MainNavigator) — analytics/earnings, today's 'Voir l'analytique' destination (ProfileScreenV2.tsx:402-405)",
+    "Share sheet (RN Share) — onShare for the noSubscribers empty state"
+   ],
+   "ctas": [
+    {
+     "label": "Gérer la chaîne (onManage, gradient primary)",
+     "target": "navigate(ChannelMembers) (manage subscribers) — or CreatorEarnings if 'manage' means analytics",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Modifier (onEdit, outline)",
+     "target": "navigate(SettingsStack→ChannelSetup)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Configurer chip (onConfigure, over hero)",
+     "target": "navigate(SettingsStack→ChannelSetup)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Partager ma chaîne (onShare, EmptyState CTA when 0 subscribers)",
+     "target": "open native Share sheet (deep link to the creator's channel)",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Back (onBack)",
+     "target": "navigation.goBack()",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "share-sheet (native)",
+     "present": false,
+     "note": "onShare must open RN Share.share() with a channel deep-link — no popup component, but the action is unimplemented (no container)"
+    },
+    {
+     "name": "premium-upgrade gate",
+     "present": true,
+     "note": "Owner side is premium-gated; UpgradeToPro paywall route exists (SettingsStack→UpgradeToPro, used by ProfileScreenV2.tsx:384). Container must gate before Configure/Edit like goConfigure does."
+    }
+   ],
+   "subScreensNote": "",
+   "feGaps": [
+    "No host screen — ChannelOwnerView.tsx rendered nowhere (grep = 0 hits outside its dir/tests). Today the owner's in-profile Channel tab is ProfileChannelPane (ProfileScreenV2.tsx:567) which only has Configurer(onAnalytics)+stats; there is NO full-screen owner channel dashboard. ChannelOwnerView would be a NEW route reached from the profile Channel tab or from ProfileChannelPane's CTA.",
+    "Overlap: ProfileChannelPane already shows owner channelName/price/perks/ownerStats inline (ProfileChannelPane.tsx:88-138). Decide whether ChannelOwnerView replaces that pane or is a push-screen from it — shipping both duplicates the owner channel surface.",
+    "No loading/error state in component — it needs the live channel status + stats (subscriber count, $ this month, trend). Container must fetch getMyChannelSubscribers (subscriptionsApi.ts:319) + earnings, with a loading guard and an error fallback (none exist).",
+    "status prop ('active'|'noSubscribers'|'draft') must be DERIVED by the container from getChannelInfo (price>0 && description≥20 = active per ChannelSetupScreen.tsx:188; subscriberCount===0 = noSubscribers; else draft) — derivation logic is a gap.",
+    "onShare action gap (no Share.share wiring anywhere for a channel link).",
+    "safe-area: header hardcodes paddingTop:8 (ChannelOwnerView.tsx:540-545), scroll paddingBottom:40 (line 551) — no inset handling for notch/home-indicator. Footer Manage/Edit buttons (line 510-531) can collide with the home indicator."
+   ],
+   "beGaps": [
+    {
+     "desc": "Owner channel stats (active subscribers, $ this month, +% vs last month) — subscriber count via getMyChannelSubscribers exists (subscriptionsApi.ts:319) but the $ this month + trend% are not a dedicated endpoint; CreatorEarnings dashboard data is the closest. A channel-scoped analytics summary (count/revenue/trend in one call) does not exist.",
+     "endpoint": "GET /channel/analytics-summary (count + revenueThisMonth + trendPct)",
+     "ticketNeeded": true
+    },
+    {
+     "desc": "Perk preview ('Ce que voient tes fans') — same structured-perks gap as ChannelDetailView; perks live serialized in description today.",
+     "endpoint": "channel perks structured field",
+     "ticketNeeded": true
+    }
+   ],
+   "wiringPlan": "Add a new route 'ChannelOwner' (3-file rule: src/screens/channels/ChannelOwnerScreen.tsx or settings/, src/types/index.ts MainStackParamList, MainNavigator.tsx). Container fetches getChannelInfo(myId)+getMyChannelSubscribers (+earnings for $/trend), derives status, maps to props. Wire onConfigure & onEdit → navigate('SettingsStack',{screen:'ChannelSetup'}); onManage → navigate('ChannelMembers'); onShare → Share.share(channel deep link); onBack → goBack. Premium-gate Configure/Edit through UpgradeToPro exactly like ProfileScreenV2.goConfigure (ProfileScreenV2.tsx:383-391). Reach this screen from ProfileChannelPane's owner CTA (replace today's goAnalytics→CreatorEarnings if this becomes the owner channel home).",
+   "safeAreaPlan": "Add a topInset prop (mirror CreatorChannelSetupView) or wrap in SafeAreaView edges=['top']; feed insets.top into header paddingTop (ChannelOwnerView.tsx:540). Add insets.bottom to scroll contentContainerStyle paddingBottom (line 551) so the Manage/Edit footer buttons clear the home indicator."
+  },
+  {
+   "screen": "PackagesEditView",
+   "componentExists": true,
+   "v1Screen": "NONE (needs new screen). Host hint was src/screens/sessions/CreatorPackagesSetupScreen.tsx, but that screen hosts CreatorPackagesSetupView (single-pack CREATE form), NOT PackagesEditView. PackagesEditView is the owner CATALOGUE MANAGER (whole-list reorder/edit/delete/add) — a distinct full screen, rendered nowhere.",
+   "effort": "M",
+   "subScreens": [
+    "CreatorPackagesSetup (route exists, MainNavigator/types:891) — per-pack edit destination for onEditPack and onAddPack (today create-only, takes no params — see beGap re packageId)",
+    "Per-pack editor (does NOT exist as a param-accepting route — ProfileScreenV2.tsx:412-423 documents this gap; CreatorPackagesSetup takes no packageId)"
+   ],
+   "ctas": [
+    {
+     "label": "Edit pack (onEditPack(id), row tap + ✎)",
+     "target": "navigate(CreatorPackagesSetup) — no packageId param accepted yet",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Add a pack (onAddPack, dashed add row)",
+     "target": "navigate(CreatorPackagesSetup)",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Move up (onMovePackUp(id))",
+     "target": "reorder action — container mutates array + persists order",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Move down (onMovePackDown(id))",
+     "target": "reorder action — container mutates array + persists order",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Delete (onRequestDelete(id) → confirm sheet → onDeletePack(id))",
+     "target": "deletePack(packId) (sessionsApi.ts:236)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Save (onSave, gradient, saveLoading guard)",
+     "target": "persist order/changes then goBack",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Back (onBack)",
+     "target": "navigation.goBack()",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "delete-confirm bottom sheet",
+     "present": true,
+     "note": "Built into PackagesEditView via BottomSheet + pendingDeleteId/onRequestDelete/onCancelDelete/onDeletePack (PackagesEditView.tsx:500-569). Destructive danger CTA present. Container only needs to hold pendingDeleteId state."
+    },
+    {
+     "name": "delete-success / save-success toast",
+     "present": true,
+     "note": "SmuppyToast (useSmuppyToast) available — container fires it; component shows no inline success"
+    },
+    {
+     "name": "add-pack iOS prompt",
+     "present": true,
+     "note": "If add reuses CreatorPackagesSetupScreen's Alert.prompt pattern (its addBenefit), already exists; otherwise onAddPack just navigates"
+    }
+   ],
+   "feGaps": [
+    "No host screen — PackagesEditView.tsx rendered nowhere (grep = 0 hits outside its dir/tests). The owner today reaches only CreatorPackagesSetupScreen (single-pack create) via ProfileScreenV2.goPackConfig (ProfileScreenV2.tsx:418-423) and SettingsScreen.tsx:692. A catalogue-manager screen must be created and reached from the profile Packs tab.",
+    "No loading state for the initial listMyPacks/listCreatorPacks fetch — component takes packs as a required-ish prop; container must guard with a loader (pattern: CreatorPackagesSetupScreen.loadPacks at line 69).",
+    "empty state is built in (EmptyState at PackagesEditView.tsx:444-452) but needs the real emptyTitle/emptyDescription i18n + an add CTA path.",
+    "Reorder has NO persistence path — onMovePackUp/Down only reorder in memory; there is no API to save pack order (see beGap). Without it, Save can't persist order → reorder UI is non-functional end-to-end.",
+    "Per-pack edit deep-link gap: onEditPack(id) has nowhere param-aware to go — CreatorPackagesSetup ignores packageId (documented ProfileScreenV2.tsx:412-417). Edit currently can only re-open the create form, not edit the selected pack.",
+    "safe-area: header paddingTop:8 (PackagesEditView.tsx:581) + scroll paddingBottom:40 (line 585) — no inset handling; Save gradient CTA can sit under the home indicator."
+   ],
+   "beGaps": [
+    {
+     "desc": "Pack reordering has no backend — sessionsApi has createPack/updatePack/deletePack (sessionsApi.ts:186/209/236) but NO reorder endpoint and SessionPack has no displayOrder/sortIndex field. The reorder UI cannot persist.",
+     "endpoint": "PATCH /packs/reorder { orderedIds: string[] } (+ add displayOrder column)",
+     "ticketNeeded": true
+    },
+    {
+     "desc": "Per-pack edit needs CreatorPackagesSetup to accept a packageId param + listMyPacks→prefill; today create-only. Either add packageId to the route/screen (FE+BE prefill) so onEditPack deep-links to the right pack.",
+     "endpoint": "GET /packs/:id (or reuse listMyPacks) for prefill",
+     "ticketNeeded": true
+    },
+    {
+     "desc": "deletePack(packId) exists (sessionsApi.ts:236) — onDeletePack wiring is FE-only, no new endpoint.",
+     "endpoint": "DELETE pack (exists)",
+     "ticketNeeded": false
+    }
+   ],
+   "wiringPlan": "Add a new route 'PackagesEdit' (3-file rule). Container: listMyPacks() (creatorApi.ts:65) → map to EditablePackItem[] (id/title/price preformatted via useCurrency), loading guard. Hold pendingDeleteId + an in-memory ordered copy in state. Wire onRequestDelete→setPendingDeleteId; onCancelDelete→clear; onDeletePack→deletePack(id)+toast+reload; onAddPack & onEditPack(id)→navigate('CreatorPackagesSetup', {packageId} once route accepts it); onMovePackUp/Down→reorder local state; onSave→persist via the new reorder endpoint (blocked until BE ticket) then goBack with saveLoading guard. Reach from ProfilePackagesPane owner CTA / profile Packs tab.",
+   "safeAreaPlan": "Add topInset prop or SafeAreaView edges=['top'] feeding insets.top into header paddingTop (PackagesEditView.tsx:581); add insets.bottom to scroll paddingBottom (line 585) so the Save CTA clears the home indicator. keyboardShouldPersistTaps already set (line 274)."
+  },
+  {
+   "screen": "PremiumPlanView",
+   "componentExists": true,
+   "v1Screen": "src/screens/payments/PlatformSubscriptionScreen.tsx",
+   "effort": "M",
+   "ctas": [
+    {
+     "label": "Subscribe (gradient CTA) — onSubscribe",
+     "target": "action: handleSubscribe (IAP via useIAPCheckout.purchaseSubscription OR Stripe via usePaymentSheetCheckout) → on success navigate(PlatformSubscriptionSuccess,{productType})",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Back (BackButton) — onBack",
+     "target": "navigation.goBack()",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    }
+   ],
+   "popups": [
+    {
+     "name": "payment-error-alert",
+     "present": true,
+     "note": "V1 surfacePaymentError via useSmuppyAlert (categorizePaymentError + Contact support button). MUST be reused — PremiumPlanView exposes no error prop/slot, so error surfacing must stay in the container."
+    },
+    {
+     "name": "already-subscribed-toast",
+     "present": true,
+     "note": "V1 toastSuccess when currentPlan===selectedPlan. PremiumPlanView has no current-plan/disabled state — container must guard before calling onSubscribe."
+    },
+    {
+     "name": "processing/pending-toast",
+     "present": true,
+     "note": "V1 toastWarning on result.status==='pending' (IAP)."
+    },
+    {
+     "name": "MFA-enroll redirect",
+     "present": true,
+     "note": "V1 navigates MFAEnrollPrompt when FEATURES.MFA_ENABLED && mfaStatus!=='enrolled' (flag currently OFF). Keep in container."
+    },
+    {
+     "name": "restore-purchases / manage-subscriptions / terms links",
+     "present": true,
+     "note": "iOS-only links + Restore Purchases row. PremiumPlanView has NO slot for these — App Store compliance requires Restore + manage links to remain visible. Gap if container drops them."
+    }
+   ],
+   "subScreens": [
+    "PlatformSubscriptionSuccess (post-purchase)",
+    "WebView (Stripe checkoutUrl fallback)",
+    "MFAEnrollPrompt (when MFA flag ON)"
+   ],
+   "feGaps": [
+    "PremiumPlanView is NOT imported anywhere (grep src/ = 0 hits). Unwired: PlatformSubscriptionScreen.tsx has NO `if (FEATURES.V2_UI) return <PremiumPlanView .../>` early-return — unlike IdentityVerificationScreen.tsx:372.",
+    "i18n namespace `v2PremiumPlanView` NOT registered in src/i18n/config.ts (only locale JSON src/i18n/locales/{fr,en,es,pt-BR}/v2PremiumPlanView.json exist). Same gap pattern noted at IdentityVerificationScreen.tsx:368-371. Container must use t('v2PremiumPlanView:key',{defaultValue}) until registered, OR register the 4 imports + 4 resources blocks in config.ts.",
+    "PremiumPlanView has NO loading/empty/error/current-plan state of its own (only subscribeLoading bool). The V1 'currentPlan===selectedPlan' disabled state + 'connectingToAppStore' (useIAP && !iapReady) spinner + price placeholder '···' (PlatformSubscriptionScreen.tsx:412,459-463,469) have NO equivalent prop. Either add a `disabled`/`isCurrentPlan` prop + `iapConnecting` slot, or gate onSubscribe + show toast in container (loses inline affordance).",
+    "PremiumPlanView has NO Restore Purchases / Manage Subscriptions / Terms+Privacy footer (PlatformSubscriptionScreen.tsx:493-533). App Store §3.1.2 requires Restore + terms on a subscription screen — these MUST be added as a footer slot or the screen is non-compliant.",
+    "No SafeAreaView/insets usage — root View has no top/bottom padding (PremiumPlanView.tsx:114,196 header paddingTop:8 only). V1 uses useSafeAreaInsets for header top + bottom CTA. Notch + home-indicator overlap risk.",
+    "Price source: V1 resolves the LIVE App Store price (resolvePlanPriceLabel, PlatformSubscriptionScreen.tsx:156-165) to avoid §3.1.1(b) false-advertising drift; container MUST feed priceLabel/subscribeCta from resolvePlanPriceLabel (NOT the hardcoded fixture $99.99/$49), and pass null-placeholder while !iapReady."
+   ],
+   "beGaps": [
+    {
+     "desc": "No new backend needed — reuse POST /payments/platform-subscription (action: subscribe | get-status) + IAP verify. Endpoints already live.",
+     "endpoint": "/payments/platform-subscription",
+     "ticketNeeded": false
+    }
+   ],
+   "wiringPlan": "In PlatformSubscriptionScreen.tsx add `if (FEATURES.V2_UI) return <PremiumPlanView .../>` early-return AFTER all hooks (mirror IdentityVerificationScreen.tsx:372). Map the SINGLE account-resolved plan (availablePlans[0] per account-type filter, lines 125-129) → planName/priceLabel/tag/features. Feed priceLabel + subscribeCta from resolvePlanPriceLabel (live IAP price, NOT hardcoded). onSubscribe = existing handleSubscribe; onBack = navigation.goBack. Keep surfacePaymentError + already-subscribed toast + MFA gate + Restore/Terms footer in container (add footer slot to the View). Register v2PremiumPlanView namespace in config.ts (4 locales) or use defaultValue fallback.",
+   "safeAreaPlan": "Add useSafeAreaInsets in container; pass insets.top to header paddingTop and insets.bottom+16 to a CTA/footer wrapper. Simplest: wrap View in SafeAreaView edges=['top','bottom'] OR extend the View to accept paddingTop/paddingBottom props. Current View hardcodes paddingTop:8 → unsafe on notch devices."
+  },
+  {
+   "screen": "PremiumSuccessView",
+   "componentExists": true,
+   "v1Screen": "src/screens/payments/PlatformSubscriptionSuccessScreen.tsx",
+   "effort": "M",
+   "ctas": [
+    {
+     "label": "Configure payments (gradient CTA + payout ListRow) — onConfigure",
+     "target": "navigate to Stripe Connect onboarding host = CreatorWallet (handleSetupStripeConnect). NOTE: index.ts doc says 'PayoutOnboarding' but NO such route exists.",
+     "status": "TARGET_MISSING"
+    },
+    {
+     "label": "Plus tard / Skip (ghost) — onLater",
+     "target": "action: dismiss → navigate(Tabs,{screen:'Home'}) (mirror V1 handleDone)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    }
+   ],
+   "popups": [
+    {
+     "name": "none",
+     "present": true,
+     "note": "Pure success screen, no modal needed. V1 has no popup either (just a Done button + iOS manage-subscriptions link)."
+    }
+   ],
+   "subScreens": [
+    "CreatorWallet (Stripe Connect onboarding via handleSetupStripeConnect) — the real payout host",
+    "Tabs/Home (on skip / done)"
+   ],
+   "feGaps": [
+    "PremiumSuccessView is NOT imported anywhere (grep = 0). PlatformSubscriptionSuccessScreen.tsx has NO `if (FEATURES.V2_UI)` early-return — fully unwired.",
+    "i18n namespace `v2PremiumSuccessView` NOT registered in src/i18n/config.ts (only locale JSON exists). headline needs {{role}} interpolation (v2PremiumSuccessView.json:'Tu es {{role}} ! 🎉') — container must resolve role from productType (pro_creator→'Pro Creator', pro_business→'Pro Business' via wallet.productNames.*).",
+    "ROUTE MISMATCH: index.ts + component header say onConfigure → 'PayoutOnboarding', but that route does NOT exist in types/index.ts or MainNavigator.tsx. The real Stripe Connect onboarding lives in CreatorWalletScreen.tsx:149 handleSetupStripeConnect (calls /payments/payout-setup). Wire onConfigure → navigate('CreatorWallet') (route exists, types/index.ts:850), NOT a non-existent PayoutOnboarding.",
+    "V1 success screen shows an info card (premiumUnlocked / autoRenews / cancelAnytime) + iOS Manage Subscriptions link (PlatformSubscriptionSuccessScreen.tsx:67-99). PremiumSuccessView replaces this with a single payout-config row + 2 CTAs — the auto-renew/cancel-anytime reassurance + manage-subscriptions link are DROPPED. Decide: keep maquette (per 'maquette=style, code=content' rule the success copy is fine to simplify) but the iOS Manage Subscriptions link is an App Store nicety worth keeping as a tertiary link slot.",
+    "No SafeArea: PremiumSuccessView.tsx:122-123 content paddingTop:96 hardcoded, footer paddingBottom:34. V1 uses insets.top + insets.bottom+16. Notch/home-indicator overlap risk.",
+    "Business-vs-creator gating: this success+payout hand-off only applies to Pro Creator / Pro Business (who can cash in). If a personal→premium edge exists, onConfigure→CreatorWallet still valid. Verify productType is always pro_* before showing payout row (data-correctness per account type)."
+   ],
+   "beGaps": [
+    {
+     "desc": "No new backend — Stripe Connect onboarding already exists (CreatorWallet handleSetupStripeConnect → /payments/payout-setup). Reuse.",
+     "endpoint": "/payments/payout-setup",
+     "ticketNeeded": false
+    }
+   ],
+   "wiringPlan": "In PlatformSubscriptionSuccessScreen.tsx add `if (FEATURES.V2_UI) return <PremiumSuccessView .../>` early-return after hooks. Resolve role from route.params.productType → headline via t('v2PremiumSuccessView:headline',{role}). onConfigure = () => navigation.navigate('CreatorWallet') (NOT PayoutOnboarding — fix the stale index.ts doc). onLater = handleDone (navigate Tabs/Home). Optionally keep iOS manage-subscriptions as a tertiary slot. Register v2PremiumSuccessView in config.ts (4 locales) or use defaultValue fallback.",
+   "safeAreaPlan": "Wrap in SafeAreaView edges=['top','bottom'] or pass insets via container: content top = max(insets.top, 96-ish), footer paddingBottom = insets.bottom + 16. Current hardcoded paddingTop:96 is acceptable only if a top inset is also applied."
+  },
+  {
+   "screen": "VerifiedBadgeView",
+   "componentExists": true,
+   "v1Screen": "src/screens/payments/IdentityVerificationScreen.tsx",
+   "effort": "L",
+   "ctas": [
+    {
+     "label": "Subscribe / Obtenir le badge (gradient CTA) — onSubscribe",
+     "target": "action: VERIFIED IAP purchase (getSubscriptionProductId('VERIFIED') → purchaseSubscription) OR Stripe create-subscription, then startVerification (Stripe Identity). V1 handler = status==='requires_input' ? startVerification : initializePayment.",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Back (BackButton) — onBack",
+     "target": "navigation.goBack()",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Already-verified (disabled outline CTA)",
+     "target": "no-op (alreadyVerified=true → disabled). Maps to V1 status==='verified' (CTA hidden in V1, disabled here).",
+     "status": "WIRED_OK"
+    }
+   ],
+   "popups": [
+    {
+     "name": "subscription-active-success-alert",
+     "present": true,
+     "note": "V1 showAlert (subscriptionActiveTitle/Message + Continue button → startVerification) after IAP/Stripe success (IdentityVerificationScreen.tsx:251-256, 278-283). VerifiedBadgeView has NO slot — keep in container."
+    },
+    {
+     "name": "payment-failed / processing toast",
+     "present": true,
+     "note": "V1 toastError/toastError on failed/pending (lines 257-261). Keep in container."
+    },
+    {
+     "name": "restore-purchases / manage-subscriptions",
+     "present": true,
+     "note": "V1 has Restore (iOS) + Manage Subscriptions links (lines 599-628). VerifiedBadgeView has NO footer slot — App Store §3.1.2 requires Restore. GAP."
+    },
+    {
+     "name": "secured-by-stripe note",
+     "present": true,
+     "note": "V1 securityNote (line 630-635). VerifiedBadgeView has no security/trust note — design decision; KYC trust note recommended."
+    }
+   ],
+   "subScreens": [
+    "Stripe Identity web flow (openVerificationUrl / WebView fallback)",
+    "WebView (Stripe checkoutUrl)",
+    "(no separate success screen — V1 flips to in-place 'verified' status state)"
+   ],
+   "feGaps": [
+    "ARCHITECTURE CONFLICT: IdentityVerificationScreen.tsx:372-445 ALREADY renders a DIFFERENT V2 component — `IdentityVerificationView` (a KYC photo-capture flow: doc-type cards, capture frame, 4-step strip), NOT VerifiedBadgeView. VerifiedBadgeView (price-row + feature-list subscription screen) is a SECOND, competing V2 design for the SAME $14.99 verified product and is imported NOWHERE (grep = 0). Founder must pick ONE: (a) VerifiedBadgeView as the paywall/upsell BEFORE IdentityVerificationView's capture flow, or (b) drop VerifiedBadgeView and keep IdentityVerificationView only. They are not interchangeable — VerifiedBadgeView is the subscribe screen, IdentityVerificationView is the capture screen.",
+    "i18n namespace `v2VerifiedBadgeView` NOT registered in src/i18n/config.ts (only locale JSON exists). Use t('v2VerifiedBadgeView:key',{defaultValue}) or register 4 locales.",
+    "FEATURE-LIST DATA GAP: v2VerifiedBadgeView.json has NO feature keys (only title/headline/lead/price/cta). The fixture hardcodes 3 FR features ('Badge bleu','Priorité recherche','Protection anti-usurpation'). Container needs real feature strings → add featureBadge/featureSearch/featureImpersonation keys to all 4 locale JSONs (or map from existing verification.benefits.* in monetization namespace).",
+    "Price source: VerifiedBadgeView ctaLabel/priceLabel must come from the SAME controller `pricing` state (IdentityVerificationScreen.tsx:144,164-175 priceLabel/ctaPriceText) which fetches /payments/identity get-config (amount 1499). Do NOT hardcode $14.99 from fixture — false-advertising drift risk per directive #18.",
+    "alreadyVerified prop must be fed from profile is_verified (status==='verified'), exercising the disabled outline-CTA branch (VerifiedBadgeView.tsx:98,161-167).",
+    "No SafeArea: VerifiedBadgeView.tsx:114,180 header paddingTop:8 hardcoded, scroll paddingBottom:40, no insets. CTA sits inside ScrollView (not pinned bottom) — V1 pins CTA in a bottomContainer with insets.bottom+16. Home-indicator overlap + non-pinned CTA UX regression.",
+    "Restore Purchases + Manage Subscriptions footer (IdentityVerificationScreen.tsx:599-628) has no slot in VerifiedBadgeView → App Store compliance gap.",
+    "Loading state: V1 shows full-screen ActivityIndicator while fetchStatus loads (line 447-453) and 'loadingPrice' placeholder. VerifiedBadgeView has only subscribeLoading; needs an initial-load gate in container (render nothing / skeleton until pricing+status resolved)."
+   ],
+   "beGaps": [
+    {
+     "desc": "No new backend — verified flow reuses /payments/identity (get-status, get-config, create-subscription, confirm-subscription, create-session) + VERIFIED IAP verify. All live.",
+     "endpoint": "/payments/identity",
+     "ticketNeeded": false
+    },
+    {
+     "desc": "If founder wants VerifiedBadgeView feature copy server-driven (unlikely), expose benefits in get-config; otherwise pure i18n (no ticket).",
+     "endpoint": "/payments/identity (action:get-config)",
+     "ticketNeeded": false
+    }
+   ],
+   "wiringPlan": "FIRST resolve the conflict with IdentityVerificationView (founder decision). If VerifiedBadgeView is chosen as the verified subscribe screen: in IdentityVerificationScreen.tsx replace/augment the FEATURES.V2_UI block (line 372) to return <VerifiedBadgeView/>. Feed priceLabel/ctaLabel from the controller `pricing`/`ctaLabel` (live price), features from new locale keys, alreadyVerified = status==='verified', onSubscribe = status==='requires_input' ? startVerification : initializePayment (the EXACT V1 handler), subscribeLoading = processing, onBack = goBack. Keep showAlert success + toasts + Restore/Manage footer in container (add footer slot to the View). Register v2VerifiedBadgeView namespace.",
+   "safeAreaPlan": "Add useSafeAreaInsets; header paddingTop = insets.top + 8. Pin the subscribe CTA in a bottom container OUTSIDE the ScrollView with paddingBottom = insets.bottom + 16 (current CTA scrolls with content — regression vs V1). Add footer slot for Restore/Manage links with bottom inset."
+  },
+  {
+   "screen": "PlatformSubscriptionView",
+   "componentExists": true,
+   "v1Screen": "src/screens/payments/PlatformSubscriptionScreen.tsx",
+   "effort": "M",
+   "ctas": [
+    {
+     "label": "Back (header)",
+     "target": "navigation.goBack()",
+     "status": "WIRED_OK"
+    },
+    {
+     "label": "Subscribe · $X/month (gradient, not-subscribed)",
+     "target": "handleSubscribe() → IAP purchaseSubscription / Stripe runCheckoutFromResponse",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Manage subscription (outline, isSubscribed)",
+     "target": "open App Store subscriptions URL (safeOpenURL apps.apple.com/account/subscriptions) on iOS; Stripe billing portal elsewhere",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Restore purchases (V1-only, not in V2 component)",
+     "target": "restorePurchases()",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Terms / Privacy links (V1-only footnote)",
+     "target": "safeOpenURL(smuppy.com/terms | /privacy)",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "payment-failed-alert",
+     "present": true,
+     "note": "V1 surfacePaymentError → showAlert (SmuppyAlert) with Contact-support button; reusable, must be invoked from V2 catch path"
+    },
+    {
+     "name": "already-subscribed-toast",
+     "present": true,
+     "note": "V1 toastSuccess(alreadySubscribed) — reuse"
+    },
+    {
+     "name": "IAP native sheet / 3DS sheet",
+     "present": true,
+     "note": "handled by useIAPCheckout / usePaymentSheetCheckout (StoreKit / Stripe PaymentSheet) — not a JSX popup"
+    },
+    {
+     "name": "MFA-enroll redirect (gated FEATURES.MFA_ENABLED, currently OFF)",
+     "present": true,
+     "note": "navigate MFAEnrollPrompt; route exists types:716"
+    },
+    {
+     "name": "subscribe-success",
+     "present": true,
+     "note": "navigate PlatformSubscriptionSuccess (IAP) OR toastSuccess (Stripe). Route exists types:853"
+    }
+   ],
+   "subScreens": [
+    "PlatformSubscriptionSuccess (types:853, nav:524)",
+    "WebView (Stripe checkoutUrl fallback, types:895, nav:538)",
+    "MFAEnrollPrompt (types:716, gated OFF)"
+   ],
+   "feGaps": [
+    "V2 PlatformSubscriptionView is NOT wired into PlatformSubscriptionScreen.tsx — no FEATURES.V2_UI early-return exists (unlike IdentityVerificationScreen.tsx:372). Add early-return before line 323 return().",
+    "i18n namespace v2PlatformSubscriptionView is NOT registered in src/i18n/config.ts (JSON exists at src/i18n/locales/{fr,en,es,pt-BR}/v2PlatformSubscriptionView.json but unregistered) → strings render as keys. Either register namespace or use t('v2PlatformSubscriptionView:key',{defaultValue}) pattern like IdentityVerificationScreen.tsx:373.",
+    "V2 component has NO 'restore purchases' affordance (PlatformSubscriptionScreen.tsx:493-509) — App Store §3.1.1 requires Restore for auto-renewable subs. Component lacks an onRestore prop → add prop or render outside.",
+    "V2 component has NO Terms/Privacy footnote link (PlatformSubscriptionScreen.tsx:524-533) — required by App Store + the existing verifiedNoteText footnote prop is single-string, no link slot.",
+    "isSubscribed manage CTA: component exposes onManage but the host has no manage handler — V1 only has the iOS apps.apple.com deep link (line 511-522), not a true 'manage' for Android/Stripe. ACTION_GAP.",
+    "V2 component renders NO connecting/loading state for 'connecting to App Store' (V1 PlatformSubscriptionScreen.tsx:459-463 while !iapReady) — subscribeText must show placeholder + CTA must be disabled until iapReady; component only has subscribeLoading (in-flight), not a pre-ready gate.",
+    "No SafeAreaView/insets in the pure View — header paddingTop:8 only (PlatformSubscriptionView.tsx:332). Container must wrap with insets.top.",
+    "Plan-picker absence is correct (management variant = single plan per account type per audit Jun23 PlatformSubscriptionScreen.tsx:125-129) but business-vs-creator price/badge MUST be selected by user.accountType in the container, not hardcoded — verify per ACCOUNT_TYPE (data-correctness-by-account-type rule)."
+   ],
+   "beGaps": [
+    {
+     "desc": "get-status for premium plan returns {hasSubscription, subscription.planType} via POST /payments/platform-subscription action:get-status — sufficient to set isSubscribed. No new endpoint needed.",
+     "endpoint": "POST /payments/platform-subscription {action:'get-status'}",
+     "ticketNeeded": false
+    },
+    {
+     "desc": "No Stripe billing-portal 'manage subscription' link endpoint for Android/web (iOS uses App Store deep link). If onManage must work cross-platform, add a create-billing-portal-session action.",
+     "endpoint": "POST /payments/platform-subscription {action:'manage'} (MISSING)",
+     "ticketNeeded": true
+    }
+   ],
+   "wiringPlan": "Add `if (FEATURES.V2_UI) { return <PlatformSubscriptionView .../> }` early-return in PlatformSubscriptionScreen.tsx AFTER all hooks (mirror IdentityVerificationScreen.tsx:372). Map: titleText/hero/unlocks from i18n; accountBadgeText+planName+priceText by user.accountType (creator $99.99 / business $49) using resolvePlanPriceLabel for live IAP price; isSubscribed = currentPlan===selectedPlan; onSubscribe=handleSubscribe; subscribeLoading=loading; onManage=iOS App Store deep link; errorTitle/Message from surfacePaymentError state (lift to state). Register the i18n namespace OR use defaultValue pattern.",
+   "safeAreaPlan": "Container wraps in SafeAreaView edges=['top'] or passes insets.top into a header padding wrapper; ScrollView already has paddingBottom:40 but add insets.bottom for the CTA. Component itself has no inset awareness."
+  },
+  {
+   "screen": "PayoutOnboardingView",
+   "componentExists": true,
+   "v1Screen": "NONE",
+   "effort": "L",
+   "ctas": [
+    {
+     "label": "Back (header)",
+     "target": "navigation.goBack()",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Commencer la configuration (start, not_started)",
+     "target": "createAccountLink → WebBrowser.openBrowserAsync(url) (logic exists in CreatorWalletScreen.tsx:151 handleSetupStripeConnect)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Rafraîchir le statut (refresh, pending)",
+     "target": "re-fetch getConnectStatus() (paymentsApi.ts:62)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Retirer maintenant (withdraw, verified)",
+     "target": "POST /payments/payout-express (CreatorWalletScreen.tsx:176 handleExpressWithdraw)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Tableau de bord Stripe (dashboard row)",
+     "target": "get-dashboard-link → WebView (CreatorWalletScreen.tsx:132 openStripeDashboard)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Compte bancaire (bank row, value-only)",
+     "target": "display •••• last4 (no nav)",
+     "status": "TARGET_MISSING"
+    },
+    {
+     "label": "Historique des virements (history row)",
+     "target": "navigate payout-history list",
+     "status": "TARGET_MISSING"
+    }
+   ],
+   "popups": [
+    {
+     "name": "setup-failed-alert",
+     "present": true,
+     "note": "CreatorWalletScreen.tsx:163 showAlert(setupFailed) — reusable"
+    },
+    {
+     "name": "withdraw-initiated-success",
+     "present": true,
+     "note": "CreatorWalletScreen.tsx:187 showAlert with fee/no-fee message — reuse for verified withdraw"
+    },
+    {
+     "name": "withdraw-failed-alert",
+     "present": true,
+     "note": "CreatorWalletScreen.tsx:197 showAlert(withdrawFailed)"
+    },
+    {
+     "name": "withdraw-confirm",
+     "present": false,
+     "note": "GAP: no confirm-before-cashout sheet; directive #18 wants explicit confirm for money out. V1 withdraws immediately."
+    },
+    {
+     "name": "min-balance-blocked (available<$10)",
+     "present": false,
+     "note": "V1 silently returns if available<1000 (CreatorWalletScreen.tsx:178) — V2 needs a disabled state or note, no user feedback today."
+    }
+   ],
+   "subScreens": [
+    "WebView (Stripe Connect onboarding + dashboard link, types:895)",
+    "Stripe-hosted Express onboarding (external browser)",
+    "payout-history list (DOES NOT EXIST — needs new screen)"
+   ],
+   "feGaps": [
+    "NO host screen exists. No PayoutOnboarding route in src/types/index.ts (MainStackParamList) nor MainNavigator.tsx. Needs new screen file + 3-file wiring (src/screens/payments/index.ts, types/index.ts, MainNavigator.tsx). Today the only Connect-onboarding entry is the inline button inside CreatorWalletScreen.tsx — there is NO dedicated 'Mes paiements' screen.",
+    "i18n namespace v2PayoutOnboardingView NOT registered in src/i18n/config.ts (JSON exists but unregistered) → strings render as keys.",
+    "Container must resolve status BEFORE mount via getConnectStatus() (paymentsApi.ts:62 returns status 'not_created'|'pending'|'active'); map 'not_created'→'not_started', 'active'→'verified'. Component has NO loading state of its own — needs a loading wrapper in the container (ActivityIndicator) while status round-trips.",
+    "Component has NO error/offline state — if getConnectStatus fails the container must render an error Banner or retry. No prop for a top-level fetch error.",
+    "bankLast4 + balanceSubLabel (next auto-payout date) have NO backend source today — would render empty. See beGaps.",
+    "history row onOpenHistory points to a non-existent screen.",
+    "No SafeAreaView/insets — header paddingTop:8 only (PayoutOnboardingView.tsx:261). New screen must add insets.top.",
+    "Account-type gating: payouts/Connect are Pro Creator only (CreatorWalletScreen AccountGate line 935). Container must AccountGate this screen identically; verified-company (Pro Business) flow is KycCompanyView, distinct."
+   ],
+   "beGaps": [
+    {
+     "desc": "get-status returns no bank account last4; component bankLast4 has no source.",
+     "endpoint": "POST /payments/connect {action:'get-status'} — add external_account last4",
+     "ticketNeeded": true
+    },
+    {
+     "desc": "get-balance returns {available,pending} arrays only (connect.ts:379) — no next-auto-payout date for balanceSubLabel.",
+     "endpoint": "POST /payments/connect {action:'get-balance'} — add next payout schedule",
+     "ticketNeeded": true
+    },
+    {
+     "desc": "No payout-history list endpoint for the 'Historique des virements' row (payout-express exists for execution only).",
+     "endpoint": "POST /payments/connect {action:'list-payouts'} or /payments/payout-history (MISSING)",
+     "ticketNeeded": true
+    },
+    {
+     "desc": "Action-name mismatch: CreatorWalletScreen.tsx:156 calls action 'create-account-link' but connect.ts only accepts 'create-link' (connect.ts:20,103). The current setup button is likely a silent no-op (400 Invalid action). Must use 'create-link' with returnUrl+refreshUrl (both validated against ALLOWED_URL_PATTERN).",
+     "endpoint": "POST /payments/connect {action:'create-link', returnUrl, refreshUrl}",
+     "ticketNeeded": true
+    },
+    {
+     "desc": "createAccountLink requires returnUrl+refreshUrl (smuppy:// or smuppy.com) — current CreatorWalletScreen call omits them → 400. Container must pass both.",
+     "endpoint": "POST /payments/connect {action:'create-link'}",
+     "ticketNeeded": false
+    }
+   ],
+   "wiringPlan": "Create new screen src/screens/payments/PayoutOnboardingScreen.tsx (3-file rule: index.ts + types MainStackParamList 'PayoutOnboarding': undefined + MainNavigator Stack.Screen). Wrap in AccountGate (Pro Creator). On mount call getConnectStatus(); show ActivityIndicator while loading, error Banner on failure. Map status→PayoutStatus. Wire onStart=create-link(returnUrl,refreshUrl)→openBrowserAsync→refetch; onRefresh=refetch; onWithdraw=payout-express (add confirm sheet); onOpenDashboard=get-dashboard-link→WebView; onOpenHistory=navigate new payout-history (BE ticket). Reuse CreatorWalletScreen handlers. Register i18n namespace or use defaultValue pattern.",
+   "safeAreaPlan": "New screen: SafeAreaView edges=['top']; ScrollView contentContainerStyle paddingBottom += insets.bottom so verified balance card + withdraw CTA clear the home indicator."
+  },
+  {
+   "screen": "KycCompanyView",
+   "componentExists": true,
+   "v1Screen": "NONE",
+   "effort": "L",
+   "ctas": [
+    {
+     "label": "Back (header)",
+     "target": "navigation.goBack()",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Vérifier mon entreprise (gradient verify)",
+     "target": "create company Connect onboarding link → openBrowserAsync",
+     "status": "ACTION_GAP"
+    },
+    {
+     "label": "Switch-to-Pro-Creator (inside info Banner copy)",
+     "target": "navigate account-type switch / PlatformSubscription (text-only today, no onPress slot)",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "verify-failed-alert",
+     "present": false,
+     "note": "GAP: no error path; reuse SmuppyAlert pattern from CreatorWalletScreen.tsx:163 when the company link call fails."
+    },
+    {
+     "name": "switch-account-confirm",
+     "present": false,
+     "note": "GAP: Banner mentions 'repasse en Pro Creator' but there's no actionable CTA/confirm; copy-only."
+    }
+   ],
+   "subScreens": [
+    "Stripe-hosted company Express onboarding (external browser)",
+    "WebView fallback (types:895)"
+   ],
+   "feGaps": [
+    "NO host screen exists. No KycCompany route in src/types/index.ts nor MainNavigator.tsx. Needs a NEW screen (3-file rule). NOTE: IdentityVerificationScreen.tsx already hosts the V2 IdentityVerificationView (the personal/pro_creator KYC) at line 372 — KycCompanyView is the DISTINCT Pro Business company-entity KYC and has no host.",
+    "i18n namespace v2KycCompanyView NOT registered in src/i18n/config.ts (JSON exists but unregistered) → strings render as keys.",
+    "Component has NO loading/error/empty state (it is a static KYC ENTRY screen per its fixtures doc) — but the onVerify call (create company Connect link) is async; container must surface a verifyLoading flag (prop exists) + an error alert (no prop, render externally).",
+    "The 'switch to Pro Creator' Banner is copy-only — there is no onPress/CTA prop to actually navigate the account-type switch. ACTION_GAP: either add a prop or accept it as informational.",
+    "backIcon/heroIcon are string-glyphs in fixtures ('🏢','‹') — production should pass real icon nodes via heroIcon (React node) consistent with other V2 screens.",
+    "No SafeAreaView/insets — header paddingTop:8 only (KycCompanyView.tsx:179). New screen must add insets.top.",
+    "Account-type gating: this screen is Pro Business ONLY — container MUST gate on isProBusiness(user.accountType) (accountTypes.ts:13); a personal/pro_creator user must never reach it (they use IdentityVerificationView)."
+   ],
+   "beGaps": [
+    {
+     "desc": "connect.ts createConnectAccount hardcodes business_type:'individual' (connect.ts:190). Company KYC is NOT supported — Stripe needs business_type:'company' + legal-entity fields (registration #, legal rep, beneficial owners, business bank). Without this, KycCompanyView cannot actually onboard a company. Matches memory: connect.ts:190 backend branch NOT done.",
+     "endpoint": "POST /payments/connect {action:'create-account'} — branch business_type by accountType (company for pro_business)",
+     "ticketNeeded": true
+    },
+    {
+     "desc": "create-link action (connect.ts:103) must be reachable for company accounts too; container passes returnUrl+refreshUrl. Same 'create-account-link' vs 'create-link' name mismatch caveat applies if reusing CreatorWalletScreen handler.",
+     "endpoint": "POST /payments/connect {action:'create-link', returnUrl, refreshUrl}",
+     "ticketNeeded": false
+    },
+    {
+     "desc": "No get-status field distinguishes company vs individual onboarding completeness (requirements.currently_due) to show which legal-entity steps remain.",
+     "endpoint": "POST /payments/connect {action:'get-status'} — surface requirements.currently_due",
+     "ticketNeeded": true
+    }
+   ],
+   "wiringPlan": "Create new screen src/screens/payments/KycCompanyScreen.tsx (3-file: index.ts + types 'KycCompany': undefined + MainNavigator Stack.Screen), AccountGate to Pro Business (isProBusiness). steps from i18n; onVerify = create-account(business_type:'company', BE ticket) then create-link(returnUrl,refreshUrl) → openBrowserAsync; verifyLoading = in-flight state; on error reuse SmuppyAlert. switchNote: optionally add an onSwitch prop → navigate account-type change. Register i18n namespace or use defaultValue pattern. Entry point: Settings → Business payments OR CreatorWallet AccountGate fallback for business.",
+   "safeAreaPlan": "New screen: SafeAreaView edges=['top']; ScrollView paddingBottom += insets.bottom so the gradient Verify CTA clears the home indicator; component currently has fixed paddingBottom:40 only (KycCompanyView.tsx:182)."
+  },
+  {
+   "screen": "BusinessSubscriptionSuccessView",
+   "componentExists": true,
+   "v1Screen": "src/screens/business/BusinessSubscriptionSuccessScreen.tsx",
+   "effort": "M",
+   "subScreens": [
+    "MySubscriptions (manage subscriptions — onManage → navigation.replace('MySubscriptions'))",
+    "Tabs (home — onDone → navigation.popToTop() + navigation.navigate('Tabs'))",
+    "Share sheet (V1 SharePostModal — present in V1, NOT surfaced by V2 component)"
+   ],
+   "ctas": [
+    {
+     "label": "Commencer à explorer / Start exploring (onDone — primary gradient footer CTA)",
+     "target": "navigation.popToTop() + navigate('Tabs') — route 'Tabs' exists (types/index.ts:755, MainNavigator.tsx:367)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Gérer mes abonnements / Manage subscriptions (onManage — secondary ghost CTA)",
+     "target": "navigation.replace('MySubscriptions') — route exists (types/index.ts:993, MainNavigator.tsx:456)",
+     "status": "TARGET_EXISTS_NOT_WIRED"
+    },
+    {
+     "label": "Partager / Share (V1 SharePostModal trigger, action #2 in V1 actions array, BusinessSubscriptionSuccessScreen.tsx:60)",
+     "target": "open SharePostModal (setShareModalVisible(true))",
+     "status": "ACTION_GAP"
+    }
+   ],
+   "popups": [
+    {
+     "name": "share-sheet (SharePostModal)",
+     "present": true,
+     "note": "Exists + wired in V1 host (BusinessSubscriptionSuccessScreen.tsx:11,40,122-126). V2 component exposes NO share prop/slot → if V2 must keep parity, add an onShare ghost CTA prop to the View OR keep SharePostModal mounted in the V2 container and trigger from a new CTA. Decision: founder said maquette=style/code=content — share is real V1 content; recommend adding onShare to V2 container + a 3rd ghost CTA, OR consciously drop share in V2 (then no gap)."
+    },
+    {
+     "name": "cancel-confirm",
+     "present": true,
+     "note": "Not needed on this terminal surface — no cancel/charge path here (subscription already active). Cancellation lives in MySubscriptions. No gap."
+    },
+    {
+     "name": "3DS / payment sheet",
+     "present": true,
+     "note": "Not needed — charge already completed before this screen renders (terminal success surface). No re-charge CTA exists (documented in component header L60-64). No gap."
+    }
+   ],
+   "feGaps": [
+    "Host screen NOT wired to V2: src/screens/business/BusinessSubscriptionSuccessScreen.tsx has NO `import { FEATURES }`, NO `import { BusinessSubscriptionSuccessView }`, NO `if (FEATURES.V2_UI) { return <BusinessSubscriptionSuccessView .../> }` early-return. Sibling BusinessSubscriptionScreen.tsx:31-32,349 shows the exact pattern to copy. This is the core gap.",
+    "Share CTA parity: V2 component (BusinessSubscriptionSuccessView.tsx:139-163) exposes onDone + onManage only — V1 exposes 3 actions incl. Share (BusinessSubscriptionSuccessScreen.tsx:58-62). Either add an onShare ghost CTA prop to the View + keep SharePostModal mounted in the V2 branch, or drop share by founder decision.",
+    "i18n namespace v2BusinessSubscriptionSuccessView is NOT registered in src/i18n/config.ts (grep empty) — JSON files exist (fr/en/es/pt-BR all present, parity test imports them at v2-namespace-parity.test.ts:551-554) but useTranslation cannot load it. Wire using existing `monetization` keys (business.subscriptionSuccessScreen.* at monetization.json:204) with defaultValue fallbacks — SAME approach as sibling BusinessSubscriptionScreen (config.ts comment + L346-348). Container is plain-string-injection so no useTranslation inside the View.",
+    "Period mapping: V1 route param `period`('weekly'|'monthly'|'yearly') must map to periodLabel via the periodWeekly/periodMonthly/periodYearly keys; trialDays?:number must map to trialInfoLabel (formatted 'Essai gratuit de N jours') — note v2 json has NO trial-days-count template (only trialTitle/trialSubtitle); reuse monetization.json business.subscriptionSuccessScreen.trialInfo (BusinessSubscriptionSuccessScreen.tsx:81).",
+    "Loading states: doneLoading/manageLoading props exist on the View but the V1 handlers (handleDone L52, replace('MySubscriptions') L59) are synchronous nav — no loading needed; safe to pass false. No empty/error state needed (terminal success surface, documented L20-24 of fixtures).",
+    "Safe-area: V2 component footer uses a hardcoded paddingBottom:34 (BusinessSubscriptionSuccessView.tsx:581) — NOT useSafeAreaInsets. On notch/home-indicator devices this is the standard V2 constant but can clip on tall devices; the View is NOT wrapped in SafeAreaView (V1 SuccessScreen wraps in SafeAreaView, SuccessScreen.tsx:153). The V2 branch must wrap the View in a SafeAreaView edges={['top']} (top inset for the 56px scroll padding hero) OR rely on the screen's native header; bottom is covered by the 34 constant."
+   ],
+   "beGaps": [
+    {
+     "desc": "No backend gap — this is a terminal confirmation surface fed entirely by route params (subscriptionId/businessName/planName/period/trialDays) already produced by the subscribe flow (BusinessSubscriptionScreen.tsx:235 replace). No endpoint, field, or validation needed.",
+     "ticketNeeded": false
+    }
+   ],
+   "wiringPlan": "In BusinessSubscriptionSuccessScreen.tsx add `import { FEATURES } from '../../config/featureFlags'` + `import { BusinessSubscriptionSuccessView } from '../../components/v2/BusinessSubscriptionSuccessView'`. After destructuring route.params, add `if (FEATURES.V2_UI) return (<SafeAreaView edges={['top']}><BusinessSubscriptionSuccessView .../></SafeAreaView>)`. Map props: title=trialDays?trialStartedTitle:subscribedTitle; subtitle similarly; businessName; subscriptionTypeLabel=subscriptionTypeLabel; periodLabel=t(PERIOD_KEYS[period]); trialInfoLabel=trialDays?t(...trialInfo,{days}):undefined; successA11yLabel=t(...successA11yLabel,{business:businessName}); benefits=[access,booking,discounts] from existing monetization keys; benefitsHeaderLabel; manageInfoLabel; onManage=()=>navigation.replace('MySubscriptions'); onDone=handleDone (popToTop+navigate('Tabs')). Use existing `monetization` ns keys via defaultValue (DON'T register v2 ns) like sibling. For share parity: keep SharePostModal mounted in the V2 branch + pass a new onShare ghost CTA (add prop to View) OR drop share. Pass icon SLOTs (checkIcon=Ionicons checkmark, benefitIcon, trialIcon=gift, manageInfoIcon=information-circle) and businessAvatarSlot=<Avatar uri=business logo>. V1 path stays intact below the flag.",
+   "safeAreaPlan": "Wrap the V2 View in SafeAreaView edges={['top']} from react-native-safe-area-context in the V2 branch (V1 SuccessScreen already does this, SuccessScreen.tsx:153) — the hero uses paddingTop:56 which needs the top inset on notched devices. Bottom is handled by the footer's paddingBottom:34 constant (BusinessSubscriptionSuccessView.tsx:581); for exact home-indicator safety on tall devices, optionally switch to edges={['top','bottom']} and let the footer constant be the floor."
+  }
+ ],
+ "beTickets": [
+  {
+   "screen": "ChannelDetailView",
+   "desc": "Perks: backend has no structured perks column — perks are serialized into the channel description field (ChannelSetupScreen.tsx:50-64 joins with ' · '). ChannelDetailView.perks must be parsed from description on the fan side too; a real perks model is a known gap (docs/backend/V2_BACKEND_GAPS_FOR_HAMZA.md).",
+   "endpoint": "channel perks structured field",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "ChannelOwnerView",
+   "desc": "Owner channel stats (active subscribers, $ this month, +% vs last month) — subscriber count via getMyChannelSubscribers exists (subscriptionsApi.ts:319) but the $ this month + trend% are not a dedicated endpoint; CreatorEarnings dashboard data is the closest. A channel-scoped analytics summary (count/revenue/trend in one call) does not exist.",
+   "endpoint": "GET /channel/analytics-summary (count + revenueThisMonth + trendPct)",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "ChannelOwnerView",
+   "desc": "Perk preview ('Ce que voient tes fans') — same structured-perks gap as ChannelDetailView; perks live serialized in description today.",
+   "endpoint": "channel perks structured field",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "PackagesEditView",
+   "desc": "Pack reordering has no backend — sessionsApi has createPack/updatePack/deletePack (sessionsApi.ts:186/209/236) but NO reorder endpoint and SessionPack has no displayOrder/sortIndex field. The reorder UI cannot persist.",
+   "endpoint": "PATCH /packs/reorder { orderedIds: string[] } (+ add displayOrder column)",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "PackagesEditView",
+   "desc": "Per-pack edit needs CreatorPackagesSetup to accept a packageId param + listMyPacks→prefill; today create-only. Either add packageId to the route/screen (FE+BE prefill) so onEditPack deep-links to the right pack.",
+   "endpoint": "GET /packs/:id (or reuse listMyPacks) for prefill",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "PlatformSubscriptionView",
+   "desc": "No Stripe billing-portal 'manage subscription' link endpoint for Android/web (iOS uses App Store deep link). If onManage must work cross-platform, add a create-billing-portal-session action.",
+   "endpoint": "POST /payments/platform-subscription {action:'manage'} (MISSING)",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "PayoutOnboardingView",
+   "desc": "get-status returns no bank account last4; component bankLast4 has no source.",
+   "endpoint": "POST /payments/connect {action:'get-status'} — add external_account last4",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "PayoutOnboardingView",
+   "desc": "get-balance returns {available,pending} arrays only (connect.ts:379) — no next-auto-payout date for balanceSubLabel.",
+   "endpoint": "POST /payments/connect {action:'get-balance'} — add next payout schedule",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "PayoutOnboardingView",
+   "desc": "No payout-history list endpoint for the 'Historique des virements' row (payout-express exists for execution only).",
+   "endpoint": "POST /payments/connect {action:'list-payouts'} or /payments/payout-history (MISSING)",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "PayoutOnboardingView",
+   "desc": "Action-name mismatch: CreatorWalletScreen.tsx:156 calls action 'create-account-link' but connect.ts only accepts 'create-link' (connect.ts:20,103). The current setup button is likely a silent no-op (400 Invalid action). Must use 'create-link' with returnUrl+refreshUrl (both validated against ALLOWED_URL_PATTERN).",
+   "endpoint": "POST /payments/connect {action:'create-link', returnUrl, refreshUrl}",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "KycCompanyView",
+   "desc": "connect.ts createConnectAccount hardcodes business_type:'individual' (connect.ts:190). Company KYC is NOT supported — Stripe needs business_type:'company' + legal-entity fields (registration #, legal rep, beneficial owners, business bank). Without this, KycCompanyView cannot actually onboard a company. Matches memory: connect.ts:190 backend branch NOT done.",
+   "endpoint": "POST /payments/connect {action:'create-account'} — branch business_type by accountType (company for pro_business)",
+   "ticketNeeded": true
+  },
+  {
+   "screen": "KycCompanyView",
+   "desc": "No get-status field distinguishes company vs individual onboarding completeness (requirements.currently_due) to show which legal-entity steps remain.",
+   "endpoint": "POST /payments/connect {action:'get-status'} — surface requirements.currently_due",
+   "ticketNeeded": true
+  }
+ ]
+}
