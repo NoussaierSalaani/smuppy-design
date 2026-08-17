@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smuppy — Demo UI Gallery</title>
+<style>
+  :root { color-scheme: dark; --bg:#070b10; --panel:#101722; --line:rgba(226,232,240,.14); --ink:#f8fafc; --muted:#9aa7b8; --mint:#33a089; }
+  * { box-sizing: border-box; }
+  body { margin:0; background: linear-gradient(180deg, rgba(51,160,137,.08), transparent 300px), var(--bg); color: var(--ink); font-family: -apple-system, "Segoe UI", Inter, sans-serif; }
+  header { position: sticky; top:0; z-index:10; background: rgba(7,11,16,.95); backdrop-filter: blur(14px); border-bottom:1px solid var(--line); padding: 20px 28px; }
+  header h1 { margin:0 0 4px; font-size: 24px; }
+  header p { margin:0; color: var(--muted); font-size: 14px; }
+  nav { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .navlink { color: var(--mint); text-decoration:none; font-size:13px; padding:6px 12px; border:1px solid var(--line); border-radius:999px; }
+  .navlink:hover { background: rgba(51,160,137,.15); }
+  main { max-width: 1400px; margin: 0 auto; padding: 8px 28px 80px; }
+  section { padding-top: 36px; scroll-margin-top: 140px; }
+  h2 { font-size: 19px; margin: 0 0 6px; display:flex; align-items:center; gap:10px; }
+  .count { font-size:11px; font-weight:600; color: var(--mint); background: rgba(51,160,137,.12); border:1px solid rgba(51,160,137,.3); padding:2px 8px; border-radius:999px; }
+  .desc { color: var(--muted); font-size: 13px; margin: 0 0 18px; max-width: 760px; }
+  .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:16px; }
+  .card { display:block; text-decoration:none; color:inherit; background: var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; transition: transform .15s, border-color .15s; }
+  .card:hover { transform: translateY(-3px); border-color: var(--mint); }
+  .card img { width:100%; display:block; aspect-ratio: 9/19.5; object-fit: cover; background:#000; }
+  .cap { padding: 8px 10px; font-size: 11.5px; color: var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; border-top:1px solid var(--line); }
+  .empty { color: var(--muted); font-size:13px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Smuppy — Galerie de Démo (toutes les UI)</h1>
+  <p>115 écrans réels, organisés par ordre d'affichage — du premier écran d'inscription jusqu'aux réglages. Clique un écran pour l'agrandir.</p>
+  <nav><a href="#s0" class="navlink">Onboarding &amp; Auth (avant connexion)</a><a href="#s1" class="navlink">Tour Principal de l&#x27;App (navigation par onglets)</a><a href="#s2" class="navlink">Suivi de Course — Run Tracking (détail)</a><a href="#s3" class="navlink">Réservations, Sessions &amp; Paiement Créateur</a><a href="#s4" class="navlink">Profil</a><a href="#s5" class="navlink">Fil Social &amp; Interactions Quotidiennes</a><a href="#s6" class="navlink">Paramètres</a></nav>
+</header>
+<main>
+
+    <section id="s0">
+      <h2>0. Onboarding &amp; Auth (avant connexion) <span class="count">24 écrans</span></h2>
+      <p class="desc">Le tunnel d&#x27;inscription complet — écran par écran, dans l&#x27;ordre exact que voit un nouvel utilisateur.</p>
+      <div class="grid"><a class="card" href="_v2ui_maquettes/AuthWelcomeView__auth_welcome_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/AuthWelcomeView__auth_welcome_v2_light.png" alt="Welcome">
+              <div class="cap">Welcome</div>
+            </a><a class="card" href="_v2ui_maquettes/AuthSignupView__auth_signup_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/AuthSignupView__auth_signup_v2_light.png" alt="Sign Up">
+              <div class="cap">Sign Up</div>
+            </a><a class="card" href="_v2ui_maquettes/AuthLoginView__auth_login_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/AuthLoginView__auth_login_v2_light.png" alt="Login">
+              <div class="cap">Login</div>
+            </a><a class="card" href="_v2ui_maquettes/AuthCheckEmailView__auth_check_email_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/AuthCheckEmailView__auth_check_email_v2_light.png" alt="Check Email">
+              <div class="cap">Check Email</div>
+            </a><a class="card" href="_v2ui_maquettes/AuthVerifyCodeView__auth_verify_code_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/AuthVerifyCodeView__auth_verify_code_v2_light.png" alt="Verify Code">
+              <div class="cap">Verify Code</div>
+            </a><a class="card" href="_v2ui_maquettes/AuthMfaEnrollPromptView__auth_mfa_enroll_prompt_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/AuthMfaEnrollPromptView__auth_mfa_enroll_prompt_v2_light.png" alt="MFA Prompt">
+              <div class="cap">MFA Prompt</div>
+            </a><a class="card" href="_v2ui_maquettes/AuthMfaEnrollQrView__auth_mfa_enroll_qr_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/AuthMfaEnrollQrView__auth_mfa_enroll_qr_v2_light.png" alt="MFA QR">
+              <div class="cap">MFA QR</div>
+            </a><a class="card" href="_v2ui_maquettes/AuthMfaEnrollBackupCodesView__auth_mfa_enroll_backup_codes_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/AuthMfaEnrollBackupCodesView__auth_mfa_enroll_backup_codes_v2_light.png" alt="MFA Backup Codes">
+              <div class="cap">MFA Backup Codes</div>
+            </a><a class="card" href="_v2ui_maquettes/AuthForgotPasswordView__auth_forgot_password_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/AuthForgotPasswordView__auth_forgot_password_v2_light.png" alt="Forgot Password">
+              <div class="cap">Forgot Password</div>
+            </a><a class="card" href="_v2ui_maquettes/AuthNewPasswordView__auth_new_password_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/AuthNewPasswordView__auth_new_password_v2_light.png" alt="New Password">
+              <div class="cap">New Password</div>
+            </a><a class="card" href="_v2ui_maquettes/AuthPasswordSuccessView__auth_password_success_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/AuthPasswordSuccessView__auth_password_success_v2_light.png" alt="Password Success">
+              <div class="cap">Password Success</div>
+            </a><a class="card" href="_v2ui_maquettes/AuthEmailVerificationPendingView__auth_email_verification_pending_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/AuthEmailVerificationPendingView__auth_email_verification_pending_v2_light.png" alt="Email Verification Pending">
+              <div class="cap">Email Verification Pending</div>
+            </a><a class="card" href="_v2ui_maquettes/OnboardingAccountTypeView__onb_account_type_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/OnboardingAccountTypeView__onb_account_type_v2_light.png" alt="Account Type">
+              <div class="cap">Account Type</div>
+            </a><a class="card" href="_v2ui_maquettes/OnboardingTellUsView__onb_tell_us_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/OnboardingTellUsView__onb_tell_us_v2_light.png" alt="Tell Us About You">
+              <div class="cap">Tell Us About You</div>
+            </a><a class="card" href="_v2ui_maquettes/OnboardingInterestsView__onb_interests_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/OnboardingInterestsView__onb_interests_v2_light.png" alt="Interests">
+              <div class="cap">Interests</div>
+            </a><a class="card" href="_v2ui_maquettes/OnboardingProfessionView__onb_profession_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/OnboardingProfessionView__onb_profession_v2_light.png" alt="Profession">
+              <div class="cap">Profession</div>
+            </a><a class="card" href="_v2ui_maquettes/OnboardingExpertiseView__onb_expertise_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/OnboardingExpertiseView__onb_expertise_v2_light.png" alt="Expertise">
+              <div class="cap">Expertise</div>
+            </a><a class="card" href="_v2ui_maquettes/OnboardingCreatorInfoView__onb_business_info_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/OnboardingCreatorInfoView__onb_business_info_v2_light.png" alt="Creator Info">
+              <div class="cap">Creator Info</div>
+            </a><a class="card" href="_v2ui_maquettes/OnboardingCreatorOptionalView__onb_creator_optional_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/OnboardingCreatorOptionalView__onb_creator_optional_v2_light.png" alt="Creator Optional Info">
+              <div class="cap">Creator Optional Info</div>
+            </a><a class="card" href="_v2ui_maquettes/OnboardingBusinessCategoryView__onb_business_category_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/OnboardingBusinessCategoryView__onb_business_category_v2_light.png" alt="Business Category">
+              <div class="cap">Business Category</div>
+            </a><a class="card" href="_v2ui_maquettes/OnboardingBusinessInfoView__onb_business_info_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/OnboardingBusinessInfoView__onb_business_info_v2_light.png" alt="Business Info">
+              <div class="cap">Business Info</div>
+            </a><a class="card" href="_v2ui_maquettes/OnboardingGuidelinesView__onb_guidelines_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/OnboardingGuidelinesView__onb_guidelines_v2_light.png" alt="Community Guidelines">
+              <div class="cap">Community Guidelines</div>
+            </a><a class="card" href="_v2ui_maquettes/OnboardingFindFriendsView__onb_find_friends_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/OnboardingFindFriendsView__onb_find_friends_v2_light.png" alt="Find Friends">
+              <div class="cap">Find Friends</div>
+            </a><a class="card" href="_v2ui_maquettes/OnboardingSuccessView__auth_password_success_v2_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="_v2ui_maquettes/OnboardingSuccessView__auth_password_success_v2_light.png" alt="Onboarding Complete">
+              <div class="cap">Onboarding Complete</div>
+            </a></div>
+    </section>
+    <section id="s1">
+      <h2>1. Tour Principal de l&#x27;App (navigation par onglets) <span class="count">10 écrans</span></h2>
+      <p class="desc">Les 10 écrans clés de l&#x27;app, dans l&#x27;ordre de navigation — c&#x27;est le set utilisé pour les captures App Store.</p>
+      <div class="grid"><a class="card" href="APP_STORE_SCREENSHOTS/01_home.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="APP_STORE_SCREENSHOTS/01_home.png" alt="Home">
+              <div class="cap">Home</div>
+            </a><a class="card" href="APP_STORE_SCREENSHOTS/02_peaks.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="APP_STORE_SCREENSHOTS/02_peaks.png" alt="Peaks">
+              <div class="cap">Peaks</div>
+            </a><a class="card" href="APP_STORE_SCREENSHOTS/03_profile.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="APP_STORE_SCREENSHOTS/03_profile.png" alt="Profile">
+              <div class="cap">Profile</div>
+            </a><a class="card" href="APP_STORE_SCREENSHOTS/04_search.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="APP_STORE_SCREENSHOTS/04_search.png" alt="Search">
+              <div class="cap">Search</div>
+            </a><a class="card" href="APP_STORE_SCREENSHOTS/05_run.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="APP_STORE_SCREENSHOTS/05_run.png" alt="Run">
+              <div class="cap">Run</div>
+            </a><a class="card" href="APP_STORE_SCREENSHOTS/06_create.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="APP_STORE_SCREENSHOTS/06_create.png" alt="Create">
+              <div class="cap">Create</div>
+            </a><a class="card" href="APP_STORE_SCREENSHOTS/07_messages.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="APP_STORE_SCREENSHOTS/07_messages.png" alt="Messages">
+              <div class="cap">Messages</div>
+            </a><a class="card" href="APP_STORE_SCREENSHOTS/08_live.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="APP_STORE_SCREENSHOTS/08_live.png" alt="Live">
+              <div class="cap">Live</div>
+            </a><a class="card" href="APP_STORE_SCREENSHOTS/09_activities.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="APP_STORE_SCREENSHOTS/09_activities.png" alt="Activities">
+              <div class="cap">Activities</div>
+            </a><a class="card" href="APP_STORE_SCREENSHOTS/10_smups.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="APP_STORE_SCREENSHOTS/10_smups.png" alt="Smups">
+              <div class="cap">Smups</div>
+            </a></div>
+    </section>
+    <section id="s2">
+      <h2>2. Suivi de Course — Run Tracking (détail) <span class="count">12 écrans</span></h2>
+      <p class="desc">Le flow complet de la fonctionnalité Run : permissions GPS, démarrage, pause, arrêt, résumé, historique, partage.</p>
+      <div class="grid"><a class="card" href="RUN_V2_REDESIGN/create_activity_v2.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="RUN_V2_REDESIGN/create_activity_v2.png" alt="Create Activity V2">
+              <div class="cap">Create Activity V2</div>
+            </a><a class="card" href="RUN_V2_REDESIGN/create_menu_styleC.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="RUN_V2_REDESIGN/create_menu_styleC.png" alt="Create Menu Stylec">
+              <div class="cap">Create Menu Stylec</div>
+            </a><a class="card" href="RUN_V2_REDESIGN/icon_canonical_base.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="RUN_V2_REDESIGN/icon_canonical_base.png" alt="Icon Canonical Base">
+              <div class="cap">Icon Canonical Base</div>
+            </a><a class="card" href="RUN_V2_REDESIGN/post_flow_details_success.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="RUN_V2_REDESIGN/post_flow_details_success.png" alt="Post Flow Details Success">
+              <div class="cap">Post Flow Details Success</div>
+            </a><a class="card" href="RUN_V2_REDESIGN/post_gallery_styleC.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="RUN_V2_REDESIGN/post_gallery_styleC.png" alt="Post Gallery Stylec">
+              <div class="cap">Post Gallery Stylec</div>
+            </a><a class="card" href="RUN_V2_REDESIGN/run_detail.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="RUN_V2_REDESIGN/run_detail.png" alt="Run Detail">
+              <div class="cap">Run Detail</div>
+            </a><a class="card" href="RUN_V2_REDESIGN/run_finish_challenge.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="RUN_V2_REDESIGN/run_finish_challenge.png" alt="Run Finish Challenge">
+              <div class="cap">Run Finish Challenge</div>
+            </a><a class="card" href="RUN_V2_REDESIGN/run_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="RUN_V2_REDESIGN/run_light.png" alt="Run Light">
+              <div class="cap">Run Light</div>
+            </a><a class="card" href="RUN_V2_REDESIGN/run_myruns.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="RUN_V2_REDESIGN/run_myruns.png" alt="Run Myruns">
+              <div class="cap">Run Myruns</div>
+            </a><a class="card" href="RUN_V2_REDESIGN/run_peak_clean.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="RUN_V2_REDESIGN/run_peak_clean.png" alt="Run Peak Clean">
+              <div class="cap">Run Peak Clean</div>
+            </a><a class="card" href="RUN_V2_REDESIGN/run_redesign.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="RUN_V2_REDESIGN/run_redesign.png" alt="Run Redesign">
+              <div class="cap">Run Redesign</div>
+            </a><a class="card" href="RUN_V2_REDESIGN/session_stats_v2.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="RUN_V2_REDESIGN/session_stats_v2.png" alt="Session Stats V2">
+              <div class="cap">Session Stats V2</div>
+            </a></div>
+    </section>
+    <section id="s3">
+      <h2>3. Réservations, Sessions &amp; Paiement Créateur <span class="count">19 écrans</span></h2>
+      <p class="desc">Booking 1:1, salles d&#x27;attente, packs, abonnements, KYC et onboarding des paiements créateur.</p>
+      <div class="grid"><a class="card" href="LOT_SESSIONS_VALIDATION/maq/BookingHistory.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_SESSIONS_VALIDATION/maq/BookingHistory.png" alt="BookingHistory">
+              <div class="cap">BookingHistory</div>
+            </a><a class="card" href="LOT_SESSIONS_VALIDATION/maq/BusinessBookingSuccess.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_SESSIONS_VALIDATION/maq/BusinessBookingSuccess.png" alt="BusinessBookingSuccess">
+              <div class="cap">BusinessBookingSuccess</div>
+            </a><a class="card" href="LOT_SESSIONS_VALIDATION/maq/PackageDetail.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_SESSIONS_VALIDATION/maq/PackageDetail.png" alt="PackageDetail">
+              <div class="cap">PackageDetail</div>
+            </a><a class="card" href="LOT_SESSIONS_VALIDATION/maq/PackagesOwner.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_SESSIONS_VALIDATION/maq/PackagesOwner.png" alt="PackagesOwner">
+              <div class="cap">PackagesOwner</div>
+            </a><a class="card" href="LOT_SESSIONS_VALIDATION/maq/PrivateCall.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_SESSIONS_VALIDATION/maq/PrivateCall.png" alt="PrivateCall">
+              <div class="cap">PrivateCall</div>
+            </a><a class="card" href="LOT_SESSIONS_VALIDATION/maq/PrivateSessionsManage.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_SESSIONS_VALIDATION/maq/PrivateSessionsManage.png" alt="PrivateSessionsManage">
+              <div class="cap">PrivateSessionsManage</div>
+            </a><a class="card" href="LOT_SESSIONS_VALIDATION/maq/SessionDetail.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_SESSIONS_VALIDATION/maq/SessionDetail.png" alt="SessionDetail">
+              <div class="cap">SessionDetail</div>
+            </a><a class="card" href="LOT_SESSIONS_VALIDATION/maq/SessionEnded.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_SESSIONS_VALIDATION/maq/SessionEnded.png" alt="SessionEnded">
+              <div class="cap">SessionEnded</div>
+            </a><a class="card" href="LOT_SESSIONS_VALIDATION/maq/SessionPayment.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_SESSIONS_VALIDATION/maq/SessionPayment.png" alt="SessionPayment">
+              <div class="cap">SessionPayment</div>
+            </a><a class="card" href="LOT_SESSIONS_VALIDATION/maq/WaitingRoom.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_SESSIONS_VALIDATION/maq/WaitingRoom.png" alt="WaitingRoom">
+              <div class="cap">WaitingRoom</div>
+            </a><a class="card" href="LOT_CREATOR_PAY_VALIDATION/maq/BusinessSubscriptionSuccess.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_CREATOR_PAY_VALIDATION/maq/BusinessSubscriptionSuccess.png" alt="BusinessSubscriptionSuccess">
+              <div class="cap">BusinessSubscriptionSuccess</div>
+            </a><a class="card" href="LOT_CREATOR_PAY_VALIDATION/maq/ChannelDetail.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_CREATOR_PAY_VALIDATION/maq/ChannelDetail.png" alt="ChannelDetail">
+              <div class="cap">ChannelDetail</div>
+            </a><a class="card" href="LOT_CREATOR_PAY_VALIDATION/maq/ChannelOwner.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_CREATOR_PAY_VALIDATION/maq/ChannelOwner.png" alt="ChannelOwner">
+              <div class="cap">ChannelOwner</div>
+            </a><a class="card" href="LOT_CREATOR_PAY_VALIDATION/maq/KycCompany.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_CREATOR_PAY_VALIDATION/maq/KycCompany.png" alt="KycCompany">
+              <div class="cap">KycCompany</div>
+            </a><a class="card" href="LOT_CREATOR_PAY_VALIDATION/maq/PackagesEdit.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_CREATOR_PAY_VALIDATION/maq/PackagesEdit.png" alt="PackagesEdit">
+              <div class="cap">PackagesEdit</div>
+            </a><a class="card" href="LOT_CREATOR_PAY_VALIDATION/maq/PayoutOnboarding.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_CREATOR_PAY_VALIDATION/maq/PayoutOnboarding.png" alt="PayoutOnboarding">
+              <div class="cap">PayoutOnboarding</div>
+            </a><a class="card" href="LOT_CREATOR_PAY_VALIDATION/maq/PlatformSubscription.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_CREATOR_PAY_VALIDATION/maq/PlatformSubscription.png" alt="PlatformSubscription">
+              <div class="cap">PlatformSubscription</div>
+            </a><a class="card" href="LOT_CREATOR_PAY_VALIDATION/maq/PremiumPlan.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_CREATOR_PAY_VALIDATION/maq/PremiumPlan.png" alt="PremiumPlan">
+              <div class="cap">PremiumPlan</div>
+            </a><a class="card" href="LOT_CREATOR_PAY_VALIDATION/maq/VerifiedBadge.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT_CREATOR_PAY_VALIDATION/maq/VerifiedBadge.png" alt="VerifiedBadge">
+              <div class="cap">VerifiedBadge</div>
+            </a></div>
+    </section>
+    <section id="s4">
+      <h2>4. Profil <span class="count">6 écrans</span></h2>
+      <p class="desc">Vues profil final et validation réelle sur device.</p>
+      <div class="grid"><a class="card" href="PROFILE_FINAL/owner_subtabs.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="PROFILE_FINAL/owner_subtabs.png" alt="Owner Subtabs">
+              <div class="cap">Owner Subtabs</div>
+            </a><a class="card" href="PROFILE_FINAL/profile_final.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="PROFILE_FINAL/profile_final.png" alt="Profile Final">
+              <div class="cap">Profile Final</div>
+            </a><a class="card" href="PROFILE_FINAL/v1.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="PROFILE_FINAL/v1.png" alt="V1">
+              <div class="cap">V1</div>
+            </a><a class="card" href="PROFILE_FINAL/visitor_fix.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="PROFILE_FINAL/visitor_fix.png" alt="Visitor Fix">
+              <div class="cap">Visitor Fix</div>
+            </a><a class="card" href="PROFILE_FINAL/visitor_v2.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="PROFILE_FINAL/visitor_v2.png" alt="Visitor V2">
+              <div class="cap">Visitor V2</div>
+            </a><a class="card" href="PROFILE_REAL/profile_real.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="PROFILE_REAL/profile_real.png" alt="Profile Real">
+              <div class="cap">Profile Real</div>
+            </a></div>
+    </section>
+    <section id="s5">
+      <h2>5. Fil Social &amp; Interactions Quotidiennes <span class="count">20 écrans</span></h2>
+      <p class="desc">Notifications, commentaires, likes, groupes, demandes de suivi — la couche sociale au quotidien.</p>
+      <div class="grid"><a class="card" href="LOT2_DAILY_VALIDATION/img/chat_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/chat_dark.png" alt="Chat Dark">
+              <div class="cap">Chat Dark</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/chat_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/chat_light.png" alt="Chat Light">
+              <div class="cap">Chat Light</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/creategroup_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/creategroup_dark.png" alt="Creategroup Dark">
+              <div class="cap">Creategroup Dark</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/creategroup_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/creategroup_light.png" alt="Creategroup Light">
+              <div class="cap">Creategroup Light</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/editprofile_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/editprofile_dark.png" alt="Editprofile Dark">
+              <div class="cap">Editprofile Dark</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/editprofile_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/editprofile_light.png" alt="Editprofile Light">
+              <div class="cap">Editprofile Light</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/fanslist_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/fanslist_dark.png" alt="Fanslist Dark">
+              <div class="cap">Fanslist Dark</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/fanslist_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/fanslist_light.png" alt="Fanslist Light">
+              <div class="cap">Fanslist Light</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/followreq_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/followreq_dark.png" alt="Followreq Dark">
+              <div class="cap">Followreq Dark</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/followreq_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/followreq_light.png" alt="Followreq Light">
+              <div class="cap">Followreq Light</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/messages_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/messages_dark.png" alt="Messages Dark">
+              <div class="cap">Messages Dark</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/messages_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/messages_light.png" alt="Messages Light">
+              <div class="cap">Messages Light</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/newmessage_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/newmessage_dark.png" alt="Newmessage Dark">
+              <div class="cap">Newmessage Dark</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/newmessage_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/newmessage_light.png" alt="Newmessage Light">
+              <div class="cap">Newmessage Light</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/notifications_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/notifications_dark.png" alt="Notifications Dark">
+              <div class="cap">Notifications Dark</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/notifications_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/notifications_light.png" alt="Notifications Light">
+              <div class="cap">Notifications Light</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/postdetail_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/postdetail_dark.png" alt="Postdetail Dark">
+              <div class="cap">Postdetail Dark</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/postdetail_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/postdetail_light.png" alt="Postdetail Light">
+              <div class="cap">Postdetail Light</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/postlikers_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/postlikers_dark.png" alt="Postlikers Dark">
+              <div class="cap">Postlikers Dark</div>
+            </a><a class="card" href="LOT2_DAILY_VALIDATION/img/postlikers_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT2_DAILY_VALIDATION/img/postlikers_light.png" alt="Postlikers Light">
+              <div class="cap">Postlikers Light</div>
+            </a></div>
+    </section>
+    <section id="s6">
+      <h2>6. Paramètres <span class="count">24 écrans</span></h2>
+      <p class="desc">Confidentialité, sécurité, abonnements, notifications, utilisateurs bloqués/muets, aide.</p>
+      <div class="grid"><a class="card" href="LOT3_SETTINGS_VALIDATION/img/BlockedRegionView_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/BlockedRegionView_dark.png" alt="Blockedregionview Dark">
+              <div class="cap">Blockedregionview Dark</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/BlockedRegionView_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/BlockedRegionView_light.png" alt="Blockedregionview Light">
+              <div class="cap">Blockedregionview Light</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/BlockedUsersView_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/BlockedUsersView_dark.png" alt="Blockedusersview Dark">
+              <div class="cap">Blockedusersview Dark</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/BlockedUsersView_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/BlockedUsersView_light.png" alt="Blockedusersview Light">
+              <div class="cap">Blockedusersview Light</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/HelpView_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/HelpView_dark.png" alt="Helpview Dark">
+              <div class="cap">Helpview Dark</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/HelpView_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/HelpView_light.png" alt="Helpview Light">
+              <div class="cap">Helpview Light</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/ManageSubscriptionView_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/ManageSubscriptionView_dark.png" alt="Managesubscriptionview Dark">
+              <div class="cap">Managesubscriptionview Dark</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/ManageSubscriptionView_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/ManageSubscriptionView_light.png" alt="Managesubscriptionview Light">
+              <div class="cap">Managesubscriptionview Light</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/MutedUsersView_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/MutedUsersView_dark.png" alt="Mutedusersview Dark">
+              <div class="cap">Mutedusersview Dark</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/MutedUsersView_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/MutedUsersView_light.png" alt="Mutedusersview Light">
+              <div class="cap">Mutedusersview Light</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/MyRatingsSettingsView_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/MyRatingsSettingsView_dark.png" alt="Myratingssettingsview Dark">
+              <div class="cap">Myratingssettingsview Dark</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/MyRatingsSettingsView_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/MyRatingsSettingsView_light.png" alt="Myratingssettingsview Light">
+              <div class="cap">Myratingssettingsview Light</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/MySubscriptionsView_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/MySubscriptionsView_dark.png" alt="Mysubscriptionsview Dark">
+              <div class="cap">Mysubscriptionsview Dark</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/MySubscriptionsView_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/MySubscriptionsView_light.png" alt="Mysubscriptionsview Light">
+              <div class="cap">Mysubscriptionsview Light</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/NotificationSettingsView_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/NotificationSettingsView_dark.png" alt="Notificationsettingsview Dark">
+              <div class="cap">Notificationsettingsview Dark</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/NotificationSettingsView_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/NotificationSettingsView_light.png" alt="Notificationsettingsview Light">
+              <div class="cap">Notificationsettingsview Light</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/PrivacySettingsView_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/PrivacySettingsView_dark.png" alt="Privacysettingsview Dark">
+              <div class="cap">Privacysettingsview Dark</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/PrivacySettingsView_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/PrivacySettingsView_light.png" alt="Privacysettingsview Light">
+              <div class="cap">Privacysettingsview Light</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/PrivateSessionsManageView_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/PrivateSessionsManageView_dark.png" alt="Privatesessionsmanageview Dark">
+              <div class="cap">Privatesessionsmanageview Dark</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/PrivateSessionsManageView_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/PrivateSessionsManageView_light.png" alt="Privatesessionsmanageview Light">
+              <div class="cap">Privatesessionsmanageview Light</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/SecuritySettingsView_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/SecuritySettingsView_dark.png" alt="Securitysettingsview Dark">
+              <div class="cap">Securitysettingsview Dark</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/SecuritySettingsView_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/SecuritySettingsView_light.png" alt="Securitysettingsview Light">
+              <div class="cap">Securitysettingsview Light</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/SettingsListView_dark.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/SettingsListView_dark.png" alt="Settingslistview Dark">
+              <div class="cap">Settingslistview Dark</div>
+            </a><a class="card" href="LOT3_SETTINGS_VALIDATION/img/SettingsListView_light.png" target="_blank" rel="noopener">
+              <img loading="lazy" src="LOT3_SETTINGS_VALIDATION/img/SettingsListView_light.png" alt="Settingslistview Light">
+              <div class="cap">Settingslistview Light</div>
+            </a></div>
+    </section>
+</main>
+</body>
+</html>
