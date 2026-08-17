@@ -138,6 +138,62 @@
       gap: 8px;
     }
 
+    select#category {
+      width: 100%;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel-2);
+      color: var(--ink);
+      padding: 0 10px;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      outline: none;
+    }
+
+    select#category:focus {
+      border-color: rgba(51, 160, 137, 0.70);
+      box-shadow: 0 0 0 3px rgba(51, 160, 137, 0.12);
+    }
+
+    .group-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      margin: 10px 0 6px;
+      background: rgba(21, 31, 46, 0.96);
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      backdrop-filter: blur(6px);
+    }
+
+    .group-header:first-child {
+      margin-top: 0;
+    }
+
+    .group-title {
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: #eafff9;
+    }
+
+    .group-count {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+    }
+
     button,
     a.quick {
       border: 1px solid var(--line);
@@ -363,6 +419,9 @@
     <aside class="sidebar">
       <div class="controls">
         <input id="search" type="search" placeholder="Rechercher: fan, profile, dark, light, creator, canonic..." autocomplete="off">
+        <select id="category" aria-label="Categorie / dossier">
+          <option value="all">Toutes les categories</option>
+        </select>
         <div class="filters" aria-label="Filtres">
           <button class="active" data-filter="all">Tout</button>
           <button data-filter="html">HTML</button>
@@ -401,6 +460,7 @@
     const state = {
       files: [],
       filter: "all",
+      category: "all",
       query: "",
       selected: null,
     };
@@ -412,11 +472,57 @@
       shownCount: document.getElementById("shownCount"),
       list: document.getElementById("list"),
       search: document.getElementById("search"),
+      category: document.getElementById("category"),
       viewerTitle: document.getElementById("viewerTitle"),
       viewerPath: document.getElementById("viewerPath"),
       openLink: document.getElementById("openLink"),
       preview: document.getElementById("preview"),
     };
+
+    // Nom lisible + ordre d'affichage pour chaque dossier racine.
+    // Plus le nombre est bas, plus la categorie apparait tot dans la liste.
+    const categoryMeta = {
+      "FINAL": { label: "V2 Canonical - derniere version", order: 0 },
+      "PROFILE_FINAL": { label: "Profile - Final", order: 1 },
+      "PROFILE_REAL": { label: "Profile - Real", order: 2 },
+      "PROFILE_FIGMA_ALL": { label: "Profile - Figma (tout)", order: 3 },
+      "PROFILE_FIGMA": { label: "Profile - Figma", order: 4 },
+      "PROFILE_ICONS": { label: "Profile - Icones", order: 5 },
+      "PROFILE_AUDIT": { label: "Profile - Audit", order: 6 },
+      "RUN_V2_REDESIGN": { label: "Run - V2 Redesign", order: 7 },
+      "SUBS_HUB_PREVIEW": { label: "Abonnements (Hub) - Preview", order: 8 },
+      "CREATE_ACTIVITY_FLOW": { label: "Creation d'activite - Flow", order: 9 },
+      "LOT2_DAILY_VALIDATION": { label: "Lot 2 - Daily (validation)", order: 10 },
+      "LOT3_SETTINGS_VALIDATION": { label: "Lot 3 - Settings (validation)", order: 11 },
+      "LOT_CREATOR_PAY_VALIDATION": { label: "Lot - Creator Pay (validation)", order: 12 },
+      "LOT_SESSIONS_VALIDATION": { label: "Lot - Sessions (validation)", order: 13 },
+      "LOT_REMAINING_PREP": { label: "Lot - Restants (prep)", order: 14 },
+      "v2-catalog": { label: "V2 - Catalogue", order: 15 },
+      "v2-implementation": { label: "V2 - Implementation", order: 16 },
+      "_v2ui_maquettes": { label: "V2 UI - Maquettes", order: 17 },
+      "creator-config-may28": { label: "Creator Config (28 mai)", order: 18 },
+      "post-peak-creation-may29": { label: "Post-Peak Creation (29 mai)", order: 19 },
+      "master-audit-may30": { label: "Master Audit (30 mai)", order: 20 },
+      "APP_STORE_SCREENSHOTS": { label: "App Store - Captures", order: 21 },
+      "ASC_REVIEW_SCREENSHOTS": { label: "App Store Connect - Review", order: 22 },
+      "audit": { label: "Audit", order: 23 },
+      "_shots": { label: "Captures diverses", order: 24 },
+    };
+    const rootCategory = { label: "Racine / divers", order: 99 };
+
+    function categoryOf(path) {
+      return path.includes("/") ? path.split("/")[0] : "__root__";
+    }
+
+    function categoryLabel(key) {
+      if (key === "__root__") return rootCategory.label;
+      return (categoryMeta[key] && categoryMeta[key].label) || key.replaceAll(/[_-]/g, " ");
+    }
+
+    function categoryOrder(key) {
+      if (key === "__root__") return rootCategory.order;
+      return (categoryMeta[key] && categoryMeta[key].order) ?? 50;
+    }
 
     function extensionOf(path) {
       const clean = path.split("?")[0].split("#")[0].toLowerCase();
@@ -488,6 +594,7 @@
             type,
             title: titleFor(relative),
             tags: tagsFor(relative, type),
+            category: categoryOf(relative),
           });
         }
       }
@@ -505,8 +612,11 @@
       const query = state.query.trim().toLowerCase();
       return state.files
         .filter((file) => state.filter === "all" || file.type === state.filter)
+        .filter((file) => state.category === "all" || file.category === state.category)
         .filter((file) => !query || `${file.title} ${file.path} ${file.tags.join(" ")}`.toLowerCase().includes(query))
         .sort((a, b) => {
+          const catDelta = categoryOrder(a.category) - categoryOrder(b.category);
+          if (catDelta !== 0) return catDelta;
           const priority = (file) => {
             if (file.path === "MASTER_V2_FLOW.html") return 0;
             if (file.path === "PROTOTYPE.html") return 1;
@@ -516,6 +626,19 @@
           };
           return priority(a) - priority(b) || a.path.localeCompare(b.path);
         });
+    }
+
+    function populateCategories() {
+      const counts = new Map();
+      for (const file of state.files) {
+        counts.set(file.category, (counts.get(file.category) || 0) + 1);
+      }
+      const keys = [...counts.keys()].sort((a, b) => categoryOrder(a) - categoryOrder(b) || categoryLabel(a).localeCompare(categoryLabel(b)));
+      const current = els.category.value || "all";
+      els.category.innerHTML = '<option value="all">Toutes les categories</option>' + keys.map((key) => `
+        <option value="${escapeHtml(key)}">${escapeHtml(categoryLabel(key))} (${counts.get(key)})</option>
+      `).join("");
+      els.category.value = keys.includes(current) || current === "all" ? current : "all";
     }
 
     function render() {
@@ -532,13 +655,28 @@
       }
 
       const selectedPath = state.selected?.path;
-      els.list.innerHTML = files.map((file) => `
-        <button class="item ${file.path === selectedPath ? "active" : ""}" data-path="${file.path}">
-          <span class="item-title">${escapeHtml(file.title)}</span>
-          <span class="item-path">${escapeHtml(file.path)}</span>
-          <span class="tag-row">${file.tags.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}</span>
-        </button>
-      `).join("");
+      let lastCategory = null;
+      const chunks = [];
+      for (const file of files) {
+        if (file.category !== lastCategory) {
+          lastCategory = file.category;
+          const countInGroup = files.filter((f) => f.category === lastCategory).length;
+          chunks.push(`
+            <div class="group-header">
+              <span class="group-title">${escapeHtml(categoryLabel(lastCategory))}</span>
+              <span class="group-count">${countInGroup}</span>
+            </div>
+          `);
+        }
+        chunks.push(`
+          <button class="item ${file.path === selectedPath ? "active" : ""}" data-path="${file.path}">
+            <span class="item-title">${escapeHtml(file.title)}</span>
+            <span class="item-path">${escapeHtml(file.path)}</span>
+            <span class="tag-row">${file.tags.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}</span>
+          </button>
+        `);
+      }
+      els.list.innerHTML = chunks.join("");
     }
 
     function selectFile(file) {
@@ -571,6 +709,11 @@
       });
     });
 
+    els.category.addEventListener("change", () => {
+      state.category = els.category.value;
+      render();
+    });
+
     els.search.addEventListener("input", () => {
       state.query = els.search.value;
       render();
@@ -595,14 +738,17 @@
               type,
               title: titleFor(path),
               tags: tagsFor(path, type),
+              category: categoryOf(path),
             };
           });
+          populateCategories();
           els.crawlStatus.textContent = "Manifeste charge";
         } else {
           await crawlDirectory("./", new Set());
           const unique = new Map();
           for (const file of state.files) unique.set(file.path, file);
           state.files = [...unique.values()];
+          populateCategories();
           els.crawlStatus.textContent = "Scan termine";
         }
         const first = state.files.find((file) => file.path === "MASTER_V2_FLOW.html")
