@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ActivityGalleryView — V2 Dark</title>
+<style>
+  /* ===== V2 DARK TOKENS (EXACT) ===== */
+  :root {
+    --surface: #0A0E1A;
+    --surfaceContainer: #161B2A;
+    --surfaceContainerHigh: #1E2435;
+    --onSurface: #FFFFFF;
+    --onSurfaceVariant: #94A3B8;
+    --outline: #2A3142;
+    --mint: #33A089;
+    --info: #60A5FA;
+    --success: #34D399;
+    --warning: #FBBF24;
+    --danger: #F87171;
+    --chrome-scrim: rgba(0,0,0,0.55);
+    --chrome-ink: #FFFFFF;
+    /* grid geometry from source: SCREEN_REF_WIDTH 393, GRID_GAP 2, GRID_PADDING 0, numColumns 3 */
+    --grid-gap: 2px;
+    --cell: 129.67px; /* (393 - (2*2 + 0)) / 3 */
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #05070d;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* iPhone 14 Pro device 393x852 */
+  .device {
+    width: 393px;
+    height: 852px;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+    border-radius: 0;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  }
+
+  /* ===== FAUX iOS STATUS BAR ===== */
+  .statusbar {
+    height: 54px; /* TOP SAFE-AREA inset: status bar + breathing room */
+    padding: 14px 22px 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    color: var(--onSurface);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+  }
+  .sb-time { font-weight: 700; }
+  .sb-right { display: flex; align-items: center; gap: 6px; }
+  .sb-right svg { display: block; }
+
+  /* content starts BELOW the 54px inset so header/back arrow is never clipped */
+  .content {
+    height: calc(852px - 54px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== TOPBAR: back / title / add ===== */
+  .topbar {
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    gap: 8px;
+  }
+  .back-hit {
+    min-width: 44px; min-height: 44px;
+    display: flex; align-items: center; justify-content: flex-start;
+    cursor: pointer;
+  }
+  .back-glyph {
+    font-size: 30px; line-height: 32px; font-weight: 600;
+    color: var(--onSurface);
+  }
+  .title {
+    flex: 1;
+    font-size: 17px; font-weight: 700;
+    text-align: center;
+    letter-spacing: -0.2px;
+    color: var(--onSurface);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .add-hit {
+    min-width: 44px; min-height: 44px;
+    display: flex; align-items: center; justify-content: flex-end;
+    cursor: pointer;
+  }
+  .add-glyph-top {
+    font-size: 28px; line-height: 30px; font-weight: 600;
+    color: var(--mint); /* t.colors.primary = mint */
+  }
+
+  /* ===== GRID ===== */
+  .grid {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 24px;
+  }
+  /* rows: each row gap 2 + marginBottom 2 (columnWrapperStyle styles.row) */
+  .row {
+    display: flex;
+    flex-direction: row;
+    gap: var(--grid-gap);
+    margin-bottom: var(--grid-gap);
+  }
+  /* header wrap: marginRight + marginBottom GRID_GAP (styles.headerWrap) */
+  .header-row {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: var(--grid-gap);
+  }
+  .header-row .add-tile { margin-right: var(--grid-gap); }
+
+  /* tile: borderRadius 2, overflow hidden, position relative */
+  .tile {
+    width: var(--cell);
+    height: var(--cell);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+    background: var(--surfaceContainer);
+  }
+  .tile .fill {
+    width: 100%; height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  /* photo placeholder fill (no external assets) — subtle gradient swatch */
+  .photo {
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, #1E2435 0%, #2A3142 100%);
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .photo svg { opacity: 0.32; }
+
+  /* video play glyph over constant dark scrim */
+  .video-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .video-glyph {
+    font-size: 26px; line-height: 30px; font-weight: 700;
+    color: var(--chrome-ink);
+  }
+
+  /* delete badge: top/right 5, minWidth 26, height 26, borderRadius 13 */
+  .delete-badge {
+    position: absolute;
+    top: 5px; right: 5px;
+    min-width: 26px; height: 26px;
+    padding: 0 4px;
+    border-radius: 13px;
+    background: var(--chrome-scrim);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .delete-glyph {
+    font-size: 13px; line-height: 16px; font-weight: 700;
+    color: var(--chrome-ink);
+    display: flex;
+  }
+
+  /* add tile: surfaceContainer + outline border 1 (styles.addTile) */
+  .add-tile {
+    width: var(--cell);
+    height: var(--cell);
+    border-radius: 2px;
+    background: var(--surfaceContainer);
+    border: 1px solid var(--outline);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .add-glyph {
+    font-size: 30px; line-height: 34px;
+    color: var(--onSurfaceVariant);
+  }
+</style>
+</head>
+<body>
+  <div class="device">
+
+    <!-- FAUX iOS STATUS BAR + TOP SAFE-AREA INSET (54px) -->
+    <div class="statusbar">
+      <div class="sb-time">9:41</div>
+      <div class="sb-right">
+        <!-- signal -->
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="#FFFFFF"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+        <!-- wifi -->
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M8.5 2C5.4 2 2.6 3.2 0.6 5.1L2 6.5C3.7 5 6 4 8.5 4s4.8 1 6.5 2.5L16.4 5.1C14.4 3.2 11.6 2 8.5 2z" fill="#FFFFFF"/><path d="M8.5 6.2c-1.7 0-3.3 0.6-4.5 1.7L5.4 9.2c0.8-0.8 1.9-1.2 3.1-1.2s2.3 0.4 3.1 1.2L13 7.9C11.8 6.8 10.2 6.2 8.5 6.2z" fill="#FFFFFF"/><circle cx="8.5" cy="10.8" r="1.2" fill="#FFFFFF"/></svg>
+        <!-- battery -->
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="#FFFFFF" opacity="0.5"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="#FFFFFF"/><rect x="23.5" y="4" width="1.8" height="4" rx="0.9" fill="#FFFFFF" opacity="0.5"/></svg>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- TOPBAR: back ‹ / "Sortie trail · 12 km" / add ＋ (showAdd: canUpload && galleryEnabled = true) -->
+      <div class="topbar">
+        <div class="back-hit" aria-label="Retour">
+          <span class="back-glyph">&lsaquo;</span>
+        </div>
+        <div class="title">Sortie trail · 12 km</div>
+        <div class="add-hit" aria-label="Ajouter une photo ou une vidéo">
+          <!-- addGlyph '＋' rendered in mint (t.colors.primary) -->
+          <span class="add-glyph-top">＋</span>
+        </div>
+      </div>
+
+      <!-- GRID (hasItems = 6 items, numColumns 3). ListHeaderComponent = add tile -->
+      <div class="grid">
+
+        <!-- LIST HEADER: add tile (showAdd true) -->
+        <div class="header-row">
+          <div class="add-tile" aria-label="Ajouter une photo ou une vidéo">
+            <span class="add-glyph">＋</span>
+          </div>
+        </div>
+
+        <!-- ROW 1: g1 (image, sara) / g2 (image, leo, canDelete) / g3 (video, maya) -->
+        <div class="row">
+          <!-- g1 -->
+          <div class="tile">
+            <div class="photo">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="M21 15l-5-5L5 21"/></svg>
+            </div>
+          </div>
+          <!-- g2 (canDelete) -->
+          <div class="tile">
+            <div class="photo">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="M21 15l-5-5L5 21"/></svg>
+            </div>
+            <div class="delete-badge" aria-label="Supprimer ce média">
+              <!-- deleteGlyph default '🗑' -> flat trash SVG (no emoji as icon), white on scrim -->
+              <span class="delete-glyph">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+              </span>
+            </div>
+          </div>
+          <!-- g3 (video) -->
+          <div class="tile">
+            <div class="photo">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="M21 15l-5-5L5 21"/></svg>
+            </div>
+            <!-- video play glyph '▶' over constant dark scrim, white ink -->
+            <div class="video-overlay">
+              <span class="video-glyph">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M8 5v14l11-7z"/></svg>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ROW 2: g4 (image, sara, canDelete) / g5 (image, leo) / g6 (image, maya) -->
+        <div class="row">
+          <!-- g4 (canDelete) -->
+          <div class="tile">
+            <div class="photo">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="M21 15l-5-5L5 21"/></svg>
+            </div>
+            <div class="delete-badge" aria-label="Supprimer ce média">
+              <span class="delete-glyph">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+              </span>
+            </div>
+          </div>
+          <!-- g5 -->
+          <div class="tile">
+            <div class="photo">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="M21 15l-5-5L5 21"/></svg>
+            </div>
+          </div>
+          <!-- g6 -->
+          <div class="tile">
+            <div class="photo">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="M21 15l-5-5L5 21"/></svg>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

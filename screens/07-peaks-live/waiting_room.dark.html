@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=393, initial-scale=1">
+<title>waiting_room_v2 — dark</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 393px; height: 852px; overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0A0E1A;
+  }
+  /* ── Device frame ── */
+  .stage {
+    position: relative; width: 393px; height: 852px; overflow: hidden;
+    background: #0A0E1A; display: flex; flex-direction: column;
+  }
+  /* faux self-camera preview (caller-owned previewSlot) */
+  .preview {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 90% at 30% 20%, #1E2435 0%, #0A0E1A 70%),
+      linear-gradient(160deg, #161B2A 0%, #0A0E1A 100%);
+  }
+  .preview .self-tag {
+    position: absolute; left: 16px; bottom: 150px;
+    font-size: 11px; font-weight: 600; color: #94A3B8;
+    background: rgba(10,14,26,0.65); padding: 4px 8px; border-radius: 8px;
+    letter-spacing: 0.2px; border: 1px solid #2A3142;
+  }
+  .scrim { position: absolute; inset: 0; background: rgba(10,14,26,0.72); }
+
+  /* ── G1 SAFE-AREA: 54px top inset ── */
+  .safearea { height: 54px; flex-shrink: 0; position: relative; z-index: 5; }
+  .statusbar {
+    position: absolute; top: 0; left: 0; right: 0; height: 54px;
+    padding: 14px 22px 0;
+    display: flex; align-items: center; justify-content: space-between;
+    color: #FFFFFF; font-size: 15px; font-weight: 600;
+  }
+  .statusbar .glyphs { display: flex; align-items: center; gap: 6px; }
+  .statusbar svg { display: block; }
+
+  /* ── SUB-SCREEN header: back chevron in circle + center title ── */
+  .subheader {
+    position: relative; z-index: 5;
+    height: 52px; padding: 0 16px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .back-circle {
+    position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+    width: 38px; height: 38px; border-radius: 999px;
+    background: #161B2A; border: 1px solid #2A3142;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .subheader-title {
+    color: #FFFFFF; font-size: 17px; font-weight: 700; letter-spacing: -0.2px;
+  }
+
+  /* ── Content (G3 no scroll — fits one screen) ── */
+  .content {
+    position: relative; z-index: 4; flex: 1;
+    padding: 8px 20px 0; display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .chrome { display: flex; flex-direction: column; align-items: center; }
+
+  /* Host identity */
+  .identity {
+    display: flex; flex-direction: row; align-items: center; gap: 10px;
+    margin-top: 8px;
+  }
+  .avatar {
+    width: 48px; height: 48px; border-radius: 16px; overflow: hidden;
+    background: linear-gradient(135deg, #176A5A, #33A089);
+    display: flex; align-items: center; justify-content: center;
+    color: #FFFFFF; font-size: 18px; font-weight: 800;
+    border: 1px solid #2A3142;
+  }
+  .host-name {
+    color: #FFFFFF; font-size: 18px; font-weight: 800;
+  }
+
+  .status-row {
+    display: flex; flex-direction: row; align-items: center; gap: 8px;
+    margin-top: 14px;
+  }
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 999px; background: #33A089;
+  }
+  .status-text {
+    color: #94A3B8; font-size: 14px; font-weight: 600; text-align: center;
+  }
+
+  .countdown-pill {
+    margin-top: 18px; display: flex; flex-direction: column; align-items: center;
+    padding: 14px 30px; border-radius: 22px;
+    background: #161B2A; border: 1px solid #2A3142;
+  }
+  .countdown-value {
+    color: #FFFFFF; font-size: 34px; font-weight: 800; letter-spacing: -1px;
+    font-variant-numeric: tabular-nums;
+  }
+  .countdown-caption {
+    color: #94A3B8; font-size: 12px; font-weight: 600; margin-top: 2px;
+  }
+
+  /* ── Device-check panel ── */
+  .panel {
+    align-self: stretch; margin-top: 24px;
+    border-radius: 20px; border: 1px solid #2A3142; overflow: hidden;
+    padding: 14px 12px 6px; background: #161B2A;
+  }
+  .panel-title {
+    color: #FFFFFF; font-size: 15px; font-weight: 700;
+    margin-bottom: 8px; padding: 0 4px;
+  }
+  .check-row {
+    display: flex; flex-direction: row; align-items: center; gap: 12px;
+    min-height: 48px; padding: 8px; border-radius: 14px;
+  }
+  .check-row.divider { border-top: 1px solid #2A3142; }
+  .check-chip {
+    width: 28px; height: 28px; border-radius: 999px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .check-chip.okc { background: #33A089; }
+  .check-chip.pend { border: 1.5px solid #33A089; background: transparent; }
+  .check-chip svg { display: block; }
+  .check-label {
+    flex: 1; font-size: 15px; font-weight: 600; color: #FFFFFF;
+  }
+  .check-state { font-size: 13px; font-weight: 500; color: #94A3B8; }
+  .check-state.ready { color: #33A089; }
+
+  /* ── G7 CHIP / info hint ── */
+  .hint {
+    margin: 16px 0 0; align-self: stretch;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 14px; border-radius: 14px;
+    border: 1px solid #33A089; background: rgba(51,160,137,0.10);
+  }
+  .hint-text { color: #33A089; font-size: 13px; font-weight: 600; }
+
+  /* ── Bottom action bar ── */
+  .actions {
+    position: relative; z-index: 4;
+    padding: 12px 20px 30px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .btn-gradient {
+    height: 52px; border-radius: 999px;
+    background: linear-gradient(135deg, #1A7D68, #157082);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0.55; /* disabled until ready */
+  }
+  .btn-gradient .label { color: #FFFFFF; font-size: 17px; font-weight: 700; }
+  .cancel {
+    min-height: 44px; display: flex; align-items: center; justify-content: center;
+  }
+  .cancel .label { color: #94A3B8; font-size: 15px; font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <!-- Self-camera preview (caller-owned previewSlot), full-bleed behind scrim -->
+    <div class="preview"><span class="self-tag">Vous</span></div>
+    <div class="scrim"></div>
+
+    <!-- G1 SAFE-AREA + iOS status bar -->
+    <div class="safearea">
+      <div class="statusbar">
+        <span>9:41</span>
+        <span class="glyphs">
+          <svg width="18" height="11" viewBox="0 0 18 11" fill="none"><rect x="0" y="6" width="3" height="5" rx="1" fill="#fff"/><rect x="4.5" y="4" width="3" height="7" rx="1" fill="#fff"/><rect x="9" y="2" width="3" height="9" rx="1" fill="#fff"/><rect x="13.5" y="0" width="3" height="11" rx="1" fill="#fff"/></svg>
+          <svg width="16" height="11" viewBox="0 0 16 11" fill="none"><path d="M8 2.2c2 0 3.8.8 5.1 2.1l1.3-1.3C12.8 1.3 10.5.4 8 .4S3.2 1.3 1.6 3l1.3 1.3C4.2 3 6 2.2 8 2.2z" fill="#fff"/><path d="M8 5.4c1.1 0 2.1.4 2.9 1.2l1.3-1.3C11 4.1 9.6 3.6 8 3.6s-3 .5-4.2 1.7l1.3 1.3c.8-.8 1.8-1.2 2.9-1.2z" fill="#fff"/><circle cx="8" cy="9" r="1.6" fill="#fff"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#fff" stroke-opacity="0.5"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="#fff"/><rect x="23" y="4" width="1.5" height="4" rx="0.75" fill="#fff" fill-opacity="0.5"/></svg>
+        </span>
+      </div>
+    </div>
+
+    <!-- SUB-SCREEN header -->
+    <div class="subheader">
+      <div class="back-circle">
+        <svg width="11" height="18" viewBox="0 0 11 18" fill="none"><path d="M9 1L2 9l7 8" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="subheader-title">Salle d'attente</div>
+    </div>
+
+    <!-- Content (no scroll) -->
+    <div class="content">
+      <div class="chrome">
+        <!-- Host identity -->
+        <div class="identity">
+          <div class="avatar">SK</div>
+          <div class="host-name">Sara Khan</div>
+        </div>
+
+        <!-- Status line (live-region) -->
+        <div class="status-row">
+          <div class="status-dot"></div>
+          <div class="status-text">En attente de Sara Khan…</div>
+        </div>
+
+        <!-- Countdown pill -->
+        <div class="countdown-pill">
+          <div class="countdown-value">02:00</div>
+          <div class="countdown-caption">avant le début</div>
+        </div>
+      </div>
+
+      <!-- Device-check panel -->
+      <div class="panel">
+        <div class="panel-title">Vérification de l'appareil</div>
+
+        <div class="check-row">
+          <div class="check-chip okc"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L5.5 10.5L11.5 3.5" stroke="#0A0E1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="check-label">Caméra</div>
+          <div class="check-state ready">Prête</div>
+        </div>
+
+        <div class="check-row divider">
+          <div class="check-chip okc"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L5.5 10.5L11.5 3.5" stroke="#0A0E1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="check-label">Micro</div>
+          <div class="check-state ready">Prêt</div>
+        </div>
+
+        <div class="check-row divider">
+          <div class="check-chip pend"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="2" fill="#33A089"/></svg></div>
+          <div class="check-label">Connexion</div>
+          <div class="check-state">Vérification…</div>
+        </div>
+      </div>
+
+      <!-- Mint info hint (G7) -->
+      <div class="hint">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#33A089" stroke-width="1.5"/><path d="M7 6.2v3.4" stroke="#33A089" stroke-width="1.5" stroke-linecap="round"/><circle cx="7" cy="4.2" r="0.9" fill="#33A089"/></svg>
+        <span class="hint-text">Le bouton s'active dès que l'hôte démarre</span>
+      </div>
+    </div>
+
+    <!-- Bottom action bar: JOIN (disabled until ready) + Cancel -->
+    <div class="actions">
+      <div class="btn-gradient"><span class="label">Rejoindre la session</span></div>
+      <div class="cancel"><span class="label">Annuler</span></div>
+    </div>
+  </div>
+</body>
+</html>

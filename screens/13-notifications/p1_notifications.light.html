@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Smuppy V2 — Notifications</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --mint:#33A089; --mint-soft:rgba(51,160,137,.12); --mint-line:rgba(51,160,137,.45);
+    --surface:#FFFFFF; --container:#F8FAFC; --text:#0F172A; --variant:#475569;
+    --outline:#E2E8F0; --logo:#0F172A;
+    --grad-a:#1A7D68; --grad-b:#157082;
+  }
+  * { box-sizing:border-box; -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent; }
+  html { background:var(--surface); }
+  html, body { max-width:100%; overflow-x:hidden; }
+  body {
+    margin:0; width:393px; height:852px; overflow:hidden;
+    background:var(--surface); color:var(--text);
+    font-family:'Plus Jakarta Sans',-apple-system,system-ui,sans-serif;
+    font-size:15px; line-height:1.5; position:relative;
+  }
+
+  /* ── Faux iOS status bar ──────────────────────────────────── */
+  .ios-status { position:absolute; top:0; left:0; right:0; height:54px; z-index:30;
+    display:flex; align-items:flex-end; justify-content:space-between;
+    padding:0 22px 6px; pointer-events:none; }
+  .ios-time { font-size:15px; font-weight:700; color:var(--text); letter-spacing:.02em; }
+  .ios-right { display:flex; align-items:center; gap:6px; color:var(--text); }
+
+  /* ── Sub-screen header (below 54px safe area) ─────────────── */
+  .p1-topbar { position:absolute; top:54px; left:0; right:0; z-index:20;
+    height:52px; padding:0 14px;
+    display:flex; align-items:center; gap:12px;
+    background:var(--surface);
+    border-bottom:1px solid var(--outline); }
+  .p1-back { width:38px; height:38px; flex-shrink:0; border:none;
+    border-radius:999px; background:var(--container);
+    border:1px solid var(--outline);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .p1-topbar-title { flex:1; text-align:center; font-size:17px;
+    font-weight:800; margin:0; color:var(--text); letter-spacing:-.01em; }
+  .p1-topbar-spacer { width:38px; flex-shrink:0; }
+
+  /* ── Main content ─────────────────────────────────────────── */
+  .p1-main { position:absolute; top:106px; left:0; right:0; bottom:64px;
+    overflow:hidden; padding:0; }
+
+  /* ── Filter chips (G7) ────────────────────────────────────── */
+  .p1-chips { display:flex; gap:7px; padding:10px 16px 8px;
+    overflow-x:auto; scrollbar-width:none; }
+  .p1-chips::-webkit-scrollbar { display:none; }
+  .p1-chip { padding:6px 13px; border-radius:999px;
+    background:transparent; border:1px solid var(--mint-line);
+    font-size:12.5px; font-weight:700; color:var(--mint); white-space:nowrap; cursor:pointer; }
+  .p1-chip-off { color:var(--variant); border-color:var(--outline); }
+  .p1-chip-on { background:var(--mint-soft); border-color:var(--mint-line); color:var(--mint); }
+
+  /* ── Day label ────────────────────────────────────────────── */
+  .p1-notif-day { font-size:11px; font-weight:800; color:var(--variant);
+    text-transform:uppercase; letter-spacing:.08em;
+    padding:8px 18px 5px; }
+
+  /* ── Notification row ─────────────────────────────────────── */
+  .p1-notif-row { display:flex; align-items:center; gap:11px;
+    padding:9px 18px; cursor:pointer;
+    border-left:3px solid var(--mint); }
+  .p1-notif-read { border-left-color:transparent; opacity:.62; }
+
+  /* Actor avatar = person photo (correction) */
+  .p1-actor { position:relative; width:46px; height:46px; flex-shrink:0; }
+  .p1-actor img { width:46px; height:46px; border-radius:999px; object-fit:cover;
+    border:1.5px solid var(--outline); }
+  .p1-actor-badge { position:absolute; bottom:-2px; right:-2px;
+    width:20px; height:20px; border-radius:999px;
+    background:var(--surface); border:1.5px solid var(--mint);
+    display:flex; align-items:center; justify-content:center; }
+
+  /* Stacked avatars + counter (multi-actor same post — correction) */
+  .p1-stack { position:relative; width:58px; height:46px; flex-shrink:0; }
+  .p1-stack img { position:absolute; top:0; width:38px; height:38px;
+    border-radius:999px; object-fit:cover; border:2px solid var(--surface); }
+  .p1-stack img:nth-child(1) { left:0; z-index:1; }
+  .p1-stack img:nth-child(2) { left:14px; z-index:2; }
+  .p1-stack-count { position:absolute; left:28px; bottom:0; z-index:3;
+    min-width:24px; height:24px; padding:0 5px; border-radius:999px;
+    background:var(--mint-soft); border:1.5px solid var(--mint);
+    color:var(--mint); font-size:11px; font-weight:800;
+    display:flex; align-items:center; justify-content:center; }
+
+  .p1-notif-text { flex:1; min-width:0; }
+  .p1-notif-text span { font-size:13px; font-weight:500; color:var(--text); line-height:1.35; }
+  .p1-notif-text b { font-weight:800; }
+  .p1-notif-time { font-size:11px; font-weight:600; color:var(--variant); margin-top:2px; }
+  .p1-notif-photo { width:42px; height:42px; border-radius:12px;
+    object-fit:cover; flex-shrink:0; border:1px solid var(--outline); }
+
+  /* ── Bottom nav (G5) ──────────────────────────────────────── */
+  .p1-bnav { position:absolute; bottom:0; left:0; right:0; z-index:20;
+    height:64px; display:flex; align-items:center; justify-content:space-around;
+    background:var(--surface); border-top:1px solid var(--outline); padding:0 6px; }
+  .p1-bnav-item { display:flex; flex-direction:column; align-items:center; gap:3px;
+    flex:1; cursor:pointer; }
+  .p1-bnav-lbl { font-size:9.5px; font-weight:700; color:var(--variant); }
+  .p1-bnav-lbl-on { color:var(--mint); }
+  .p1-bnav-plus { width:44px; height:30px; border-radius:12px;
+    background:linear-gradient(135deg,var(--grad-a),var(--grad-b));
+    display:flex; align-items:center; justify-content:center; }
+</style>
+</head><body>
+
+<!-- faux iOS status bar -->
+<div class="ios-status">
+  <span class="ios-time">9:41</span>
+  <span class="ios-right">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="1" fill="#0F172A"/><rect x="5" y="4" width="3" height="8" rx="1" fill="#0F172A"/><rect x="10" y="1.5" width="3" height="10.5" rx="1" fill="#0F172A"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#0F172A" opacity=".35"/></svg>
+    <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M8.5 2.5c2 0 3.8.8 5.1 2.1l1.2-1.3A9.2 9.2 0 0 0 8.5.8 9.2 9.2 0 0 0 2.2 3.3l1.2 1.3A7.2 7.2 0 0 1 8.5 2.5z" fill="#0F172A"/><path d="M8.5 6c1 0 2 .4 2.7 1.1l1.2-1.3A6 6 0 0 0 8.5 4a6 6 0 0 0-3.9 1.8l1.2 1.3A3.8 3.8 0 0 1 8.5 6z" fill="#0F172A"/><circle cx="8.5" cy="10" r="1.6" fill="#0F172A"/></svg>
+    <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="1" y="1" width="21" height="11" rx="3" stroke="#0F172A" stroke-opacity=".5"/><rect x="2.5" y="2.5" width="16" height="8" rx="1.5" fill="#0F172A"/><rect x="23" y="4.5" width="2" height="4" rx="1" fill="#0F172A" fill-opacity=".5"/></svg>
+  </span>
+</div>
+
+<!-- sub-screen header -->
+<header class="p1-topbar">
+  <button class="p1-back" aria-label="Retour">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#0F172A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <h1 class="p1-topbar-title">Notifications</h1>
+  <span class="p1-topbar-spacer"></span>
+</header>
+
+<main class="p1-main">
+  <!-- filter chips (G7) -->
+  <div class="p1-chips">
+    <span class="p1-chip p1-chip-on">Tous · 8</span>
+    <span class="p1-chip p1-chip-off">Likes</span>
+    <span class="p1-chip p1-chip-off">Fans</span>
+    <span class="p1-chip p1-chip-off">Mentions</span>
+  </div>
+
+  <div class="p1-notif-day">Aujourd&rsquo;hui</div>
+
+  <!-- multi-actor same post → stacked avatars + counter (correction) -->
+  <div class="p1-notif-row">
+    <div class="p1-stack">
+      <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&q=80" alt=""/>
+      <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&q=80" alt=""/>
+      <span class="p1-stack-count">+12</span>
+    </div>
+    <div class="p1-notif-text">
+      <span><b>Emma Chen</b>, <b>Marc Dubois</b> et 12 autres ont aimé ta photo</span>
+      <div class="p1-notif-time">5 min</div>
+    </div>
+    <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=80&h=80&fit=crop&q=80" alt="" class="p1-notif-photo"/>
+  </div>
+
+  <!-- single actor → person photo as icon (correction) -->
+  <div class="p1-notif-row">
+    <div class="p1-actor">
+      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&q=80" alt=""/>
+      <span class="p1-actor-badge">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M16 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4zM8 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-2.7 0-8 1.3-8 4v2h9v-2c0-1 .4-1.9 1-2.7A12 12 0 0 0 8 13zm8 0c-.3 0-.7 0-1.1.1A5 5 0 0 1 17 17v2h7v-2c0-2.7-5.3-4-8-4z" stroke="#33A089" stroke-width="1.4" fill="none"/></svg>
+      </span>
+    </div>
+    <div class="p1-notif-text">
+      <span><b>Marc Dubois</b> est devenu un fan</span>
+      <div class="p1-notif-time">1 h</div>
+    </div>
+  </div>
+
+  <div class="p1-notif-row">
+    <div class="p1-actor">
+      <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&q=80" alt=""/>
+      <span class="p1-actor-badge">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6.5 7 .9-5 4.9 1.3 7L12 18l-6.3 3.3L7 14.3 2 9.4l7-.9z" stroke="#33A089" stroke-width="1.4" fill="none" stroke-linejoin="round"/></svg>
+      </span>
+    </div>
+    <div class="p1-notif-text">
+      <span><b>L&eacute;a Martin</b> s'est abonn&eacute;e &agrave; ta cha&icirc;ne</span>
+      <div class="p1-notif-time">2 h</div>
+    </div>
+  </div>
+
+  <div class="p1-notif-row p1-notif-read">
+    <div class="p1-actor">
+      <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&q=80" alt=""/>
+      <span class="p1-actor-badge">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.4 8.4 0 0 1-12 7.6L3 21l1.9-6A8.5 8.5 0 1 1 21 11.5z" stroke="#33A089" stroke-width="1.4" fill="none" stroke-linejoin="round"/></svg>
+      </span>
+    </div>
+    <div class="p1-notif-text">
+      <span><b>Thomas Roy</b> t'a envoy&eacute; un message</span>
+      <div class="p1-notif-time">3 h</div>
+    </div>
+  </div>
+
+  <div class="p1-notif-row p1-notif-read">
+    <div class="p1-actor">
+      <img src="https://images.unsplash.com/photo-1463453091185-61582044d556?w=80&h=80&fit=crop&q=80" alt=""/>
+      <span class="p1-actor-badge">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M3 7h18v10H3z" stroke="#33A089" stroke-width="1.4" fill="none"/><circle cx="12" cy="12" r="2.6" stroke="#33A089" stroke-width="1.4" fill="none"/></svg>
+      </span>
+    </div>
+    <div class="p1-notif-text">
+      <span><b>Coach Mike</b> t'a envoy&eacute; 50 Smups</span>
+      <div class="p1-notif-time">6 h</div>
+    </div>
+  </div>
+
+  <div class="p1-notif-day">Hier</div>
+
+  <div class="p1-notif-row p1-notif-read">
+    <div class="p1-actor">
+      <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&h=80&fit=crop&q=80" alt=""/>
+      <span class="p1-actor-badge">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M3 6h13v12H3z" stroke="#33A089" stroke-width="1.4" fill="none"/><path d="M16 10l5-3v10l-5-3z" stroke="#33A089" stroke-width="1.4" fill="none" stroke-linejoin="round"/></svg>
+      </span>
+    </div>
+    <div class="p1-notif-text">
+      <span><b>Sara Khan</b> est en live</span>
+      <div class="p1-notif-time">Hier</div>
+    </div>
+  </div>
+
+  <div class="p1-notif-day">Cette semaine</div>
+
+  <div class="p1-notif-row p1-notif-read">
+    <div class="p1-actor">
+      <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=80&h=80&fit=crop&q=80" alt=""/>
+      <span class="p1-actor-badge">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M13 4l-2 7h4l-3 9 8-12h-5l2-4z" stroke="#33A089" stroke-width="1.4" fill="none" stroke-linejoin="round"/></svg>
+      </span>
+    </div>
+    <div class="p1-notif-text">
+      <span><b>Activit&eacute;</b> Tu as battu ton record &middot; 5K &agrave; 4:30 / km</span>
+      <div class="p1-notif-time">2 jours</div>
+    </div>
+  </div>
+</main>
+
+<!-- bottom nav (G5) -->
+<nav class="p1-bnav">
+  <div class="p1-bnav-item">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z" fill="#33A089" stroke="#33A089" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    <span class="p1-bnav-lbl p1-bnav-lbl-on">Accueil</span>
+  </div>
+  <div class="p1-bnav-item">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#475569" stroke-width="1.8"/><path d="M20 20l-4-4" stroke="#475569" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <span class="p1-bnav-lbl">Recherche</span>
+  </div>
+  <div class="p1-bnav-item">
+    <span class="p1-bnav-plus">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/></svg>
+    </span>
+    <span class="p1-bnav-lbl">Cr&eacute;er</span>
+  </div>
+  <div class="p1-bnav-item">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M13 3L4 14h7l-1 7 9-11h-7z" stroke="#475569" stroke-width="1.7" stroke-linejoin="round"/></svg>
+    <span class="p1-bnav-lbl">Activit&eacute;s</span>
+  </div>
+  <div class="p1-bnav-item">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#475569" stroke-width="1.8"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" stroke="#475569" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <span class="p1-bnav-lbl">Profil</span>
+  </div>
+</nav>
+
+</body></html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RunTrackingView · V2 Dark</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: #05070d;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    min-height: 100vh;
+  }
+
+  /* ---- Device frame 393x852 ---- */
+  .device {
+    position: relative;
+    width: 393px;
+    height: 852px;
+    background: #0A0E1A;            /* surface */
+    border-radius: 46px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 11px #15171c, 0 0 0 13px #2a2c30;
+  }
+
+  /* ---- Live route map slot (decorative) behind scrim ---- */
+  .map {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 30% 22%, rgba(51,160,137,0.18), transparent 42%),
+      radial-gradient(circle at 78% 70%, rgba(96,165,250,0.14), transparent 46%),
+      linear-gradient(160deg, #11202a 0%, #0c1620 55%, #0a1018 100%);
+  }
+  /* faint street grid */
+  .map .grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(148,163,184,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148,163,184,0.06) 1px, transparent 1px);
+    background-size: 46px 46px;
+  }
+  /* run route path */
+  .route { position: absolute; inset: 0; }
+  .scrim { position: absolute; inset: 0; background: rgba(0,0,0,0.35); }
+
+  /* ---- iOS status bar ---- */
+  .statusbar {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 54px;                  /* SAFE-AREA top inset */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 26px 0;
+    z-index: 30;
+    pointer-events: none;
+  }
+  .statusbar .time {
+    color: #fff; font-size: 15px; font-weight: 600;
+    letter-spacing: 0.3px; font-variant-numeric: tabular-nums;
+  }
+  .statusbar .icons { display: flex; align-items: center; gap: 6px; }
+  .statusbar .icons svg { display: block; }
+
+  /* ---- Overlay (justify space-between, paddingTop 12 over the 54px inset, paddingBottom 20) ---- */
+  .overlay {
+    position: absolute;
+    top: 54px; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-top: 12px;
+    padding-bottom: 20px;
+    z-index: 20;
+  }
+
+  /* ---- GPS signal pill (alignSelf center) ---- */
+  .signalPill {
+    align-self: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    border-radius: 999px;
+    border: 0.5px solid #34D399;       /* good → primary-ish accent (success-green contour) */
+    background: #1E2435;               /* surfaceContainerHigh */
+    padding: 7px 14px;
+  }
+  .signalDot { width: 9px; height: 9px; border-radius: 999px; background: #34D399; }
+  .signalText {
+    font-size: 12px; font-weight: 700; color: #FFFFFF;     /* onSurface */
+    line-height: 14px;
+  }
+
+  /* ---- Card wrap (paddingHorizontal 12, gap 10) ---- */
+  .cardWrap { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
+
+  /* ---- Metric card ---- */
+  .card {
+    border-radius: 24px;
+    padding: 16px;
+    border: 0.5px solid #2A3142;       /* outline */
+    background: #1E2435;               /* surfaceContainerHigh */
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  /* ---- Hero distance tile ---- */
+  .heroRow { display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
+  .tile { display: flex; flex-direction: column; align-items: center; }
+  .valueRow { display: flex; flex-direction: row; align-items: baseline; justify-content: center; }
+  .labelRow { display: flex; flex-direction: row; align-items: center; justify-content: center; margin-top: 3px; }
+
+  .hero .value {
+    font-size: 30px; font-weight: 800; letter-spacing: -0.6px;
+    color: #33A089;                    /* tone="accent" → primary mint */
+    font-variant-numeric: tabular-nums;
+    line-height: 34px;
+  }
+  .hero .unit {
+    margin-left: 3px; font-size: 15px; font-weight: 600;
+    color: #94A3B8;                    /* onSurfaceVariant */
+    font-variant-numeric: tabular-nums;
+  }
+
+  .label {
+    font-size: 11px; font-weight: 700; color: #94A3B8;
+    text-transform: uppercase; letter-spacing: 0.6px; line-height: 14px;
+  }
+
+  /* ---- Secondary metric rows ---- */
+  .statsRow { display: flex; flex-direction: row; justify-content: space-between; }
+  .statCol { flex: 1; }
+  .statCol .value {
+    font-size: 20px; font-weight: 800; letter-spacing: -0.4px;
+    color: #FFFFFF;                    /* onSurface (default tone) */
+    font-variant-numeric: tabular-nums;
+    line-height: 24px;
+  }
+  .statCol .unit {
+    margin-left: 3px; font-size: 12px; font-weight: 600; color: #94A3B8;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---- Controls (pause⇄resume + stop) ---- */
+  .controls { display: flex; flex-direction: row; gap: 12px; margin-top: 14px; }
+  .ctrlBtn {
+    flex: 1;
+    min-height: 52px;
+    border-radius: 16px;
+    padding: 14px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0.5px solid #2A3142;       /* outline */
+    background: #161B2A;               /* surfaceContainer */
+  }
+  .ctrlText { font-size: 16px; font-weight: 800; color: #FFFFFF; line-height: 20px; }
+  .stopBtn {
+    border-color: transparent;
+    background: #F87171;               /* danger (dark token) */
+  }
+  .stopBtn .ctrlText { color: #3B0A0A; }   /* STOP_INK.dark — dark ink on lighter dark-mode danger (≥4.5:1) */
+</style>
+</head>
+<body>
+  <div class="device">
+
+    <!-- Live route map — decorative slot behind scrim -->
+    <div class="map" aria-hidden="true">
+      <div class="grid"></div>
+      <svg class="route" viewBox="0 0 393 852" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 70 250 C 120 180, 230 200, 250 300 S 150 460, 200 540 S 330 600, 300 700"
+              fill="none" stroke="#33A089" stroke-width="6" stroke-linecap="round" stroke-opacity="0.9"/>
+        <circle cx="70" cy="250" r="9" fill="#34D399" stroke="#0A0E1A" stroke-width="3"/>
+        <circle cx="300" cy="700" r="11" fill="#fff" stroke="#33A089" stroke-width="4"/>
+      </svg>
+    </div>
+    <div class="scrim" aria-hidden="true"></div>
+
+    <!-- iOS status bar (within 54px safe-area inset) -->
+    <div class="statusbar">
+      <span class="time">9:41</span>
+      <span class="icons">
+        <!-- cellular -->
+        <svg width="18" height="11" viewBox="0 0 18 11" fill="#fff"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="6" rx="1"/><rect x="10" y="2.5" width="3" height="8.5" rx="1"/><rect x="15" y="0" width="3" height="11" rx="1"/></svg>
+        <!-- wifi -->
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="#fff"><path d="M8.5 2.2c2.7 0 5.2 1 7 2.7l-1.3 1.3a8 8 0 0 0-11.4 0L1.5 4.9A10 10 0 0 1 8.5 2.2Z"/><path d="M8.5 6c1.5 0 2.9.6 3.9 1.6L11 8.9a4 4 0 0 0-5 0L4.6 7.6A5.6 5.6 0 0 1 8.5 6Z"/><circle cx="8.5" cy="10.4" r="1.4"/></svg>
+        <!-- battery -->
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="#fff" stroke-opacity="0.45"/><rect x="2" y="2" width="18" height="8" rx="1.6" fill="#fff"/><rect x="24" y="3.6" width="1.6" height="4.8" rx="0.8" fill="#fff" fill-opacity="0.55"/></svg>
+      </span>
+    </div>
+
+    <!-- Overlay (space-between) -->
+    <div class="overlay">
+
+      <!-- GPS signal pill (top) -->
+      <div class="signalPill" role="text" aria-label="Qualité du signal GPS">
+        <span class="signalDot" aria-hidden="true"></span>
+        <span class="signalText">Signal bon</span>
+      </div>
+
+      <!-- Card wrap (bottom) -->
+      <div class="cardWrap">
+        <!-- (no banner — signal === 'good' in running fixture) -->
+
+        <div class="card">
+
+          <!-- Hero distance tile -->
+          <div class="heroRow">
+            <div class="tile hero">
+              <div class="valueRow">
+                <span class="value">5,2</span>
+                <span class="unit">km</span>
+              </div>
+              <div class="labelRow"><span class="label">Distance</span></div>
+            </div>
+          </div>
+
+          <!-- Secondary row 1: Durée / Allure -->
+          <div class="statsRow">
+            <div class="tile statCol">
+              <div class="valueRow"><span class="value">28:30</span></div>
+              <div class="labelRow"><span class="label">Durée</span></div>
+            </div>
+            <div class="tile statCol">
+              <div class="valueRow"><span class="value">5'16"</span><span class="unit">/km</span></div>
+              <div class="labelRow"><span class="label">Allure</span></div>
+            </div>
+          </div>
+
+          <!-- Secondary row 2: Cadence / Calories -->
+          <div class="statsRow">
+            <div class="tile statCol">
+              <div class="valueRow"><span class="value">172</span><span class="unit">ppm</span></div>
+              <div class="labelRow"><span class="label">Cadence</span></div>
+            </div>
+            <div class="tile statCol">
+              <div class="valueRow"><span class="value">312</span><span class="unit">kcal</span></div>
+              <div class="labelRow"><span class="label">Calories</span></div>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="controls">
+            <div class="ctrlBtn" role="button" aria-label="Pause">
+              <span class="ctrlText">Pause</span>
+            </div>
+            <div class="ctrlBtn stopBtn" role="button" aria-label="Terminer">
+              <span class="ctrlText">Terminer</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

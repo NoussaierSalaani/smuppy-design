@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Smuppy — La Tribu (Dark)</title>
+<style>
+  :root{
+    --surface:#0A0E1A;
+    --container:#161B2A;
+    --text:#FFFFFF;
+    --variant:#94A3B8;
+    --outline:#2A3142;
+    --mint:#33A089;
+    --logo:#33A089;
+    --grad-a:#1A7D68;
+    --grad-b:#157082;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:#000;
+    display:flex;justify-content:center;align-items:center;
+    min-height:100vh;padding:20px;
+  }
+  .device{
+    position:relative;width:393px;height:852px;
+    background:var(--surface);overflow:hidden;
+    border-radius:44px;
+    box-shadow:0 30px 80px rgba(0,0,0,.5);
+  }
+  /* faux iOS status bar */
+  .statusbar{
+    position:absolute;top:0;left:0;width:100%;height:54px;z-index:60;
+    display:flex;align-items:flex-end;justify-content:space-between;
+    padding:0 26px 8px;color:var(--text);font-size:14px;font-weight:600;
+    pointer-events:none;
+  }
+  .statusbar .icons{display:flex;gap:6px;align-items:center;}
+  .statusbar svg{display:block;}
+
+  /* HEADER — feed canonical, below 54px safe-area */
+  .header{
+    position:absolute;top:54px;left:0;width:100%;z-index:50;
+    background:rgba(10,14,26,.82);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--outline);
+  }
+  .header-row{
+    display:flex;align-items:center;justify-content:space-between;
+    height:56px;padding:0 20px;
+  }
+  .icon-btn{background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;}
+  .icon-btn svg{display:block;}
+  .badge{position:absolute;top:-2px;right:-2px;width:9px;height:9px;border-radius:50%;background:#EF4444;border:2px solid var(--surface);}
+  .wordmark{font-size:22px;font-weight:800;letter-spacing:-.02em;color:var(--logo);}
+
+  /* segmented pills */
+  .pills{display:flex;gap:8px;padding:0 20px 12px;}
+  .pill{
+    flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
+    padding:9px 0;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;
+    background:transparent;border:1px solid var(--outline);color:var(--variant);
+  }
+  .pill.active{color:var(--mint);border-color:var(--mint);background:rgba(51,160,137,.10);}
+  .pill svg{display:block;}
+
+  /* scroll area */
+  .content{
+    position:absolute;top:54px;left:0;width:100%;height:calc(852px - 54px - 72px);
+    padding-top:128px;overflow:hidden;
+  }
+  .scroll{height:100%;overflow:hidden;padding:0 16px 8px;}
+
+  .section{margin-bottom:18px;}
+  .section h2{font-size:17px;font-weight:800;color:var(--mint);margin-bottom:10px;letter-spacing:.01em;}
+
+  .rail{display:flex;gap:12px;overflow:hidden;}
+
+  /* live / peak cards */
+  .vcard{position:relative;width:104px;height:148px;flex:0 0 auto;border-radius:26px;overflow:hidden;}
+  .vcard img{width:100%;height:100%;object-fit:cover;display:block;}
+  .vcard.live{border:2px solid #EF4444;animation:blink 1.1s ease-in-out infinite;}
+  .vcard.peak{border:2px solid var(--mint);}
+  @keyframes blink{0%,100%{border-color:#EF4444;box-shadow:0 0 10px rgba(239,68,68,.6);}50%{border-color:rgba(239,68,68,.35);box-shadow:0 0 2px rgba(239,68,68,.15);}}
+  .live-badge{position:absolute;top:8px;left:8px;background:#EF4444;color:#fff;font-size:9px;font-weight:800;letter-spacing:.06em;padding:2px 7px;border-radius:999px;}
+  .vcard .cap{position:absolute;bottom:8px;left:8px;right:8px;color:#fff;font-size:11px;font-weight:700;text-shadow:0 1px 4px rgba(0,0,0,.7);}
+
+  /* creator cards */
+  .ccard{width:128px;flex:0 0 auto;background:var(--container);border:1px solid var(--outline);border-radius:24px;padding:14px;display:flex;flex-direction:column;align-items:center;}
+  .ccard img.avatar{width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--mint);padding:2px;}
+  .ccard .nm{display:flex;align-items:center;gap:4px;margin-top:10px;}
+  .ccard .nm span{font-size:13px;font-weight:700;color:var(--text);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cta{margin-top:10px;width:100%;padding:8px 0;border:none;border-radius:999px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--grad-a),var(--grad-b));}
+
+  /* posts */
+  .post{background:var(--container);border:1px solid var(--outline);border-radius:24px;padding:14px;margin-bottom:14px;}
+  .post-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .post-head .who{display:flex;align-items:center;gap:10px;}
+  .post-head .who img{width:38px;height:38px;border-radius:50%;object-fit:cover;}
+  .post-head .who h3{font-size:14px;font-weight:700;color:var(--text);}
+  .post-head .who p{font-size:11px;color:var(--variant);margin-top:1px;}
+  .post-head .more{color:var(--variant);background:none;border:none;cursor:pointer;font-size:20px;line-height:1;}
+  .caption{font-size:13px;line-height:1.5;color:var(--text);margin-bottom:10px;}
+  .caption .tag{color:var(--mint);font-weight:600;}
+  .caption .more-link{color:var(--variant);font-weight:500;cursor:pointer;}
+  .media{border-radius:22px;overflow:hidden;background:var(--surface);margin-bottom:10px;position:relative;}
+  .media img{width:100%;height:100%;object-fit:cover;display:block;}
+  .media.r45{aspect-ratio:4/5;}
+  .media.r169{aspect-ratio:16/9;}
+  .media.grid2{display:grid;grid-template-columns:1fr 1fr;gap:3px;background:var(--surface);}
+  .media.grid2 div{aspect-ratio:1;overflow:hidden;}
+  .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+  .play .btn{width:58px;height:58px;border-radius:50%;background:rgba(10,14,26,.85);display:flex;align-items:center;justify-content:center;}
+  .dur{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);color:#fff;font-size:11px;font-weight:600;padding:2px 7px;border-radius:6px;}
+  .cidx{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);color:#fff;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;}
+  .dots{display:flex;justify-content:center;gap:6px;margin-top:8px;}
+  .dots i{width:6px;height:6px;border-radius:50%;background:var(--outline);}
+  .dots i.on{background:var(--mint);}
+  /* engagement: star (save) + like + share */
+  .engage{display:flex;align-items:center;justify-content:space-between;padding:0 4px;}
+  .engage .left{display:flex;align-items:center;gap:16px;}
+  .engage button{background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;color:var(--variant);font-size:13px;font-weight:600;}
+  .engage button svg{display:block;}
+  .star-on path{fill:var(--mint);stroke:var(--mint);}
+
+  /* BOTTOM NAV — canonical */
+  .bottomnav{
+    position:absolute;bottom:0;left:0;width:100%;height:72px;z-index:50;
+    background:var(--container);border-top:1px solid var(--outline);
+    border-radius:24px 24px 0 0;
+    display:flex;align-items:center;justify-content:space-around;padding:0 22px;
+  }
+  .navitem{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;width:48px;height:48px;position:relative;}
+  .navitem svg{display:block;}
+  .navitem .home-dot{position:absolute;bottom:2px;width:20px;height:3px;border-radius:999px;background:var(--mint);}
+  .navitem img{width:30px;height:30px;border-radius:9px;object-fit:cover;opacity:.75;}
+</style>
+</head>
+<body>
+<div class="device">
+
+  <!-- faux iOS status bar -->
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="icons">
+      <svg width="18" height="11" viewBox="0 0 18 11" fill="none"><rect x="0" y="6" width="3" height="5" rx="1" fill="#fff"/><rect x="5" y="3.5" width="3" height="7.5" rx="1" fill="#fff"/><rect x="10" y="1.5" width="3" height="9.5" rx="1" fill="#fff"/><rect x="15" y="0" width="3" height="11" rx="1" fill="#fff"/></svg>
+      <svg width="16" height="11" viewBox="0 0 16 11" fill="none"><path d="M8 2.5c2 0 3.8.8 5.2 2.1l1-1.1C12.5 1.8 10.3 1 8 1S3.5 1.8 1.8 3.5l1 1.1C4.2 3.3 6 2.5 8 2.5z" fill="#fff"/><path d="M8 5.5c1.1 0 2.1.4 2.9 1.1l1-1.1C10.8 4.5 9.5 4 8 4s-2.8.5-3.9 1.5l1 1.1C5.9 5.9 6.9 5.5 8 5.5z" fill="#fff"/><circle cx="8" cy="9" r="1.5" fill="#fff"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#fff" opacity=".4"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="#fff"/><rect x="23" y="4" width="2" height="4" rx="1" fill="#fff" opacity=".5"/></svg>
+    </div>
+  </div>
+
+  <!-- HEADER (feed canonical) -->
+  <header class="header">
+    <div class="header-row">
+      <button class="icon-btn" aria-label="Rechercher">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#94A3B8" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <span class="wordmark">Smuppy</span>
+      <button class="icon-btn" aria-label="Notifications">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.7 21a2 2 0 0 1-3.4 0" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="badge"></span>
+      </button>
+    </div>
+    <!-- segmented pills: Fan / Vibes / Xplorer -->
+    <div class="pills">
+      <button class="pill active">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.5-9.5-9C1 9 2.5 5 6 5c2 0 3.2 1.2 4 2.3C10.8 6.2 12 5 14 5c3.5 0 5 4 3.5 7-2.5 4.5-9.5 9-9.5 9z" fill="#33A089"/></svg>
+        Fan
+      </button>
+      <button class="pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94A3B8" stroke-width="2"/><path d="M8.5 14.5c.8 1 2 1.5 3.5 1.5s2.7-.5 3.5-1.5" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="10" r="1" fill="#94A3B8"/><circle cx="15" cy="10" r="1" fill="#94A3B8"/></svg>
+        Vibes
+      </button>
+      <button class="pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94A3B8" stroke-width="2"/><path d="M15.5 8.5l-2 5-5 2 2-5 5-2z" stroke="#94A3B8" stroke-width="2" stroke-linejoin="round"/></svg>
+        Xplorer
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <div class="scroll">
+
+      <!-- LA TRIBU : Peaks & Live -->
+      <section class="section">
+        <h2>LA TRIBU</h2>
+        <div class="rail">
+          <div class="vcard live">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVGjAaTQjvh3GscWLLRpul7lV3C7WSn56k-ABejz0JSlXyj8LSoXUhV8yp8rO0wNtfeegPKeu03fni_WqFapQEFQmE2iqLSV1XnQntCaIxbgsZ0DQ53dzq2WTLzZ9iKm8xV_mLADW4TWdABgpNhRR1GS35CDMJWRT6nbr8jA5wNUWyixwh6hAwR7oITekM3kOeSYtPtHTupG5tuJnBNvk9qseY3RTIUqSBuOzAKZcg2jvrVNx9WvsOQlSdQ13DO6ZK-AJ51ZoQKKQ" alt="Yoga"/>
+            <div class="live-badge">LIVE</div>
+            <div class="cap">Sunrise Yoga</div>
+          </div>
+          <div class="vcard peak">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_kbu5cWlQTWWPjomJd_PpcCet0L8mbjK1Tq2KJEb5nLZaxKENr46M4qcmQaooz_eoYdYzyMDP0d-MIGwvKKP8CI3_ubkuyDeRwCUHlXm_quYpV5QRKCeNNcpn0cV3xOFdxywX6532Ms3VL18bXgtJFe8cJXH6CXPa-YYtJxHjFi5ayjNC3TiuuAH2uJtiSK7BBILFLS6aKehpKWZwuSC-8684BLxV-sWd-p3jO4iafNdTxcAXZEifQ03XptghpXoBJZ9kzmvd9hk" alt="Gym"/>
+          </div>
+          <div class="vcard peak">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAB3Ri82I_wqbN-gYWtuJ6s6CTCC1lDv8yYHkYFoRbYl_SkZI79gg9dxCuxJu-NjNtglL04JtZ2uzISiMOTLsBFE764o1CyaV7PLs2uCtRjkjvI23X1rJp8CC1OnalDpaSXlMox2Iab2v3DJmiEdN3t6zFMLCmg1pXwkbU2aMvCqj0C4vjfe-2Nc9GFZFqCZ1_3vM7L2VJTIXw8_D8y4N5quTqXahSfMshspIg5Wg9Cqh77Nq6oyglR9UC0YJD-5j0EkKkC_4LnRgs" alt="Running"/>
+          </div>
+          <div class="vcard peak">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdYpb-uq7mb7zmyBIyK1qFH-f_1OAav9j33S5HLPCRcsSbXUJMzVrJx0ttruPA2VXGPQe5OMc_VB7a97EozlSj96uA9SU-vutExkiCs5wsXLCfQzIKnBIUMK6MeY4KstFxdGXCy7N_dui92N88SWgOGVi0qLgAcYaRhiSyW3UtUIOjZUX2EKheOARhF80EM2UeD6oN9L-kGtFGWEYZxTnOZf43PSaseyq2nY3vs3qiAPKjrQVf56imAs9lY7bfwE3ADLYJcB-G_7Y" alt="Boxing"/>
+          </div>
+        </div>
+      </section>
+
+      <!-- Suggestions for you -->
+      <section class="section">
+        <h2>Suggestions pour toi</h2>
+        <div class="rail">
+          <div class="ccard">
+            <img class="avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCS9lGlSLFT2skpN0PwkE8GycDz-wBARf9D8mOMds_StsVdHdbOIs1HFxYZ1OuBnKjgeDKdtJPGuDfqsVdG2MghzEoNySQTE4GSjUZe05Uc2XMIrDOr8iXpA5ItGEmQGBaxnzOX-V2z8imBGZCC2VoCtO7r74ghJGNn9nDLIlRk1AJqTn51mA5w06_UK1PIiA7Y_1tkhH-tO0yTgKvOqmatp9Vw97LXPbdS6uH8GarXstK_eEWcu2GG_D8JChVwiqmAIv-ivCc_xPU" alt=""/>
+            <div class="nm"><span>Alex Rivera</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.4 1.8 3 .2 1 2.8 2.4 1.8-1 2.8 1 2.8-2.4 1.8-1 2.8-3 .2L12 22l-2.4-1.8-3-.2-1-2.8L3.2 15l1-2.8-1-2.8 2.4-1.8 1-2.8 3-.2L12 2z" fill="#33A089"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <button class="cta">Devenir fan</button>
+          </div>
+          <div class="ccard">
+            <img class="avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3IS0wLEvo4pXfDJ7lt5zoSi19U9xsq3D0g6FLV07iebQGxhqa6vPgScIJfJW3oWUXjj0E7l0vKunjr-kjDEsDXENteSllqsCF8JcjBgabp_1NDgg4df58pl65hr9Vl2erq4z-oH2ybXHx7YfGah8a-5oN3FAfhBhwUxY_6cyEZ0MDvNatBlDWjCJlkJ8CT2PVD-NAVbcB8jzhDuHKoS9kYIFUquD0agO6mLGJfuS226ugGq9tO3Dd-oDdfOVpYC3mzusEKrDpYlg" alt=""/>
+            <div class="nm"><span>Sam Chen</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.4 1.8 3 .2 1 2.8 2.4 1.8-1 2.8 1 2.8-2.4 1.8-1 2.8-3 .2L12 22l-2.4-1.8-3-.2-1-2.8L3.2 15l1-2.8-1-2.8 2.4-1.8 1-2.8 3-.2L12 2z" fill="#33A089"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <button class="cta">Devenir fan</button>
+          </div>
+          <div class="ccard">
+            <img class="avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeDRzP18Yp-S_Ni0oz1YrBfNfVn-lcTLWRdT_A-pZO9fCvi3L7-xXBGC-v63ZyPmNB6bmJ9Z3XeFdBF2DvpVFZcovscBNjiLbnoK2Vlq6lm7mAbI579tHLBZ-iByvfj59PACgbAZ-zZCvWDXJS3wIGBE4hl3DzptUgw4xAH_xDSg9qcxOHh8ApJC5k0nAx1OPFpww-DM41ifeY6Nk9-GKsfuaVCb7N09Hffi2vghCK07bebzEwIGI7YaRJSVAgDVz9Vxuzw_F2c4Q" alt=""/>
+            <div class="nm"><span>Jordan Lee</span></div>
+            <button class="cta">Devenir fan</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- POST 1: Single image -->
+      <article class="post">
+        <div class="post-head">
+          <div class="who">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvtvMp0u40W8cmUL1TRvSD42NhyYB52V7gsUtZ3pa6tBSSrsvDlSf9qkUMegDwjxAHw8HJQwDyjqGY8qgbE1bc5OfEFAyv9LL1614Pa2jDQ0-DbKSvDXweNZsC3uUdYEWCwtnXXKxpqWOQ7RLHB452TPjpqAWCVLspB1dCTe0-GWc9ynKiJKANKtpMrDxDStEGKolYT2MQBcN8GvupCisxndF3H4Gx8vSy5U30Te8RkiAy-mRY3myIVep0J-gc2sVUEVBJLuVfxAE" alt=""/>
+            <div><h3>Mia Wong</h3><p>Central Park • 2h</p></div>
+          </div>
+          <button class="more">⋯</button>
+        </div>
+        <p class="caption">Morning miles done! The weather was absolutely perfect today. Pushing for that new PB... <span class="more-link">voir plus</span><br/><span class="tag">#running #morningmotivation #fitness</span></p>
+        <div class="media r45">
+          <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDL6B79kWEP8Fs-ZjdTwKN5poz_SpSdX_qviYCTGCsa-MU4Z-pwlEN9PAKoVTfdOsuOLB8hvm4yoDFga4mAFDAGADlZQUy6w_TAOzLjKiWXUfMVnaaKz54ovNwAPte6poJGfwr94Bz5rloxt03ua-G8sUkuUN5jWz1Zp5g6ll6YH_-mnnSpHIquqp_9Plm1n_1yyEmKNMlCOEzFj3fe_9v7uOMvfRfhwEYB_uTxjBbrj5wYexpAgmDMb1OmLLeEmFeoeImjyQWWYRk" alt=""/>
+        </div>
+        <div class="engage">
+          <div class="left">
+            <button><svg width="24" height="24" viewBox="0 0 24 24" fill="#EF4444"><path d="M12 21s-7-4.5-9.5-9C1 9 2.5 5 6 5c2 0 3.2 1.2 4 2.3C10.8 6.2 12 5 14 5c3.5 0 5 4 3.5 7-2.5 4.5-9.5 9-9.5 9z"/></svg><span>1.2k</span></button>
+          </div>
+          <div class="left">
+            <button class="star-on" aria-label="Enregistrer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17.9 6.6 20l1-6.1L3.2 9.5l6.1-.9L12 3z" stroke="#33A089" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
+            <button aria-label="Partager"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/><path d="M12 16V3m0 0L8 7m4-4l4 4" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+      </article>
+
+      <!-- POST 2: Video -->
+      <article class="post">
+        <div class="post-head">
+          <div class="who">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3IS0wLEvo4pXfDJ7lt5zoSi19U9xsq3D0g6FLV07iebQGxhqa6vPgScIJfJW3oWUXjj0E7l0vKunjr-kjDEsDXENteSllqsCF8JcjBgabp_1NDgg4df58pl65hr9Vl2erq4z-oH2ybXHx7YfGah8a-5oN3FAfhBhwUxY_6cyEZ0MDvNatBlDWjCJlkJ8CT2PVD-NAVbcB8jzhDuHKoS9kYIFUquD0agO6mLGJfuS226ugGq9tO3Dd-oDdfOVpYC3mzusEKrDpYlg" alt=""/>
+            <div><h3>Sam Chen</h3><p>Gym • 4h</p></div>
+          </div>
+          <button class="more">⋯</button>
+        </div>
+        <p class="caption">Focus on form. <span class="tag">#lifting #gains</span></p>
+        <div class="media r169">
+          <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_kbu5cWlQTWWPjomJd_PpcCet0L8mbjK1Tq2KJEb5nLZaxKENr46M4qcmQaooz_eoYdYzyMDP0d-MIGwvKKP8CI3_ubkuyDeRwCUHlXm_quYpV5QRKCeNNcpn0cV3xOFdxywX6532Ms3VL18bXgtJFe8cJXH6CXPa-YYtJxHjFi5ayjNC3TiuuAH2uJtiSK7BBILFLS6aKehpKWZwuSC-8684BLxV-sWd-p3jO4iafNdTxcAXZEifQ03XptghpXoBJZ9kzmvd9hk" alt=""/>
+          <div class="play"><div class="btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#33A089"><path d="M8 5v14l11-7L8 5z"/></svg></div></div>
+          <div class="dur">0:15</div>
+        </div>
+        <div class="engage">
+          <div class="left">
+            <button><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.5-9.5-9C1 9 2.5 5 6 5c2 0 3.2 1.2 4 2.3C10.8 6.2 12 5 14 5c3.5 0 5 4 3.5 7-2.5 4.5-9.5 9-9.5 9z" stroke="#94A3B8" stroke-width="2"/></svg><span>856</span></button>
+          </div>
+          <div class="left">
+            <button aria-label="Enregistrer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17.9 6.6 20l1-6.1L3.2 9.5l6.1-.9L12 3z" stroke="#94A3B8" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
+            <button aria-label="Partager"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/><path d="M12 16V3m0 0L8 7m4-4l4 4" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+      </article>
+
+      <!-- POST 3: 2 images -->
+      <article class="post">
+        <div class="post-head">
+          <div class="who">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeDRzP18Yp-S_Ni0oz1YrBfNfVn-lcTLWRdT_A-pZO9fCvi3L7-xXBGC-v63ZyPmNB6bmJ9Z3XeFdBF2DvpVFZcovscBNjiLbnoK2Vlq6lm7mAbI579tHLBZ-iByvfj59PACgbAZ-zZCvWDXJS3wIGBE4hl3DzptUgw4xAH_xDSg9qcxOHh8ApJC5k0nAx1OPFpww-DM41ifeY6Nk9-GKsfuaVCb7N09Hffi2vghCK07bebzEwIGI7YaRJSVAgDVz9Vxuzw_F2c4Q" alt=""/>
+            <div><h3>Jordan Lee</h3><p>Studio • 5h</p></div>
+          </div>
+          <button class="more">⋯</button>
+        </div>
+        <p class="caption">Balance is key. <span class="tag">#yoga #mindfulness</span></p>
+        <div class="media grid2">
+          <div><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEPF9Cv3EQfc5IEB01MDRCo7DB8wOSxnBnw5UUtn0lODiv9yICqOjK7HIreAQaNor-1h_gLfDFnjB5hjZ_8mtfXDsuex9Ai-Gq-eXNv3SpsUnNbPCzzIiYWimTAOgFg4L_nDzlXfX5oogAtvZIXbs8ZV45hXr6EVbu88lPvL7bK7NigwQUP2Xl20MUIq9fQmP3vG_Prm6L7OjstpVjfUAZOEc-i1N4xmFXzXKvgTMuR8YN34o3lic4hQos-O3ZEV5l2tkpBVj4sEs" alt=""/></div>
+          <div><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIyeQSj9Ft5-a_SKHWm3dPi17mVLODJ42b2yya8xGDRwk6xWOqix114JDP7dxpM6ZZnZY7yBqwx_fougM9X16fXpChNs9B9vQ8gFon9CK7o4wQCk4KisxzR8JMJloAiUgMRmV5bYGrC6O3JNR9XiosQi2Z5jQ7cJIEnLit6jIiwYr-QKPVsz7psb3LpjF-47BYa1Vg0cj5Olw8a8E2UhyXdT8_pj0x1YtHrJoDGCMkx6zDYbBjZbg2DeVZ0EWCS4E98s5x8B6qNLE" alt=""/></div>
+        </div>
+        <div class="engage">
+          <div class="left">
+            <button><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.5-9.5-9C1 9 2.5 5 6 5c2 0 3.2 1.2 4 2.3C10.8 6.2 12 5 14 5c3.5 0 5 4 3.5 7-2.5 4.5-9.5 9-9.5 9z" stroke="#94A3B8" stroke-width="2"/></svg><span>432</span></button>
+          </div>
+          <div class="left">
+            <button aria-label="Enregistrer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17.9 6.6 20l1-6.1L3.2 9.5l6.1-.9L12 3z" stroke="#94A3B8" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
+            <button aria-label="Partager"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/><path d="M12 16V3m0 0L8 7m4-4l4 4" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+      </article>
+
+      <!-- POST 4: Carousel -->
+      <article class="post">
+        <div class="post-head">
+          <div class="who">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjP5Nigc3QX0yshvYPUzxM7vxyRz8Y42he3n6PDG5sw4z2YZhwSEoqM0Og_wt2CE1weYfkk2Xuz3jzf-XUWJMWzigy40zHSElEZt9F-6wUM07bbQKx9SHgZUtzq20pYCkTdZCAf_S_cjp-T6FP9DxKlC35ozaac4R73XMmnRRrkhvbemN4r1YherksV6vbJR-hF3hpSWv3GSYayeiQGTcLQpbCweLXc1YuKGDWzp-GYmUjiRdUTdxqTMJR8tMOyiAqSWGA9YPBhjY" alt=""/>
+            <div><h3>Sara Khan</h3><p>Montreal • 8h</p></div>
+          </div>
+          <button class="more">⋯</button>
+        </div>
+        <p class="caption">Healthy eats to start the week right. <span class="tag">#healthyfood #wellness</span></p>
+        <div class="media r45">
+          <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUImwlkzv9FoPY23a5lX20PHaqrYonZxjuuagH6IFhhYfxgJJQww6oki952UJouWg04C_pn3xv3_ysSLHbMUVfwbWQVcc0GSwwJaAYa38Cppq7DZdt91QFW-dj0emYiN1_AiAsWlFGLK21wUY9I5sjFWJb8Ex8fbGiBaU9h9s78snFJIe-3FdQnzFzucicankfvLmcw7X20BwdAvRFje8ly5VULuFoU0qQNdCEEnqj7DJeTgmbQ2RKfCq1jL__eeH_jhjkQXh3_KI" alt=""/>
+          <div class="cidx">1/2</div>
+        </div>
+        <div class="dots"><i class="on"></i><i></i></div>
+        <div class="engage">
+          <div class="left">
+            <button><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.5-9.5-9C1 9 2.5 5 6 5c2 0 3.2 1.2 4 2.3C10.8 6.2 12 5 14 5c3.5 0 5 4 3.5 7-2.5 4.5-9.5 9-9.5 9z" stroke="#94A3B8" stroke-width="2"/></svg><span>2.1k</span></button>
+          </div>
+          <div class="left">
+            <button aria-label="Enregistrer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17.9 6.6 20l1-6.1L3.2 9.5l6.1-.9L12 3z" stroke="#94A3B8" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
+            <button aria-label="Partager"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/><path d="M12 16V3m0 0L8 7m4-4l4 4" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottomnav">
+    <button class="navitem" aria-label="Accueil">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1v-9.5z" fill="#33A089"/></svg>
+      <span class="home-dot"></span>
+    </button>
+    <button class="navitem" aria-label="Rechercher">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#94A3B8" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <button class="navitem" aria-label="Créer">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="#94A3B8" stroke-width="1.6"/><path d="M12 7v10M7 12h10" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <button class="navitem" aria-label="Activités">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l2-5 4 14 2.5-9H21" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="navitem" aria-label="Profil">
+      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt="me"/>
+    </button>
+  </nav>
+
+</div>
+</body>
+</html>

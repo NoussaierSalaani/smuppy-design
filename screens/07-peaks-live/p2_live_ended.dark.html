@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>p2_live_ended_v2 — dark</title>
+<style>
+  :root {
+    --surface: #0A0E1A;
+    --surfaceContainer: #161B2A;
+    --onSurface: #FFFFFF;
+    --onSurfaceVariant: #94A3B8;
+    --outline: #2A3142;
+    --mint: #33A089;
+    --gradStart: #1A7D68;
+    --gradEnd: #157082;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #000;
+    font-family: var(--font);
+  }
+
+  .device {
+    position: relative;
+    width: 393px;
+    height: 852px;
+    overflow: hidden;
+    background: var(--surface);
+    margin: 0 auto;
+  }
+
+  /* ── faux iOS status bar ── */
+  .statusbar {
+    position: relative;
+    z-index: 5;
+    height: 54px;
+    padding: 0 26px 8px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  .statusbar .time {
+    color: var(--onSurface);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+  .statusbar .glyphs { display: flex; align-items: center; gap: 7px; }
+  .statusbar .glyphs svg { display: block; }
+
+  /* ── G1 safe-area : everything starts below the 54px status bar ── */
+
+  /* ── SUB-SCREEN header : back chevron (circle) + centered title ── */
+  .header {
+    position: relative;
+    z-index: 5;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+  }
+  .backBtn {
+    width: 38px;
+    height: 38px;
+    border-radius: 19px;
+    border: 1px solid var(--outline);
+    background: var(--surfaceContainer);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .headerTitle {
+    position: absolute;
+    left: 0; right: 0;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--onSurface);
+    pointer-events: none;
+  }
+
+  /* ── decorative confetti backdrop (mint @ 8% alpha) ── */
+  .confetti {
+    position: absolute;
+    top: 54px;
+    left: 0; right: 0;
+    height: 150px;
+    background: rgba(51, 160, 137, 0.08);
+    border-bottom-left-radius: 80px;
+    border-bottom-right-radius: 80px;
+    z-index: 1;
+  }
+
+  /* ── content column (G3: compact, no scroll) ── */
+  .content {
+    position: relative;
+    z-index: 2;
+    height: calc(852px - 54px - 52px);
+    padding: 8px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  /* ── hero filled mint circle with check ── */
+  .hero {
+    width: 84px;
+    height: 84px;
+    border-radius: 42px;
+    background: var(--mint);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 6px;
+  }
+
+  .title {
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    text-align: center;
+    color: var(--onSurface);
+    line-height: 30px;
+    margin-top: 16px;
+  }
+  .subtitle {
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    margin-top: 8px;
+    font-weight: 500;
+    color: var(--onSurfaceVariant);
+    max-width: 300px;
+  }
+
+  /* ── stats card ── */
+  .statsCard {
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 20px;
+    border: 1px solid var(--outline);
+    background: var(--surfaceContainer);
+    padding: 16px 12px;
+    margin-top: 20px;
+  }
+  .statTile { flex: 1; display: flex; flex-direction: column; align-items: center; }
+  .statValue {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    color: var(--onSurface);
+    font-variant-numeric: tabular-nums;
+  }
+  .statValue.accent { color: var(--mint); }
+  .statLabel {
+    margin-top: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--onSurfaceVariant);
+  }
+  .statDivider { width: 1px; height: 32px; margin: 0 6px; background: var(--outline); }
+
+  /* ── G7 "donner des smups" tip / proposition card ── */
+  .smupsCard {
+    align-self: stretch;
+    margin-top: 16px;
+    border-radius: 18px;
+    border: 1px solid var(--mint);
+    background: rgba(51, 160, 137, 0.10);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .smupsIcon {
+    width: 40px; height: 40px;
+    border-radius: 20px;
+    background: rgba(51, 160, 137, 0.18);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .smupsText { flex: 1; }
+  .smupsTitle {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--onSurface);
+  }
+  .smupsDesc {
+    font-size: 12px;
+    line-height: 16px;
+    margin-top: 2px;
+    color: var(--onSurfaceVariant);
+  }
+  .smupsChips { display: flex; gap: 8px; margin-top: 12px; align-self: stretch; }
+  .smupsChip {
+    flex: 1;
+    height: 38px;
+    border-radius: 999px;
+    border: 1px solid var(--mint);
+    background: transparent;
+    color: var(--mint);
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .smupsChip.selected { background: rgba(51, 160, 137, 0.14); }
+
+  /* ── action stack ── */
+  .actions {
+    align-self: stretch;
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .btn {
+    height: 54px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: 700;
+  }
+  .btn.gradient {
+    background: linear-gradient(135deg, var(--gradStart), var(--gradEnd));
+    color: #FFFFFF;
+  }
+  .btn.outline {
+    height: 48px;
+    border-radius: 999px;
+    background: transparent;
+    border: 1.5px solid var(--mint);
+    color: var(--mint);
+    font-size: 16px;
+  }
+  .done {
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .doneLabel { font-size: 15px; font-weight: 600; color: var(--onSurfaceVariant); }
+</style>
+</head>
+<body>
+  <div class="device">
+    <!-- faux iOS status bar -->
+    <div class="statusbar">
+      <span class="time">9:41</span>
+      <span class="glyphs">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+          <rect x="0" y="8" width="3" height="4" rx="1" fill="#FFFFFF"/>
+          <rect x="5" y="5" width="3" height="7" rx="1" fill="#FFFFFF"/>
+          <rect x="10" y="2.5" width="3" height="9.5" rx="1" fill="#FFFFFF"/>
+          <rect x="15" y="0" width="3" height="12" rx="1" fill="#FFFFFF"/>
+        </svg>
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+          <path d="M8.5 2C4.9 2 1.8 3.4 0 5.5L1.6 7.2C3 5.5 5.6 4.3 8.5 4.3s5.5 1.2 6.9 2.9L17 5.5C15.2 3.4 12.1 2 8.5 2z" fill="#FFFFFF"/>
+          <path d="M8.5 6.4c-1.9 0-3.6.8-4.6 2l1.7 1.8L8.5 12l2.9-1.8 1.7-1.8c-1-1.2-2.7-2-4.6-2z" fill="#FFFFFF"/>
+        </svg>
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none">
+          <rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#FFFFFF" stroke-opacity="0.5"/>
+          <rect x="2" y="2" width="18" height="8" rx="1.5" fill="#FFFFFF"/>
+          <rect x="23" y="4" width="2" height="4" rx="1" fill="#FFFFFF" fill-opacity="0.5"/>
+        </svg>
+      </span>
+    </div>
+
+    <!-- SUB-SCREEN header: back chevron in circle + centered title -->
+    <div class="header">
+      <div class="backBtn">
+        <svg width="10" height="17" viewBox="0 0 10 17" fill="none">
+          <path d="M8.5 1L1.5 8.5L8.5 16" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="headerTitle">Live terminé</div>
+    </div>
+
+    <!-- decorative confetti backdrop -->
+    <div class="confetti"></div>
+
+    <!-- content -->
+    <div class="content">
+      <!-- hero: filled mint circle with check -->
+      <div class="hero">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <path d="M9 20.5L16.5 28L31 12.5" stroke="#003B30" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="title">Live terminé !</div>
+      <div class="subtitle">42 min avec Sara Khan · Yoga live</div>
+
+      <!-- stats card -->
+      <div class="statsCard">
+        <div class="statTile">
+          <div class="statValue">1,2k</div>
+          <div class="statLabel">Spectateurs</div>
+        </div>
+        <div class="statDivider"></div>
+        <div class="statTile">
+          <div class="statValue">42</div>
+          <div class="statLabel">min</div>
+        </div>
+        <div class="statDivider"></div>
+        <div class="statTile">
+          <div class="statValue accent">340</div>
+          <div class="statLabel">Smups</div>
+        </div>
+      </div>
+
+      <!-- "donner des smups" proposition -->
+      <div class="smupsCard">
+        <div class="smupsIcon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <circle cx="11" cy="11" r="9" stroke="#33A089" stroke-width="2"/>
+            <path d="M11 6.5V15.5M8 9.2c0-1.2 1.3-1.9 3-1.9s3 .6 3 1.7c0 1.2-1.3 1.7-3 1.9-1.7.2-3 .7-3 1.9 0 1.1 1.3 1.7 3 1.7s3-.7 3-1.9" stroke="#33A089" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="smupsText">
+          <div class="smupsTitle">Soutenir Sara Khan</div>
+          <div class="smupsDesc">Offrez des Smups pour remercier ce live.</div>
+        </div>
+      </div>
+      <div class="smupsChips">
+        <div class="smupsChip">50</div>
+        <div class="smupsChip selected">100</div>
+        <div class="smupsChip">250</div>
+      </div>
+
+      <!-- action stack -->
+      <div class="actions">
+        <div class="btn gradient">Donner des Smups</div>
+        <div class="btn outline">Partager le replay</div>
+        <div class="done"><span class="doneLabel">Terminé</span></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

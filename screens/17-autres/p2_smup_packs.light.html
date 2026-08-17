@@ -1,0 +1,101 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=393,initial-scale=1">
+<style>
+*{box-sizing:border-box;-webkit-font-smoothing:antialiased;margin:0;padding:0}
+:root{
+  --surface:#FFFFFF;--container:#F8FAFC;--text:#0F172A;--variant:#475569;
+  --outline:#E2E8F0;--mint:#33A089;--logo:#0F172A;
+}
+body{width:393px;height:852px;background:var(--surface);color:var(--text);
+  font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;overflow:hidden;display:flex;flex-direction:column}
+/* faux iOS status bar */
+.sb{height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 8px;font-size:14px;font-weight:700;flex:0 0 auto}
+.sb .ic{display:flex;gap:6px;align-items:center}
+/* SUB-SCREEN header: back chevron in circle + center title */
+.hd{display:flex;align-items:center;gap:12px;padding:4px 18px 12px;flex:0 0 auto;position:relative}
+.hd .bk{width:36px;height:36px;border-radius:50%;background:var(--container);border:1px solid var(--outline);
+  display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.hd h1{font-size:19px;margin:0;font-weight:800;letter-spacing:-.02em;position:absolute;left:0;right:0;text-align:center;pointer-events:none}
+.body{flex:1;overflow:hidden;padding:4px 18px 14px}
+/* balance card */
+.bal{background:var(--container);border:1px solid var(--outline);border-radius:18px;padding:16px;
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.bal .lbl{color:var(--variant);font-size:12px;font-weight:600}
+.bal .amt{font-size:24px;font-weight:800;display:flex;align-items:center;gap:6px;margin-top:2px}
+.chip{display:inline-flex;align-items:center;background:transparent;color:var(--mint);font-size:11px;font-weight:800;
+  padding:4px 11px;border-radius:20px;border:1px solid var(--mint)}
+/* pack cards grid */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.pk{background:var(--container);border:1px solid var(--outline);border-radius:16px;padding:13px 10px;
+  text-align:center;cursor:pointer;color:var(--text);position:relative;display:flex;flex-direction:column;align-items:center;gap:3px}
+.pk .ico{margin-bottom:1px}
+.pk .qty{font-weight:800;font-size:16px}
+.pk .price{color:var(--mint);font-weight:800;font-size:15px}
+.pk.featured{border-color:var(--mint)}
+.pk .top{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--surface)}
+.note{color:var(--variant);font-size:12px;text-align:center;margin:13px 4px 4px;display:flex;align-items:center;justify-content:center;gap:6px}
+/* gradient CTA */
+.cta{flex:0 0 auto;padding:12px 18px 16px;border-top:1px solid var(--outline);background:var(--surface)}
+.btn{width:100%;background:linear-gradient(135deg,#1A7D68,#157082);color:#FFFFFF;border:0;border-radius:15px;
+  padding:16px;font-size:16px;font-weight:800;cursor:pointer}
+</style></head><body>
+<div class="sb"><span>9:41</span><span class="ic">
+  <svg width="17" height="11" viewBox="0 0 17 11" fill="none"><rect x="0" y="6" width="3" height="5" rx="1" fill="#0F172A"/><rect x="4.5" y="4" width="3" height="7" rx="1" fill="#0F172A"/><rect x="9" y="2" width="3" height="9" rx="1" fill="#0F172A"/><rect x="13.5" y="0" width="3" height="11" rx="1" fill="#0F172A"/></svg>
+  <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x="0.5" y="0.5" width="18" height="10" rx="2.5" stroke="#0F172A" opacity="0.5"/><rect x="2" y="2" width="15" height="7" rx="1.5" fill="#0F172A"/><rect x="20" y="3.5" width="1.5" height="4" rx="0.75" fill="#0F172A" opacity="0.5"/></svg>
+</span></div>
+
+<div class="hd">
+  <div class="bk"><svg width="11" height="18" viewBox="0 0 11 18" fill="none"><path d="M9 1.5L2 9l7 7.5" stroke="#0F172A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <h1>Recharger des Smups</h1>
+</div>
+
+<div class="body">
+  <div class="bal">
+    <div>
+      <div class="lbl">Solde Smups</div>
+      <div class="amt">128
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M7 13a5 5 0 0 1 5-5h2a3 3 0 0 1 3 3v1l3 1.5a1.5 1.5 0 0 1 0 2.7L17 19v-2H9a2 2 0 0 1-2-2v-2z" stroke="#33A089" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+    <span class="chip">&#8776; $19 en envoi</span>
+  </div>
+
+  <div class="grid">
+    <button class="pk">
+      <svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M7 13a5 5 0 0 1 5-5h2a3 3 0 0 1 3 3v1l3 1.5a1.5 1.5 0 0 1 0 2.7L17 19v-2H9a2 2 0 0 1-2-2v-2z" stroke="#33A089" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      <div class="qty">1 Smups</div><div class="price">$1.99</div>
+    </button>
+    <button class="pk">
+      <svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M7 13a5 5 0 0 1 5-5h2a3 3 0 0 1 3 3v1l3 1.5a1.5 1.5 0 0 1 0 2.7L17 19v-2H9a2 2 0 0 1-2-2v-2z" stroke="#33A089" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      <div class="qty">3 Smups</div><div class="price">$4.99</div>
+    </button>
+    <button class="pk">
+      <svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M7 13a5 5 0 0 1 5-5h2a3 3 0 0 1 3 3v1l3 1.5a1.5 1.5 0 0 1 0 2.7L17 19v-2H9a2 2 0 0 1-2-2v-2z" stroke="#33A089" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      <div class="qty">5 Smups</div><div class="price">$7.99</div>
+    </button>
+    <button class="pk featured">
+      <span class="chip top">Top</span>
+      <svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M7 13a5 5 0 0 1 5-5h2a3 3 0 0 1 3 3v1l3 1.5a1.5 1.5 0 0 1 0 2.7L17 19v-2H9a2 2 0 0 1-2-2v-2z" stroke="#33A089" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      <div class="qty">10 Smups</div><div class="price">$14.99</div>
+    </button>
+    <button class="pk">
+      <svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M7 13a5 5 0 0 1 5-5h2a3 3 0 0 1 3 3v1l3 1.5a1.5 1.5 0 0 1 0 2.7L17 19v-2H9a2 2 0 0 1-2-2v-2z" stroke="#33A089" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      <div class="qty">20 Smups</div><div class="price">$29.99</div>
+    </button>
+    <button class="pk">
+      <svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M7 13a5 5 0 0 1 5-5h2a3 3 0 0 1 3 3v1l3 1.5a1.5 1.5 0 0 1 0 2.7L17 19v-2H9a2 2 0 0 1-2-2v-2z" stroke="#33A089" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      <div class="qty">35 Smups</div><div class="price">$49.99</div>
+    </button>
+    <button class="pk">
+      <svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M7 13a5 5 0 0 1 5-5h2a3 3 0 0 1 3 3v1l3 1.5a1.5 1.5 0 0 1 0 2.7L17 19v-2H9a2 2 0 0 1-2-2v-2z" stroke="#33A089" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      <div class="qty">70 Smups</div><div class="price">$99.99</div>
+    </button>
+  </div>
+
+  <p class="note">
+    <svg width="13" height="14" viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="11" rx="2" stroke="#475569" stroke-width="1.6"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="#475569" stroke-width="1.6"/></svg>
+    Paiement s&#233;curis&#233; via l&#8217;App Store
+  </p>
+</div>
+
+<div class="cta"><button class="btn">Recharger</button></div>
+</body></html>

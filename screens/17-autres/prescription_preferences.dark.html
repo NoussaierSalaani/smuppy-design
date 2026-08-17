@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=393, initial-scale=1">
+<title>prescription_preferences_v2</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; }
+  html,body {
+    width:393px; height:852px; overflow:hidden;
+    background:#0A0E1A;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  .screen { width:393px; height:852px; background:#0A0E1A; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* ── iOS status bar (within 54px safe-area inset) ── */
+  .statusbar {
+    height:54px; flex:0 0 54px; display:flex; align-items:center; justify-content:space-between;
+    padding:14px 22px 0 28px; color:#FFFFFF;
+  }
+  .statusbar .time { font-size:15px; font-weight:600; letter-spacing:-0.2px; }
+  .statusbar .glyphs { display:flex; align-items:center; gap:6px; }
+  .bars { display:inline-flex; align-items:flex-end; gap:1.5px; height:10px; }
+  .bars i { width:3px; background:#FFFFFF; border-radius:1px; }
+  .bars i:nth-child(1){height:4px;} .bars i:nth-child(2){height:6px;} .bars i:nth-child(3){height:8px;} .bars i:nth-child(4){height:10px;}
+  .battery { width:24px; height:12px; border:1px solid rgba(255,255,255,0.6); border-radius:3px; position:relative; padding:1.5px; }
+  .battery::after { content:""; position:absolute; right:-3px; top:3.5px; width:2px; height:4px; background:rgba(255,255,255,0.6); border-radius:0 1px 1px 0; }
+  .battery i { display:block; height:100%; width:80%; background:#FFFFFF; border-radius:1px; }
+
+  /* ── Sub-screen header: back chevron in circle + centered title ── */
+  .header { display:flex; flex-direction:row; align-items:center; padding:6px 14px 8px 14px; flex:0 0 auto; }
+  .backBtn { width:38px; height:38px; border-radius:999px; border:1px solid #2A3142; background:#161B2A; display:flex; align-items:center; justify-content:center; }
+  .headerTitle { flex:1; text-align:center; font-size:18px; font-weight:800; letter-spacing:-0.3px; color:#FFFFFF; padding-right:38px; }
+
+  /* ── Content (no scroll, compact) ── */
+  .scroll { flex:1; overflow:hidden; padding:0 20px; }
+  .description { font-size:13px; font-weight:500; color:#94A3B8; margin-top:4px; margin-bottom:2px; line-height:18px; }
+
+  .section { margin-top:16px; }
+  .sectionTitle { font-size:11.5px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase; color:#94A3B8; margin-bottom:7px; margin-left:4px; }
+
+  /* ── Categories card ── */
+  .card { border-radius:20px; border:0.5px solid #2A3142; background:#161B2A; padding:0 16px; }
+  .listrow { min-height:50px; display:flex; align-items:center; }
+  .listrow + .listrow { border-top:0.5px solid #2A3142; }
+  .row { display:flex; flex-direction:row; align-items:center; gap:13px; padding:9px 0; width:100%; }
+  .iconSquare { width:34px; height:34px; border-radius:11px; display:flex; align-items:center; justify-content:center; flex:0 0 34px; }
+  .iconSquare.on { background:rgba(51,160,137,0.13); }
+  .iconSquare.muted { background:rgba(148,163,184,0.13); }
+  .texts { flex:1; min-width:0; }
+  .rowTitle { font-size:15px; font-weight:600; color:#FFFFFF; }
+  .rowSub { font-size:12.5px; font-weight:500; color:#94A3B8; margin-top:2px; }
+
+  /* ── Toggle pill ── */
+  .track { width:46px; height:28px; border-radius:999px; padding:3px; display:flex; align-items:center; flex:0 0 46px; }
+  .track.on { background:#33A089; justify-content:flex-end; }
+  .track.off { background:#2A3142; justify-content:flex-start; }
+  .knob { width:22px; height:22px; border-radius:999px; }
+  .knob.on { background:#FFFFFF; }
+  .knob.off { background:#94A3B8; }
+
+  /* ── Option cards (single-select) ── */
+  .optionCard {
+    display:flex; flex-direction:row; align-items:center;
+    padding:11px 16px; border-radius:16px; border:1.5px solid #2A3142;
+    margin-bottom:8px; min-height:48px; background:#161B2A;
+  }
+  .optionCard.active { background:#1E2435; border-color:#33A089; }
+  .optionText { flex:1; }
+  .optionLabel { font-size:14.5px; font-weight:600; color:#FFFFFF; }
+  .optionLabel.active { color:#33A089; }
+  .optionDesc { font-size:12px; font-weight:400; color:#94A3B8; margin-top:2px; }
+  .check { width:24px; height:24px; border-radius:999px; background:#33A089; display:flex; align-items:center; justify-content:center; margin-left:10px; flex:0 0 24px; }
+
+  /* ── Save CTA (gradient) ── */
+  .saveWrap { margin-top:18px; }
+  .btnSolid {
+    height:48px; border-radius:14px; background:linear-gradient(135deg,#1A7D68,#157082);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .btnLabel { font-size:16px; font-weight:600; color:#FFFFFF; letter-spacing:-0.2px; }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <!-- iOS status bar -->
+    <div class="statusbar">
+      <div class="time">9:41</div>
+      <div class="glyphs">
+        <span class="bars"><i></i><i></i><i></i><i></i></span>
+        <span style="font-size:12px;">5G</span>
+        <span class="battery"><i></i></span>
+      </div>
+    </div>
+
+    <!-- Sub-screen header -->
+    <div class="header">
+      <div class="backBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="headerTitle">Préférences de missions</div>
+    </div>
+
+    <!-- Content -->
+    <div class="scroll">
+      <div class="description">Personnalise tes missions bien-être pour qu&rsquo;elles te ressemblent.</div>
+
+      <!-- Categories — multi-select toggles -->
+      <div class="section">
+        <div class="sectionTitle">Catégories</div>
+        <div class="card">
+          <!-- movement (ON) -->
+          <div class="listrow"><div class="row">
+            <div class="iconSquare on">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="13" cy="4" r="2" stroke="#33A089" stroke-width="1.8"/><path d="M5 21l3-5 3 1 1-4-3-2 4-3 3 4 3 1" stroke="#33A089" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="texts"><div class="rowTitle">Mouvement</div><div class="rowSub">Bouge ton corps</div></div>
+            <div class="track on"><div class="knob on"></div></div>
+          </div></div>
+          <!-- mindfulness (ON) -->
+          <div class="listrow"><div class="row">
+            <div class="iconSquare on">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="6" r="2.2" stroke="#33A089" stroke-width="1.8"/><path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6M8 18l-3-2M16 18l3-2" stroke="#33A089" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="texts"><div class="rowTitle">Pleine conscience</div><div class="rowSub">Respire et recentre-toi</div></div>
+            <div class="track on"><div class="knob on"></div></div>
+          </div></div>
+          <!-- social (OFF) -->
+          <div class="listrow"><div class="row">
+            <div class="iconSquare muted">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="3" stroke="#94A3B8" stroke-width="1.8"/><circle cx="16" cy="9" r="2.4" stroke="#94A3B8" stroke-width="1.8"/><path d="M3 20c0-3 2.2-5 5-5s5 2 5 5M14 20c0-2.4 1.3-4 3.5-4S21 17.6 21 20" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="texts"><div class="rowTitle">Social</div><div class="rowSub">Connecte-toi aux autres</div></div>
+            <div class="track off"><div class="knob off"></div></div>
+          </div></div>
+          <!-- creative (OFF) -->
+          <div class="listrow"><div class="row">
+            <div class="iconSquare muted">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 100 18c1.2 0 2-.8 2-2 0-.5-.2-.9-.5-1.2-.3-.4-.5-.8-.5-1.3 0-1 .8-1.8 1.8-1.8H17a4 4 0 004-4c0-4-3.6-7-9-7z" stroke="#94A3B8" stroke-width="1.8" stroke-linejoin="round"/><circle cx="7.5" cy="11" r="1" fill="#94A3B8"/><circle cx="11" cy="7.5" r="1" fill="#94A3B8"/><circle cx="15" cy="8.5" r="1" fill="#94A3B8"/></svg>
+            </div>
+            <div class="texts"><div class="rowTitle">Créativité</div><div class="rowSub">Exprime-toi</div></div>
+            <div class="track off"><div class="knob off"></div></div>
+          </div></div>
+          <!-- nutrition (ON) -->
+          <div class="listrow"><div class="row">
+            <div class="iconSquare on">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 8c-1-3-4-4-6-3-2 1-2.5 4-1.5 7s4 7 7.5 7 6.5-4 7.5-7-0-6-2-7c-2-1-4.5 0-5.5 3z" stroke="#33A089" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 8c0-2 1-4 3-5" stroke="#33A089" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="texts"><div class="rowTitle">Nutrition</div><div class="rowSub">Nourris-toi bien</div></div>
+            <div class="track on"><div class="knob on"></div></div>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- Activity level — single-select (value: medium) -->
+      <div class="section">
+        <div class="sectionTitle">Niveau d'activité</div>
+        <div class="optionCard">
+          <div class="optionText"><div class="optionLabel">Doux</div><div class="optionDesc">Des missions légères et apaisantes</div></div>
+        </div>
+        <div class="optionCard active">
+          <div class="optionText"><div class="optionLabel active">Modéré</div><div class="optionDesc">Un bon équilibre au quotidien</div></div>
+          <div class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="optionCard">
+          <div class="optionText"><div class="optionLabel">Intense</div><div class="optionDesc">Des défis qui te poussent</div></div>
+        </div>
+      </div>
+
+      <!-- Outdoor preference — single-select (value: weather_permitting) -->
+      <div class="section">
+        <div class="sectionTitle">Activités en extérieur</div>
+        <div class="optionCard">
+          <div class="optionText"><div class="optionLabel">Toujours</div><div class="optionDesc">Privilégie le plein air</div></div>
+        </div>
+        <div class="optionCard active">
+          <div class="optionText"><div class="optionLabel active">Si la météo le permet</div><div class="optionDesc">Selon les conditions</div></div>
+          <div class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="optionCard">
+          <div class="optionText"><div class="optionLabel">Jamais</div><div class="optionDesc">Reste à l'intérieur</div></div>
+        </div>
+      </div>
+
+      <!-- Frequency — single-select (value: few_times_daily) -->
+      <div class="section">
+        <div class="sectionTitle">Fréquence</div>
+        <div class="optionCard">
+          <div class="optionText"><div class="optionLabel">Toutes les heures</div></div>
+        </div>
+        <div class="optionCard active">
+          <div class="optionText"><div class="optionLabel active">Plusieurs fois par jour</div></div>
+          <div class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="optionCard">
+          <div class="optionText"><div class="optionLabel">Une fois par jour</div></div>
+        </div>
+      </div>
+
+      <!-- Save -->
+      <div class="saveWrap">
+        <div class="btnSolid"><span class="btnLabel">Enregistrer</span></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

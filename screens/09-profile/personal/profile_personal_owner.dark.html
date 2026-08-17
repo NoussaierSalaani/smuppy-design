@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=393, initial-scale=1" />
+<title>profile_personal_owner_v2 — dark</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 393px;
+    height: 852px;
+    overflow: hidden;
+    background: #0A0E1A;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .device {
+    position: relative;
+    width: 393px;
+    height: 852px;
+    background: #0A0E1A;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Faux iOS status bar (part of 54px safe-area) ───────────────── */
+  .statusbar {
+    height: 54px;
+    flex: 0 0 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 22px 0 28px;
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: 600;
+    z-index: 30;
+    background: #0A0E1A;
+  }
+  .sb-time { letter-spacing: 0.3px; }
+  .sb-glyphs { display: flex; align-items: center; gap: 6px; }
+  .sb-glyphs svg { display: block; }
+
+  /* ── Sub-screen header (back chevron in circle + centered title) ── */
+  .subhead {
+    flex: 0 0 auto;
+    position: relative;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    background: #0A0E1A;
+  }
+  .back-circle {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    background: #161B2A;
+    border: 1px solid #2A3142;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .head-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: -0.2px;
+  }
+  .head-more {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    background: #161B2A;
+    border: 1px solid #2A3142;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── Content ─────────────────────────────────────────────────────── */
+  .scroll {
+    flex: 1 1 auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── ProfileHeader ───────────────────────────────────────────────── */
+  .pheader { width: 100%; }
+
+  .cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3.2 / 1;
+    overflow: hidden;
+    background:
+      linear-gradient(135deg, rgba(26,125,104,0.65), rgba(21,112,130,0.55)),
+      linear-gradient(180deg, #1E2435 0%, #161B2A 100%);
+  }
+
+  .headrow {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 16px;
+    margin-top: -44px;
+  }
+  .avatar-wrap {
+    position: relative;
+    border: 5px solid #0A0E1A;
+    border-radius: 999px;
+    width: 88px;
+    height: 88px;
+  }
+  .avatar {
+    width: 78px;
+    height: 78px;
+    border-radius: 999px;
+    background:
+      radial-gradient(circle at 35% 30%, #2C6E5C, #176A5A 70%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #A8E6D9;
+    font-size: 29px;
+    font-weight: 800;
+  }
+  .verified {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    background: #33A089;
+    border: 2.5px solid #0A0E1A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 4px;
+  }
+  /* Share — secondary round icon button (outline mint) */
+  .icon-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    border: 1.5px solid #33A089;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* meta */
+  .meta { padding: 10px 16px 0 16px; }
+  .name-row { display: flex; flex-direction: row; align-items: center; gap: 6px; }
+  .name {
+    font-size: 19px;
+    font-weight: 800;
+    color: #FFFFFF;
+    letter-spacing: -0.2px;
+  }
+  .role {
+    font-size: 13px;
+    font-weight: 500;
+    color: #94A3B8;
+    margin-top: 3px;
+  }
+  .bio {
+    font-size: 13px;
+    font-weight: 500;
+    color: #94A3B8;
+    margin-top: 6px;
+    line-height: 19px;
+  }
+
+  /* ── Vibesmood counter (NEW) ─────────────────────────────────────── */
+  .vibesmood {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 9px;
+    margin: 11px 16px 0 16px;
+    padding: 9px 13px;
+    border-radius: 16px;
+    background: #161B2A;
+    border: 1px solid #2A3142;
+  }
+  .vm-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    background: rgba(51,160,137,0.12);
+    border: 1px solid #33A089;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+  .vm-text { display: flex; flex-direction: column; }
+  .vm-count {
+    font-size: 15px;
+    font-weight: 800;
+    color: #33A089;
+    font-variant-numeric: tabular-nums;
+    line-height: 17px;
+  }
+  .vm-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #94A3B8;
+    margin-top: 1px;
+  }
+
+  /* stats */
+  .stats {
+    display: flex;
+    flex-direction: row;
+    gap: 22px;
+    padding: 12px 16px 2px 16px;
+  }
+  .stat-row {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 5px;
+  }
+  .stat-value {
+    font-size: 15px;
+    font-weight: 800;
+    color: #FFFFFF;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #94A3B8;
+  }
+
+  /* ── Sub-tab strip (TabBar pill-card WITH icons) ─────────────────── */
+  .tabs-wrap { padding: 8px 8px 8px 8px; }
+  .tabbar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: #161B2A;
+    border-radius: 999px;
+    padding: 4px;
+    column-gap: 4px;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    border-radius: 999px;
+    padding: 7px 0;
+  }
+  .tab-label {
+    font-size: 11px;
+    line-height: 13px;
+    font-weight: 600;
+    text-align: center;
+    color: #94A3B8;
+    white-space: nowrap;
+  }
+  .tab.active {
+    background: rgba(51,160,137,0.10);
+    border: 1px solid #33A089;
+  }
+  .tab.active .tab-label { color: #33A089; }
+
+  /* ── Active pane (Posts grid) ────────────────────────────────────── */
+  .pane { padding-top: 2px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .grid-cell {
+    aspect-ratio: 1 / 1;
+    position: relative;
+    overflow: hidden;
+  }
+  .gc1 { background: linear-gradient(160deg, #1E2435, #176A5A); }
+  .gc2 { background: linear-gradient(160deg, #161B2A, #1A7D68); }
+  .gc3 { background: linear-gradient(200deg, #1E2435, #157082); }
+  .gc4 { background: linear-gradient(140deg, #176A5A, #0A0E1A); }
+  .gc5 { background: linear-gradient(160deg, #1E2435, #475569); }
+  .gc6 { background: linear-gradient(200deg, #1A7D68, #161B2A); }
+  .cell-badge {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    opacity: 0.92;
+  }
+
+  /* ── BottomNav (canonical, dark) ─────────────────────────────────── */
+  .bnav {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 12px 24px 30px 24px;
+    background: #0E1413;
+    border-top-left-radius: 28px;
+    border-top-right-radius: 28px;
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.12);
+  }
+  .bnav-item {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .bnav-bar {
+    position: absolute;
+    bottom: -6px;
+    width: 24px;
+    height: 3px;
+    border-radius: 999px;
+    background: #33A089;
+    box-shadow: 0 0 8px rgba(51,160,137,0.5);
+  }
+  .create-disc {
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    background: #16201E;
+    border: 1.5px solid #33A089;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 12px rgba(51,160,137,0.45);
+  }
+  .bnav-avatar-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 14px;
+    border: 2px solid #33A089;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 8px rgba(51,160,137,0.4);
+  }
+  .bnav-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 12px;
+    background: radial-gradient(circle at 35% 30%, #2C6E5C, #176A5A 70%);
+  }
+</style>
+</head>
+<body>
+  <div class="device">
+
+    <!-- ── Faux iOS status bar (safe-area top inset) ──────────────── -->
+    <div class="statusbar">
+      <span class="sb-time">9:41</span>
+      <span class="sb-glyphs">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="#FFFFFF">
+          <rect x="0" y="8" width="3" height="4" rx="0.7"/>
+          <rect x="5" y="5.5" width="3" height="6.5" rx="0.7"/>
+          <rect x="10" y="3" width="3" height="9" rx="0.7"/>
+          <rect x="15" y="0.5" width="3" height="11.5" rx="0.7"/>
+        </svg>
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="#FFFFFF">
+          <path d="M8.5 2C5.4 2 2.6 3.2 0.6 5.2L8.5 13 16.4 5.2C14.4 3.2 11.6 2 8.5 2Z" opacity="0.95"/>
+        </svg>
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none">
+          <rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="#FFFFFF" opacity="0.5"/>
+          <rect x="2" y="2" width="18" height="8" rx="1.6" fill="#FFFFFF"/>
+          <rect x="24" y="4" width="1.8" height="4" rx="0.9" fill="#FFFFFF" opacity="0.5"/>
+        </svg>
+      </span>
+    </div>
+
+    <!-- ── Sub-screen header ──────────────────────────────────────── -->
+    <div class="subhead">
+      <div class="back-circle">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M15 6L9 12L15 18" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="head-title">Profil</span>
+      <div class="head-more">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <circle cx="5" cy="12" r="1.7" fill="#FFFFFF"/>
+          <circle cx="12" cy="12" r="1.7" fill="#FFFFFF"/>
+          <circle cx="19" cy="12" r="1.7" fill="#FFFFFF"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ── Content ────────────────────────────────────────────────── -->
+    <div class="scroll">
+
+      <!-- ProfileHeader -->
+      <div class="pheader">
+        <div class="cover"></div>
+
+        <div class="headrow">
+          <div class="avatar-wrap">
+            <div class="avatar">LR</div>
+            <div class="verified">&#10003;</div>
+          </div>
+          <div class="actions">
+            <!-- Modifier button REMOVED — only Share icon remains -->
+            <div class="icon-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M12 16V4M12 4L7 9M12 4L17 9" stroke="#33A089" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M5 14V18C5 19.1 5.9 20 7 20H17C18.1 20 19 19.1 19 18V14" stroke="#33A089" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="meta">
+          <div class="name-row">
+            <span class="name">L&eacute;a Run</span>
+          </div>
+          <div class="role">Coach course &middot; Lyon</div>
+          <div class="bio">Trouve ta paix, kilom&egrave;tre apr&egrave;s kilom&egrave;tre.</div>
+        </div>
+
+        <!-- Vibesmood counter (NEW) -->
+        <div class="vibesmood">
+          <div class="vm-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M12 21C12 21 4 14.5 4 8.8C4 6.1 6.1 4 8.7 4C10.2 4 11.5 4.8 12 6C12.5 4.8 13.8 4 15.3 4C17.9 4 20 6.1 20 8.8C20 14.5 12 21 12 21Z"
+                stroke="#33A089" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
+          <div class="vm-text">
+            <span class="vm-count">8 942</span>
+            <span class="vm-label">vibesmood re&ccedil;us</span>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat-row"><span class="stat-value">24,3&nbsp;k</span><span class="stat-label">Fans</span></div>
+          <div class="stat-row"><span class="stat-value">412</span><span class="stat-label">Posts</span></div>
+          <div class="stat-row"><span class="stat-value">57</span><span class="stat-label">Peaks</span></div>
+        </div>
+      </div>
+
+      <!-- Sub-tab strip (TabBar pill-card WITH icons) -->
+      <div class="tabs-wrap">
+        <div class="tabbar" role="tablist" aria-label="Onglets du profil">
+          <div class="tab active" role="tab" aria-selected="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="3" width="7.5" height="7.5" rx="1.5" stroke="#33A089" stroke-width="1.9"/>
+              <rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5" stroke="#33A089" stroke-width="1.9"/>
+              <rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5" stroke="#33A089" stroke-width="1.9"/>
+              <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5" stroke="#33A089" stroke-width="1.9"/>
+            </svg>
+            <span class="tab-label">Posts</span>
+          </div>
+          <div class="tab" role="tab">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="3" width="18" height="18" rx="4" stroke="#94A3B8" stroke-width="1.9"/>
+              <path d="M10 9L15 12L10 15V9Z" fill="#94A3B8"/>
+            </svg>
+            <span class="tab-label">Peaks</span>
+          </div>
+          <div class="tab" role="tab">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M3 12H7L9.5 5L14.5 19L17 12H21" stroke="#94A3B8" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="tab-label">Activit&eacute;s</span>
+          </div>
+          <div class="tab" role="tab">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M6 4H18C18.6 4 19 4.4 19 5V20L12 16L5 20V5C5 4.4 5.4 4 6 4Z" stroke="#94A3B8" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+            <span class="tab-label">Enregistr&eacute;s</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active pane — Posts grid -->
+      <div class="pane">
+        <div class="grid">
+          <div class="grid-cell gc1"></div>
+          <div class="grid-cell gc2">
+            <span class="cell-badge">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="5" width="18" height="14" rx="2.5" stroke="#FFFFFF" stroke-width="1.8"/>
+                <path d="M10 9L15 12L10 15V9Z" fill="#FFFFFF"/>
+              </svg>
+            </span>
+          </div>
+          <div class="grid-cell gc3"></div>
+          <div class="grid-cell gc4"></div>
+          <div class="grid-cell gc5">
+            <span class="cell-badge">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="5" width="18" height="14" rx="2.5" stroke="#FFFFFF" stroke-width="1.8"/>
+                <path d="M10 9L15 12L10 15V9Z" fill="#FFFFFF"/>
+              </svg>
+            </span>
+          </div>
+          <div class="grid-cell gc6"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── BottomNav (active = profile) ───────────────────────────── -->
+    <div class="bnav" role="tablist">
+      <!-- home -->
+      <div class="bnav-item">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+          <path d="M3 10.5L12 3L21 10.5V20C21 20.6 20.6 21 20 21H15V15H9V21H4C3.4 21 3 20.6 3 20V10.5Z"
+            stroke="#94A3B8" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
+      <!-- search -->
+      <div class="bnav-item">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#94A3B8" stroke-width="1.9"/>
+          <path d="M16 16L21 21" stroke="#94A3B8" stroke-width="1.9" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <!-- create + -->
+      <div class="bnav-item">
+        <div class="create-disc">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M12 5V19M5 12H19" stroke="#33A089" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <!-- activités -->
+      <div class="bnav-item">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+          <path d="M3 12H7L9.5 5L14.5 19L17 12H21" stroke="#94A3B8" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <!-- profil (active) -->
+      <div class="bnav-item">
+        <div class="bnav-avatar-wrap">
+          <div class="bnav-avatar"></div>
+        </div>
+        <div class="bnav-bar"></div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

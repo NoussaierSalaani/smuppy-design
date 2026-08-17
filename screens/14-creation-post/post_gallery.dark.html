@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html class="dark" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Smuppy — Nouveau post</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  /* CANONICAL KIT — DARK theme tokens */
+  :root {
+    --mint: #33A089;
+    --surface: #0A0E1A;     /* page */
+    --container: #161B2A;   /* card */
+    --text: #FFFFFF;
+    --variant: #94A3B8;     /* sub-text */
+    --outline: #2A3142;
+    --logo: #33A089;        /* wordmark mint in dark */
+    --grad-a: #1A7D68; --grad-b: #157082;
+  }
+  * { box-sizing:border-box; -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent; }
+  html { background:var(--surface); }
+  html, body { max-width:100%; overflow-x:hidden; }
+  body {
+    margin:0; width:393px; height:852px; overflow:hidden;
+    background:var(--surface); color:var(--text);
+    font-family:'Plus Jakarta Sans',-apple-system,system-ui,sans-serif;
+    font-size:15px; line-height:1.5;
+    position:relative;
+  }
+  .phone-root { position:relative; width:100%; height:100%; background:var(--surface); overflow:hidden; }
+
+  /* ── G1 Faux iOS status bar (top 54px inset) ─────────────────── */
+  .statusbar {
+    position:absolute; top:0; left:0; right:0; height:54px; z-index:60;
+    display:flex; align-items:flex-end; justify-content:space-between;
+    padding:0 22px 8px; pointer-events:none;
+  }
+  .statusbar .sb-time { font-size:15px; font-weight:700; color:var(--text); letter-spacing:.02em; }
+  .statusbar .sb-right { display:flex; align-items:center; gap:6px; }
+  .statusbar svg { display:block; }
+
+  /* ── SUB-SCREEN header (below safe-area, back chevron in circle + title) */
+  .sub-topbar {
+    position:absolute; top:54px; left:0; right:0; z-index:50;
+    height:56px; display:flex; align-items:center; gap:10px;
+    padding:0 12px; background:var(--surface);
+    border-bottom:1px solid var(--outline);
+  }
+  .sub-back {
+    width:38px; height:38px; flex-shrink:0;
+    border:1px solid var(--outline); background:var(--container);
+    border-radius:999px; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; }
+  .sub-topbar h1 { flex:1; text-align:center; font-size:16px; font-weight:700;
+    margin:0; color:var(--text); letter-spacing:-.01em; }
+  .pg-next { padding:8px 16px; border:1.5px solid var(--mint); border-radius:999px;
+    background:transparent; color:var(--mint);
+    font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; }
+
+  /* ── Main ─────────────────────────────────────────────────────── */
+  .pg-main { position:absolute; top:110px; left:0; right:0; bottom:0;
+    overflow:hidden; display:flex; flex-direction:column; }
+
+  /* Preview */
+  .pg-preview { position:relative; width:100%; aspect-ratio:1/1; overflow:hidden;
+    background:#000; flex-shrink:0; }
+  .pg-preview img { width:100%; height:100%; object-fit:cover; }
+  .pg-preview-overlay { position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,.35) 100%); }
+  .pg-preview-tag { position:absolute; top:14px; right:14px;
+    padding:6px 12px; border-radius:999px;
+    background:rgba(0,0,0,.50); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); }
+  .pg-preview-logo { font-size:13px; font-weight:900; letter-spacing:-.02em; color:var(--logo); }
+
+  /* Meta row (camera button REMOVED — photo/vidéo are in the bottom tabs) */
+  .pg-meta { display:flex; justify-content:space-between; align-items:center;
+    padding:9px 14px; flex-shrink:0; }
+  .pg-recents { display:inline-flex; align-items:center; gap:5px;
+    border:none; background:transparent; cursor:pointer;
+    font-family:inherit; font-size:13px; font-weight:700; color:var(--text); }
+  .pg-multi { display:inline-flex; align-items:center; gap:6px;
+    padding:6px 12px; border-radius:999px;
+    border:1.5px solid var(--mint); background:transparent; color:var(--mint);
+    font-family:inherit; font-size:12px; font-weight:700; cursor:pointer; }
+
+  /* Gallery grid */
+  .pg-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:2px;
+    flex:1; overflow:hidden; align-content:start; }
+  .pg-tile { position:relative; aspect-ratio:1/1; overflow:hidden; }
+  .pg-tile img { width:100%; height:100%; object-fit:cover; display:block; }
+  .pg-tile-on { outline:2px solid var(--mint); outline-offset:-2px; }
+  .pg-tile-check { position:absolute; top:6px; right:6px; width:18px; height:18px;
+    border-radius:999px; background:var(--mint);
+    display:flex; align-items:center; justify-content:center; }
+
+  /* Source tabs (chips — G7) */
+  .pg-source-tabs { display:flex; gap:8px; padding:12px 14px 16px;
+    background:var(--container); border-top:1px solid var(--outline);
+    justify-content:center; flex-shrink:0; }
+  .pg-source-tab { padding:8px 18px; border:1.5px solid var(--mint); border-radius:999px;
+    background:transparent; color:var(--mint);
+    font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; }
+  .pg-source-tab-on { background:rgba(51,160,137,.12); color:var(--mint); }
+
+  /* ── BottomSheet popups (leave + success) ─────────────────────── */
+  .sheet-scrim { position:absolute; inset:0; z-index:200;
+    background:rgba(0,0,0,0.50);
+    -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+    display:flex; align-items:flex-end; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity .22s ease; }
+  .sheet-scrim[data-state="open"] { opacity:1; pointer-events:auto; }
+  .sheet { width:100%; max-width:393px; box-sizing:border-box;
+    background:var(--container); border-radius:28px 28px 0 0;
+    padding:8px 24px 28px; border-top:1.5px solid rgba(51,160,137,.20);
+    transform:translateY(100%); transition:transform .28s cubic-bezier(0.32,0.72,0,1); }
+  .sheet-scrim[data-state="open"] .sheet { transform:translateY(0); }
+  .sheet-handle { width:38px; height:4px; border-radius:999px; background:var(--outline);
+    margin:8px auto 18px; }
+  .sheet-icon-wrap { width:64px; height:64px; border-radius:999px;
+    display:flex; align-items:center; justify-content:center; margin:0 auto 16px; }
+  .sheet-icon-wrap.success { background:rgba(51,160,137,.14); }
+  .sheet-icon-wrap.warn { background:rgba(245,158,11,.14); }
+  .sheet-title { text-align:center; font-size:19px; font-weight:800;
+    color:var(--text); margin:0 0 8px; letter-spacing:-.01em; }
+  .sheet-body { text-align:center; font-size:14px; font-weight:500; line-height:1.5;
+    color:var(--variant); margin:0 0 22px; padding:0 8px; }
+  .sheet-body b { color:var(--text); font-weight:700; }
+  .sheet-actions { display:flex; gap:10px; }
+  .sheet-actions-stacked { flex-direction:column; }
+  .sheet-btn { flex:1; height:52px; border-radius:16px; border:none;
+    font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; }
+  .sheet-btn-primary { background:linear-gradient(135deg, var(--grad-a) 0%, var(--grad-b) 100%);
+    color:#FFFFFF; }
+  .sheet-btn-ghost { background:transparent; color:var(--variant); border:1px solid var(--outline); }
+  .sheet-btn-danger { background:rgba(239,68,68,.12); color:#F87171; border:1px solid rgba(239,68,68,.30); }
+</style>
+</head>
+<body>
+<div class="phone-root">
+
+  <!-- G1 faux iOS status bar -->
+  <div class="statusbar">
+    <span class="sb-time">9:41</span>
+    <span class="sb-right">
+      <svg width="18" height="12" viewBox="0 0 18 12" fill="var(--text)"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1" width="3" height="11" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1" opacity="0.4"/></svg>
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M8.5 3.5c1.8 0 3.5.7 4.8 1.9l1.2-1.3A9 9 0 0 0 8.5 1.5 9 9 0 0 0 2 4.1l1.2 1.3A6.9 6.9 0 0 1 8.5 3.5z" fill="var(--text)"/><path d="M8.5 6.4c1 0 2 .4 2.7 1.1l1.2-1.3a6 6 0 0 0-7.8 0l1.2 1.3c.7-.7 1.7-1.1 2.7-1.1z" fill="var(--text)"/><circle cx="8.5" cy="10" r="1.6" fill="var(--text)"/></svg>
+      <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="var(--text)" opacity="0.5"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="var(--text)"/><rect x="23.5" y="4" width="1.5" height="4" rx="0.75" fill="var(--text)" opacity="0.5"/></svg>
+    </span>
+  </div>
+
+  <!-- SUB-SCREEN header -->
+  <header class="sub-topbar">
+    <button class="sub-back" aria-label="Retour">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h1>Nouveau post</h1>
+    <button class="pg-next">Suivant</button>
+  </header>
+
+  <main class="pg-main">
+    <div class="pg-preview">
+      <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&h=800&fit=crop&q=80" alt="Preview"/>
+      <div class="pg-preview-overlay"></div>
+      <div class="pg-preview-tag"><span class="pg-preview-logo">Smuppy</span></div>
+    </div>
+
+    <div class="pg-meta">
+      <button class="pg-recents">
+        <span>Recents</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <button class="pg-multi" aria-label="Sélection multiple">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--mint)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="13" height="13" rx="2"/><path d="M8 21h11a2 2 0 0 0 2-2V8"/></svg>
+        <span>Multiple</span>
+      </button>
+    </div>
+
+    <div class="pg-grid">
+      <div class="pg-tile"><img src="https://images.unsplash.com/photo-1488161628813-04466f6efb19?w=200&h=200&fit=crop&q=80" alt="flower-orange"/></div>
+      <div class="pg-tile pg-tile-on"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&q=80" alt="woman-portrait"/><span class="pg-tile-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
+      <div class="pg-tile"><img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=200&h=200&fit=crop&q=80" alt="red-paint"/></div>
+      <div class="pg-tile"><img src="https://images.unsplash.com/photo-1517999144091-3d9dca6d1e43?w=200&h=200&fit=crop&q=80" alt="wide-shot"/></div>
+      <div class="pg-tile"><img src="https://images.unsplash.com/photo-1494790108755-2616c84d7e9f?w=200&h=200&fit=crop&q=80" alt="portrait-2"/></div>
+      <div class="pg-tile"><img src="https://images.unsplash.com/photo-1502691876148-a84978e59af8?w=200&h=200&fit=crop&q=80" alt="palm-tree"/></div>
+      <div class="pg-tile"><img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?w=200&h=200&fit=crop&q=80" alt="rooftop"/></div>
+      <div class="pg-tile"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&q=80" alt="studio-girl"/></div>
+      <div class="pg-tile"><img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&h=200&fit=crop&q=80" alt="bridge"/></div>
+      <div class="pg-tile"><img src="https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=200&h=200&fit=crop&q=80" alt="street-night"/></div>
+      <div class="pg-tile"><img src="https://images.unsplash.com/photo-1502716119720-b23a93e5fe1b?w=200&h=200&fit=crop&q=80" alt="tower"/></div>
+      <div class="pg-tile"><img src="https://images.unsplash.com/photo-1485518882345-15568b007407?w=200&h=200&fit=crop&q=80" alt="food"/></div>
+      <div class="pg-tile"><img src="https://images.unsplash.com/photo-1488376739361-66f47020a2dc?w=200&h=200&fit=crop&q=80" alt="pasta"/></div>
+      <div class="pg-tile"><img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=200&h=200&fit=crop&q=80" alt="cat"/></div>
+      <div class="pg-tile"><img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=200&h=200&fit=crop&q=80" alt="lake"/></div>
+      <div class="pg-tile"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=200&h=200&fit=crop&q=80" alt="shoes"/></div>
+    </div>
+
+    <div class="pg-source-tabs">
+      <button class="pg-source-tab pg-source-tab-on">Galerie</button>
+      <button class="pg-source-tab">Photo</button>
+      <button class="pg-source-tab">Vidéo</button>
+    </div>
+  </main>
+
+  <!-- Leave-without-saving sheet -->
+  <div class="sheet-scrim" id="sheet-leave" data-state="closed" aria-hidden="true">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-icon-wrap warn">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <h3 class="sheet-title">Quitter sans enregistrer ?</h3>
+      <p class="sheet-body">Tes modifications ne seront pas conservées. Tu peux revenir et appuyer sur <b>Suivant</b> pour continuer.</p>
+      <div class="sheet-actions">
+        <button class="sheet-btn sheet-btn-ghost">Continuer</button>
+        <button class="sheet-btn sheet-btn-danger">Quitter quand même</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success sheet -->
+  <div class="sheet-scrim" id="sheet-success" data-state="closed" aria-hidden="true">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-icon-wrap success">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#33A089" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h3 class="sheet-title">Photo sélectionnée</h3>
+      <p class="sheet-body">Continue vers les détails du post.</p>
+      <div class="sheet-actions sheet-actions-stacked">
+        <button class="sheet-btn sheet-btn-primary">Continuer</button>
+        <button class="sheet-btn sheet-btn-ghost">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body></html>

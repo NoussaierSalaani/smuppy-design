@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Smuppy — Post publié</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --mint:#33A089; --accent:#33A089;
+    --surface:#FFFFFF; --container:#F8FAFC;
+    --text:#0F172A; --variant:#475569; --outline:#E2E8F0;
+    --logo:#0F172A;
+    --safe-top:54px;
+  }
+  * { box-sizing:border-box; -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent; }
+  html { background:var(--surface); }
+  html, body { max-width:100%; overflow:hidden; }
+  body {
+    margin:0; width:393px; height:852px; overflow:hidden;
+    background:var(--surface); color:var(--text);
+    font-family:'Plus Jakarta Sans',-apple-system,system-ui,sans-serif;
+    font-size:15px; line-height:1.5; position:relative;
+  }
+  .phone-root { position:relative; width:100%; height:100%; background:var(--surface); overflow:hidden; }
+
+  /* ── Faux iOS status bar ─────────────────────────────────── */
+  .statusbar { position:absolute; top:0; left:0; right:0; height:var(--safe-top); z-index:60;
+    display:flex; align-items:flex-end; justify-content:space-between;
+    padding:0 24px 8px; pointer-events:none; }
+  .statusbar .sb-time { font-size:15px; font-weight:700; color:var(--text); letter-spacing:.02em; }
+  .statusbar .sb-right { display:flex; align-items:center; gap:6px; color:var(--text); }
+  .statusbar .sb-right svg { display:block; }
+
+  /* ── Success state (no CTA · auto-dismiss confirmation) ──── */
+  .ps-wrap { position:absolute; left:0; right:0; bottom:0; top:var(--safe-top);
+    padding:0 24px; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:0; }
+  .ps-particles { position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(circle at 30% 25%, rgba(51,160,137,.10) 0%, transparent 28%),
+               radial-gradient(circle at 75% 70%, rgba(51,160,137,.06) 0%, transparent 30%); }
+
+  .ps-check { position:relative; width:120px; height:120px;
+    border-radius:999px; background:rgba(51,160,137,.10);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 60px rgba(51,160,137,.28),
+               0 0 0 2px rgba(51,160,137,.30) inset;
+    margin-bottom:28px; }
+  .ps-check-ring { position:absolute; inset:-12px; border-radius:999px;
+    border:2px solid rgba(51,160,137,.35);
+    box-shadow:0 0 24px rgba(51,160,137,.18);
+    animation:ps-pulse 2.4s ease-in-out infinite; }
+  @keyframes ps-pulse { 0%,100% { transform:scale(1); opacity:.5; } 50% { transform:scale(1.06); opacity:1; } }
+  .ps-check-icon { width:60px; height:60px; color:var(--mint);
+    filter:drop-shadow(0 0 8px rgba(51,160,137,.35)); }
+
+  .ps-title { font-size:24px; font-weight:800; margin:0 0 8px;
+    color:var(--text); letter-spacing:-.02em; text-align:center; }
+  .ps-body { font-size:14px; font-weight:500; color:var(--variant);
+    text-align:center; margin:0 0 28px; max-width:280px; line-height:1.45; }
+
+  /* Status card — publication EN LIGNE */
+  .ps-status-card { display:flex; align-items:center; gap:12px;
+    padding:12px 14px; border-radius:18px;
+    background:var(--container); border:1px solid var(--outline);
+    box-shadow:0 0 16px rgba(51,160,137,.06),
+               0 4px 16px rgba(15,23,42,0.06);
+    width:100%; max-width:300px; }
+  .ps-status-card img { width:46px; height:46px; border-radius:12px; object-fit:cover; }
+  .ps-status-text { flex:1; min-width:0; }
+  .ps-status-label { font-size:12px; font-weight:600; color:var(--variant); }
+  .ps-status-live { display:flex; align-items:center; gap:6px;
+    font-size:11px; font-weight:800; color:var(--mint);
+    letter-spacing:.10em; text-transform:uppercase; margin-top:3px; }
+  .ps-live-dot { width:7px; height:7px; border-radius:999px; background:var(--mint);
+    box-shadow:0 0 8px rgba(51,160,137,.5);
+    animation:ps-blink 1.6s ease-in-out infinite; }
+  @keyframes ps-blink { 0%,100% { opacity:1; } 50% { opacity:.35; } }
+
+  /* Auto-dismiss hint (replaces CTA — no tap target) */
+  .ps-dismiss-hint { margin-top:26px; display:flex; align-items:center; gap:8px;
+    font-size:12px; font-weight:600; color:var(--variant); letter-spacing:.02em; }
+  .ps-dismiss-bar { width:120px; height:3px; border-radius:999px;
+    background:var(--outline); overflow:hidden; position:relative; }
+  .ps-dismiss-bar::after { content:""; position:absolute; inset:0;
+    background:linear-gradient(90deg,#1A7D68,#157082); transform-origin:left;
+    animation:ps-fill 2.6s linear forwards; }
+  @keyframes ps-fill { from { transform:scaleX(0); } to { transform:scaleX(1); } }
+</style>
+</head>
+<body>
+<div class="phone-root">
+
+  <!-- Faux iOS status bar (inside the 54px safe-area inset) -->
+  <div class="statusbar">
+    <span class="sb-time">9:41</span>
+    <span class="sb-right">
+      <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1.5" width="3" height="10.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1" opacity="0.4"/></svg>
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><path d="M8.5 2.5c2.2 0 4.2.8 5.7 2.2l1.3-1.4C13.7 1.5 11.2.5 8.5.5S3.3 1.5 1.5 3.3l1.3 1.4C4.3 3.3 6.3 2.5 8.5 2.5z" opacity="0.85"/><path d="M8.5 6c1.2 0 2.3.5 3.1 1.3l1.3-1.4C11.7 4.7 10.2 4 8.5 4S5.3 4.7 4.1 5.9l1.3 1.4C6.2 6.5 7.3 6 8.5 6z"/><circle cx="8.5" cy="10" r="1.6"/></svg>
+      <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="currentColor" opacity="0.5"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="3.5" width="1.5" height="5" rx="0.75" fill="currentColor" opacity="0.5"/></svg>
+    </span>
+  </div>
+
+  <!-- Success confirmation — NO CTA, auto-dismiss -->
+  <div class="ps-wrap">
+    <div class="ps-particles"></div>
+
+    <div class="ps-check">
+      <div class="ps-check-ring"></div>
+      <svg class="ps-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+
+    <h2 class="ps-title">Post publié &amp; en ligne</h2>
+    <p class="ps-body">Ta tribu peut maintenant voir ta nouvelle publication.</p>
+
+    <div class="ps-status-card">
+      <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&h=120&fit=crop&q=80" alt="Aperçu de la publication"/>
+      <div class="ps-status-text">
+        <div class="ps-status-label">Statut de la publication</div>
+        <div class="ps-status-live"><span class="ps-live-dot"></span>EN LIGNE</div>
+      </div>
+    </div>
+
+    <div class="ps-dismiss-hint">
+      <span class="ps-dismiss-bar"></span>
+      Retour au fil&nbsp;…
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

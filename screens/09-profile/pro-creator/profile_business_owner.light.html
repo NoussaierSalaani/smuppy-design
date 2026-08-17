@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=393, initial-scale=1">
+<title>profile_business_owner_v2</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body {
+    width: 393px; height: 852px; overflow: hidden;
+    background: #FFFFFF;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #0F172A;
+  }
+  .screen {
+    width: 393px; height: 852px; position: relative;
+    background: #FFFFFF; overflow: hidden; display: flex; flex-direction: column;
+  }
+
+  /* ---- iOS status bar ---- */
+  .statusbar {
+    height: 44px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 22px 0 28px;
+    font-size: 15px; font-weight: 600; color: #0F172A;
+    position: relative; z-index: 40;
+  }
+  .statusbar .time { font-weight: 700; letter-spacing: -0.2px; }
+  .sb-glyphs { display: flex; align-items: center; gap: 6px; }
+  .sb-glyphs svg { display: block; }
+
+  /* ---- scroll body ---- */
+  .scroll { flex: 1; overflow: hidden; padding-bottom: 40px; }
+
+  /* ---- cover ---- */
+  .coverWrap { position: relative; }
+  .coverSlot {
+    width: 393px; height: 180px; overflow: hidden;
+    background: linear-gradient(135deg, #176A5A 0%, #157082 60%, #FFFFFF 100%);
+    position: relative;
+  }
+  .coverSlot::after {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(circle at 70% 20%, rgba(168,230,217,0.22), transparent 55%);
+  }
+  .floatingRow {
+    position: absolute; top: 12px; left: 16px; right: 16px;
+    display: flex; flex-direction: row; justify-content: space-between;
+  }
+  .floatingBtn {
+    min-width: 44px; min-height: 44px; width: 44px; height: 44px;
+    border-radius: 22px; background: #F8FAFC;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .floatingBtn svg { display: block; }
+  .logoWrap { position: absolute; bottom: -36px; left: 20px; }
+  .logo {
+    width: 76px; height: 76px; border-radius: 20px;
+    border: 3px solid #FFFFFF; background: #F8FAFC;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px; font-weight: 800; color: #A8E6D9;
+    overflow: hidden;
+  }
+
+  /* ---- identity ---- */
+  .identity { padding: 0 20px; padding-top: 48px; }
+  .nameRow { display: flex; flex-direction: row; align-items: center; gap: 8px; }
+  .name { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; color: #0F172A; }
+  .verifiedBadge {
+    width: 24px; height: 24px; border-radius: 12px; background: #176A5A;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .verifiedBadge svg { display: block; }
+  .categoryPill { align-self: flex-start; margin-top: 6px; }
+  .categoryText { font-size: 14px; font-weight: 600; color: #475569; }
+
+  /* ---- stats ---- */
+  .statsRow {
+    display: flex; flex-direction: row; align-items: center;
+    margin-top: 16px; padding-top: 14px; padding-bottom: 14px;
+    border-top: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0;
+  }
+  .statItem {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  }
+  .statDivider { width: 1px; height: 28px; background: #E2E8F0; }
+  .statValue { font-size: 17px; font-weight: 700; color: #0F172A; }
+  .statLabel { font-size: 12px; font-weight: 500; color: #475569; }
+  .ratingValueRow { display: flex; flex-direction: row; align-items: center; gap: 4px; }
+  .starSlotSm { width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; }
+  .starSlotSm svg { display: block; }
+
+  /* ---- CTA (owner = single edit) ---- */
+  .ctaRow { display: flex; flex-direction: row; gap: 10px; margin-top: 16px; }
+  .btn {
+    flex: 1; min-height: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 600; letter-spacing: 0.1px;
+  }
+  .btn-outline {
+    background: transparent; border: 1.5px solid #33A089;
+    border-radius: 14px; color: #33A089;
+  }
+
+  /* ---- tabs ---- */
+  .tabsRow {
+    display: flex; flex-direction: row; gap: 8px;
+    padding: 0 20px; padding-top: 18px; padding-bottom: 4px;
+  }
+  .tab {
+    flex: 1; min-height: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 12px; border-radius: 22px; border: 1px solid #E2E8F0;
+    background: #FFFFFF; font-size: 14px; font-weight: 600; color: #0F172A;
+  }
+  .tab.selected {
+    background: #176A5A; border-color: #176A5A; color: #0F172A; font-weight: 700;
+  }
+
+  /* ---- about body ---- */
+  .aboutBody { padding: 0 20px; padding-top: 12px; }
+  .section { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .sectionTitle { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; color: #0F172A; }
+  .bodyText { font-size: 14.5px; line-height: 21px; font-weight: 400; color: #475569; }
+
+  .featuresGrid { display: flex; flex-direction: row; flex-wrap: wrap; gap: 8px; }
+  .featureChip {
+    padding: 8px 12px; border-radius: 12px; background: #F8FAFC;
+    font-size: 13.5px; font-weight: 500; color: #0F172A;
+  }
+
+  .mapSlot {
+    width: 100%; height: 140px; border-radius: 14px; overflow: hidden;
+    background: linear-gradient(160deg, #F8FAFC 0%, #F1F5F9 100%);
+    position: relative;
+  }
+  .mapSlot::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(#E2E8F0 1px, transparent 1px),
+      linear-gradient(90deg, #E2E8F0 1px, transparent 1px);
+    background-size: 34px 34px; opacity: 0.5;
+  }
+  .mapPin {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100%);
+    z-index: 2;
+  }
+  .addressRow { display: flex; flex-direction: column; gap: 2px; }
+  .addressName { font-size: 15px; font-weight: 600; color: #0F172A; }
+  .addressDetail { font-size: 13.5px; line-height: 19px; font-weight: 400; color: #475569; }
+
+  .hourRow {
+    display: flex; flex-direction: row; justify-content: space-between;
+    align-items: center; padding: 6px 0;
+  }
+  .hourDay { font-size: 14.5px; font-weight: 500; color: #0F172A; }
+  .hourTime { font-size: 14.5px; font-weight: 500; color: #475569; }
+  .hourTime.closed { color: #64748B; }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <!-- iOS status bar -->
+  <div class="statusbar">
+    <span class="time">9:41</span>
+    <span class="sb-glyphs">
+      <!-- signal -->
+      <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+        <rect x="0" y="8" width="3" height="4" rx="1" fill="#0F172A"/>
+        <rect x="5" y="5.5" width="3" height="6.5" rx="1" fill="#0F172A"/>
+        <rect x="10" y="3" width="3" height="9" rx="1" fill="#0F172A"/>
+        <rect x="15" y="0.5" width="3" height="11.5" rx="1" fill="#0F172A"/>
+      </svg>
+      <!-- wifi -->
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+        <path d="M8.5 2C5.4 2 2.6 3.2 0.6 5.2L2 6.6C3.7 4.9 5.9 4 8.5 4s4.8 0.9 6.5 2.6l1.4-1.4C14.4 3.2 11.6 2 8.5 2z" fill="#0F172A"/>
+        <path d="M8.5 6c-1.6 0-3.1 0.6-4.2 1.7l1.4 1.4C6.4 8.4 7.4 8 8.5 8s2.1 0.4 2.8 1.1l1.4-1.4C11.6 6.6 10.1 6 8.5 6z" fill="#0F172A"/>
+        <circle cx="8.5" cy="10.5" r="1.3" fill="#0F172A"/>
+      </svg>
+      <!-- battery -->
+      <svg width="27" height="13" viewBox="0 0 27 13" fill="none">
+        <rect x="0.5" y="0.5" width="23" height="12" rx="3.5" stroke="#0F172A" stroke-opacity="0.5"/>
+        <rect x="2" y="2" width="19" height="9" rx="2" fill="#0F172A"/>
+        <rect x="24.5" y="4" width="2" height="5" rx="1" fill="#0F172A" fill-opacity="0.5"/>
+      </svg>
+    </span>
+  </div>
+
+  <div class="scroll">
+
+    <!-- ===== Header: cover + identity + stats + CTA + tabs ===== -->
+    <div class="coverWrap">
+      <div class="coverSlot"></div>
+      <div class="floatingRow">
+        <div class="floatingBtn">
+          <!-- back chevron -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M15 5l-7 7 7 7" stroke="#0F172A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="floatingBtn">
+          <!-- share -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M12 3v12M12 3l-4 4M12 3l4 4" stroke="#0F172A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5 12v6a2 2 0 002 2h10a2 2 0 002-2v-6" stroke="#0F172A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="logoWrap">
+        <div class="logo">V</div>
+      </div>
+    </div>
+
+    <div class="identity">
+      <div class="nameRow">
+        <span class="name">Vibe Fitness Studio</span>
+        <span class="verifiedBadge">
+          <!-- verified check -->
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M5 12.5l4.5 4.5L19 7" stroke="#0F172A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </div>
+
+      <div class="categoryPill">
+        <span class="categoryText">Salle de sport</span>
+      </div>
+
+      <!-- stats -->
+      <div class="statsRow">
+        <div class="statItem">
+          <span class="statValue">1.2k</span>
+          <span class="statLabel">abonnés</span>
+        </div>
+        <div class="statDivider"></div>
+        <div class="statItem">
+          <span class="ratingValueRow">
+            <span class="starSlotSm">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B">
+                <path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17.6 5.9 20.4l1.5-6.8L2.2 9l6.9-.7L12 2z"/>
+              </svg>
+            </span>
+            <span class="statValue">4.8</span>
+          </span>
+          <span class="statLabel">24 avis</span>
+        </div>
+        <div class="statDivider"></div>
+        <div class="statItem">
+          <span class="statValue">€€€</span>
+          <span class="statLabel">prix</span>
+        </div>
+      </div>
+
+      <!-- owner CTA = Edit -->
+      <div class="ctaRow">
+        <div class="btn btn-outline">Modifier le profil</div>
+      </div>
+    </div>
+
+    <!-- tabs (about active) -->
+    <div class="tabsRow">
+      <div class="tab selected">À propos</div>
+      <div class="tab">Services</div>
+      <div class="tab">Avis</div>
+    </div>
+
+    <!-- ===== About body ===== -->
+    <div class="aboutBody">
+
+      <div class="section">
+        <span class="sectionTitle">À propos</span>
+        <span class="bodyText">Studio de fitness boutique au cœur de Paris. Cours collectifs, coaching personnalisé et espace musculation premium.</span>
+      </div>
+
+      <div class="section">
+        <span class="sectionTitle">Équipements</span>
+        <div class="featuresGrid">
+          <span class="featureChip">Vestiaires</span>
+          <span class="featureChip">Douches</span>
+          <span class="featureChip">Parking</span>
+          <span class="featureChip">Wi-Fi</span>
+          <span class="featureChip">Sauna</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <span class="sectionTitle">Emplacement</span>
+        <div class="mapSlot">
+          <span class="mapPin">
+            <svg width="26" height="32" viewBox="0 0 26 32" fill="none">
+              <path d="M13 1C6.9 1 2 5.9 2 12c0 7.5 11 19 11 19s11-11.5 11-19C24 5.9 19.1 1 13 1z" fill="#33A089" stroke="#A8E6D9" stroke-width="1.2"/>
+              <circle cx="13" cy="12" r="4.2" fill="#FFFFFF"/>
+            </svg>
+          </span>
+        </div>
+        <div class="addressRow">
+          <span class="addressName">Vibe Fitness Studio</span>
+          <span class="addressDetail">12 rue de la Forme, 75011 Paris</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <span class="sectionTitle">Horaires d'ouverture</span>
+        <div class="hourRow"><span class="hourDay">Lundi</span><span class="hourTime">07:00 - 22:00</span></div>
+        <div class="hourRow"><span class="hourDay">Mardi</span><span class="hourTime">07:00 - 22:00</span></div>
+        <div class="hourRow"><span class="hourDay">Mercredi</span><span class="hourTime">07:00 - 22:00</span></div>
+        <div class="hourRow"><span class="hourDay">Jeudi</span><span class="hourTime">07:00 - 22:00</span></div>
+        <div class="hourRow"><span class="hourDay">Vendredi</span><span class="hourTime">07:00 - 21:00</span></div>
+        <div class="hourRow"><span class="hourDay">Samedi</span><span class="hourTime">09:00 - 18:00</span></div>
+        <div class="hourRow"><span class="hourDay">Dimanche</span><span class="hourTime closed">Fermé</span></div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

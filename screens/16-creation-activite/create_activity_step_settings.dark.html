@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Create Activity · Step Settings · V2 Dark</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root{
+    --surface:#0A0E1A;
+    --surfaceContainer:#161B2A;
+    --surfaceContainerHigh:#1E2435;
+    --onSurface:#FFFFFF;
+    --onSurfaceVariant:#94A3B8;
+    --outline:#2A3142;
+    --mint:#33A089;
+    --mint12:rgba(51,160,137,0.10);
+    --mint30:rgba(51,160,137,0.22);
+    --mint66:rgba(51,160,137,0.45);
+    --info:#60A5FA;
+    --success:#34D399;
+    --warning:#FBBF24;
+    --danger:#F87171;
+    --danger22:rgba(248,113,113,0.13);
+  }
+  html,body{ background:#05070F; }
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;
+    display:flex; justify-content:center; align-items:flex-start;
+    padding:24px; -webkit-font-smoothing:antialiased;
+  }
+  .device{
+    width:393px; height:852px;
+    background:var(--surface);
+    border-radius:44px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 30px 80px rgba(0,0,0,.6);
+    display:flex; flex-direction:column;
+  }
+  /* ── faux iOS status bar ── */
+  .statusbar{
+    height:54px; flex-shrink:0;
+    display:flex; align-items:flex-end; justify-content:space-between;
+    padding:0 26px 8px;
+    font-size:14px; font-weight:600; color:var(--onSurface);
+    position:relative; z-index:5;
+  }
+  .statusbar .time{ font-weight:700; letter-spacing:.2px; }
+  .sb-right{ display:flex; align-items:center; gap:6px; }
+  .sb-right svg{ display:block; }
+
+  /* ── wizard header ── */
+  .header{
+    flex-shrink:0;
+    padding:4px 16px 12px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .back-btn{
+    width:38px; height:38px; border-radius:12px;
+    background:var(--surfaceContainer);
+    border:1px solid var(--outline);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .header-titles{ flex:1; min-width:0; }
+  .header-step{ font-size:11px; font-weight:700; color:var(--mint); letter-spacing:.6px; text-transform:uppercase; }
+  .header-title{ font-size:20px; font-weight:800; color:var(--onSurface); margin-top:2px; }
+  /* progress dots */
+  .progress{ display:flex; gap:6px; padding:0 16px 4px; flex-shrink:0; }
+  .progress .seg{ flex:1; height:4px; border-radius:999px; background:var(--outline); }
+  .progress .seg.done{ background:var(--mint); }
+  .progress .seg.active{ background:var(--mint); }
+
+  /* ── scroll body ── */
+  .scroll{
+    flex:1; overflow-y:auto;
+    padding-bottom:120px;
+  }
+  .scroll::-webkit-scrollbar{ display:none; }
+
+  .section{ padding:0 16px; margin-top:20px; }
+  .section-title{ font-size:16px; font-weight:700; color:var(--onSurface); margin-bottom:10px; }
+  .field-label{ font-size:12px; font-weight:600; margin-bottom:4px; color:var(--onSurfaceVariant); }
+
+  /* visibility grid */
+  .vis-grid{ display:flex; flex-wrap:wrap; gap:10px; }
+  .vis-card{
+    width:calc(47% - 0px);
+    flex-basis:47%;
+    border-radius:14px; border:1.5px solid var(--outline);
+    background:var(--surfaceContainer);
+    padding:14px; display:flex; flex-direction:column; gap:6px;
+  }
+  .vis-card.active{ border-color:var(--mint); background:var(--mint12); }
+  .vis-top{ display:flex; align-items:center; justify-content:space-between; }
+  .vis-label{ font-size:14px; font-weight:600; color:var(--onSurface); }
+  .vis-card.active .vis-label{ color:var(--mint); }
+
+  /* participants halves */
+  .half-row{ display:flex; gap:12px; }
+  .half-field{ flex:1; }
+  .num-input{
+    width:100%; border:1px solid var(--outline); border-radius:12px;
+    padding:12px; font-size:15px; text-align:center;
+    background:var(--surfaceContainer); color:var(--onSurface);
+    font-family:inherit;
+  }
+  .num-input.ph{ color:var(--onSurfaceVariant); }
+
+  /* age */
+  .age-row{ display:flex; align-items:center; gap:10px; }
+  .age-input{
+    width:90px; border:1px solid var(--outline); border-radius:12px;
+    padding:12px; font-size:15px; text-align:center;
+    background:var(--surfaceContainer); color:var(--onSurfaceVariant);
+  }
+  .age-unit{ font-size:14px; color:var(--onSurfaceVariant); }
+
+  /* toggle rows */
+  .toggle-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:4px 0;
+  }
+  .toggle-left{ display:flex; align-items:center; gap:10px; flex:1; }
+  .toggle-label{ font-size:15px; font-weight:500; color:var(--onSurface); }
+
+  /* iOS switch */
+  .switch{
+    width:51px; height:31px; border-radius:999px;
+    background:var(--outline); position:relative; flex-shrink:0;
+    transition:background .2s;
+  }
+  .switch .knob{
+    position:absolute; top:2px; left:2px;
+    width:27px; height:27px; border-radius:999px;
+    background:var(--onSurfaceVariant);
+    box-shadow:0 1px 3px rgba(0,0,0,.4);
+  }
+  .switch.on{ background:var(--mint66); }
+  .switch.on .knob{ left:22px; background:var(--mint); }
+
+  /* cover upload */
+  .cover-upload{
+    width:100%; height:160px; border-radius:18px;
+    border:1.5px dashed var(--outline);
+    background:var(--surfaceContainer);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .cover-ph{ display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .cover-ph-text{ font-size:14px; color:var(--onSurfaceVariant); }
+
+  /* price block */
+  .price-block{ margin-top:12px; display:flex; flex-direction:column; gap:10px; }
+  .price-input{
+    border:1px solid var(--outline); border-radius:12px; padding:12px;
+    font-size:15px; background:var(--surfaceContainer); color:var(--onSurfaceVariant);
+  }
+  .currency-row{ display:flex; gap:8px; }
+  .currency-chip{
+    flex:1; text-align:center; padding:8px 0; border-radius:20px;
+    border:1.5px solid var(--outline); background:var(--surfaceContainer);
+    font-size:13px; font-weight:600; color:var(--onSurface);
+  }
+  .currency-chip.active{ background:var(--mint); border-color:var(--mint); color:#FFFFFF; }
+
+  /* pro hint */
+  .pro-hint{
+    display:flex; align-items:center; gap:8px; margin-top:10px;
+    padding:12px; border-radius:12px;
+    border:1px solid var(--mint30); background:var(--mint12);
+  }
+  .pro-hint-text{ font-size:13px; font-weight:500; color:var(--mint); flex:1; }
+
+  /* multiline */
+  .multiline{
+    border:1px solid var(--outline); border-radius:12px; padding:12px;
+    font-size:15px; min-height:100px; background:var(--surfaceContainer);
+    color:var(--onSurfaceVariant);
+  }
+  .char-count{ font-size:12px; text-align:right; margin-top:4px; color:var(--onSurfaceVariant); }
+
+  /* chat mode chips */
+  .chip-row{ display:flex; gap:8px; margin-top:10px; }
+  .mode-chip{
+    flex:1; text-align:center; padding:10px 0; border-radius:20px;
+    border:1.5px solid var(--outline); background:var(--surfaceContainer);
+    font-size:13px; font-weight:600; color:var(--onSurface);
+  }
+  .mode-chip.active{ background:var(--mint); border-color:var(--mint); color:#FFFFFF; }
+
+  /* custom fields builder */
+  .cf-label{ font-size:14px; font-weight:600; color:var(--onSurface); margin-bottom:12px; }
+  .cf-card{ background:var(--surfaceContainer); border-radius:12px; padding:12px; margin-bottom:10px; }
+  .cf-header{ display:flex; align-items:center; margin-bottom:10px; gap:8px; }
+  .cf-label-input{
+    flex:1; font-size:14px; color:var(--onSurfaceVariant);
+    border-bottom:1px solid var(--outline); padding:4px 0;
+  }
+  .cf-delete{ font-size:14px; color:var(--danger); padding:4px; }
+  .cf-chip-row{ display:flex; flex-wrap:wrap; gap:6px; }
+  .cf-chip{
+    display:flex; align-items:center; gap:4px;
+    border-radius:14px; border:1px solid var(--outline);
+    padding:4px 10px;
+  }
+  .cf-chip.active{ background:var(--mint); border-color:var(--mint); }
+  .cf-chip-icon{ font-size:12px; color:var(--onSurfaceVariant); }
+  .cf-chip-text{ font-size:12px; color:var(--onSurfaceVariant); }
+  .cf-chip.active .cf-chip-icon,
+  .cf-chip.active .cf-chip-text{ color:#FFFFFF; }
+  .cf-add{
+    border:1.5px dashed var(--mint); border-radius:12px;
+    padding:12px 0; text-align:center; margin-top:4px;
+    font-size:14px; font-weight:600; color:var(--mint);
+  }
+
+  /* sticky bottom CTA */
+  .footer{
+    position:absolute; left:0; right:0; bottom:0;
+    padding:14px 16px 30px;
+    background:linear-gradient(to top, var(--surface) 60%, rgba(10,14,26,0));
+    display:flex; gap:12px;
+  }
+  .btn-secondary{
+    flex:0 0 auto; padding:0 22px; height:52px; border-radius:16px;
+    border:1px solid var(--outline); background:var(--surfaceContainer);
+    color:var(--onSurface); font-size:16px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .btn-cta{
+    flex:1; height:52px; border-radius:16px;
+    background:linear-gradient(135deg,#1A7D68,#157082);
+    color:#FFFFFF; font-size:16px; font-weight:800;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    box-shadow:0 8px 24px rgba(26,125,104,0.35);
+  }
+  .icon{ display:block; }
+</style>
+</head>
+<body>
+  <div class="device">
+
+    <!-- faux iOS status bar -->
+    <div class="statusbar">
+      <span class="time">9:41</span>
+      <span class="sb-right">
+        <!-- cellular -->
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="8" width="3" height="4" rx="1" fill="#FFFFFF"/><rect x="5" y="5" width="3" height="7" rx="1" fill="#FFFFFF"/><rect x="10" y="2.5" width="3" height="9.5" rx="1" fill="#FFFFFF"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#FFFFFF"/></svg>
+        <!-- wifi -->
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M8.5 11.2 10.6 8.6a3.3 3.3 0 0 0-4.2 0L8.5 11.2Z" fill="#FFFFFF"/><path d="M4.4 6.1a6.6 6.6 0 0 1 8.2 0l1.4-1.7a8.8 8.8 0 0 0-11 0L4.4 6.1Z" fill="#FFFFFF"/><path d="M1.7 3a10.9 10.9 0 0 1 13.6 0L17 1.2a13.1 13.1 0 0 0-17 0L1.7 3Z" fill="#FFFFFF"/></svg>
+        <!-- battery -->
+        <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="1" y="1" width="22" height="11" rx="3" stroke="#FFFFFF" stroke-opacity=".5"/><rect x="2.5" y="2.5" width="17" height="8" rx="1.5" fill="#FFFFFF"/><rect x="24" y="4" width="2" height="5" rx="1" fill="#FFFFFF" fill-opacity=".5"/></svg>
+      </span>
+    </div>
+
+    <!-- wizard header -->
+    <div class="header">
+      <div class="back-btn">
+        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="header-titles">
+        <div class="header-step">Étape 4 sur 5</div>
+        <div class="header-title">Paramètres</div>
+      </div>
+    </div>
+    <div class="progress">
+      <div class="seg done"></div>
+      <div class="seg done"></div>
+      <div class="seg done"></div>
+      <div class="seg active"></div>
+      <div class="seg"></div>
+    </div>
+
+    <!-- scroll body -->
+    <div class="scroll">
+
+      <!-- ── Visibility ── -->
+      <div class="section">
+        <div class="section-title">Visibilité</div>
+        <div class="vis-grid">
+          <div class="vis-card active">
+            <div class="vis-top">
+              <!-- globe-outline -->
+              <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#33A089" stroke-width="1.8"/><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" stroke="#33A089" stroke-width="1.8"/></svg>
+              <!-- checkmark-circle -->
+              <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="#33A089"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm-1.2 14.2L6.6 12l1.4-1.4 2.8 2.8 5.2-5.2L17.4 9.6l-6.6 6.6Z"/></svg>
+            </div>
+            <div class="vis-label">Public</div>
+          </div>
+          <div class="vis-card">
+            <div class="vis-top">
+              <!-- heart-outline -->
+              <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 20s-7-4.5-9.3-9C1 7.5 2.8 4.5 6 4.5c2 0 3.2 1.2 4 2.3.8-1.1 2-2.3 4-2.3 3.2 0 5 3 3.3 6.5C19 15.5 12 20 12 20Z" stroke="#94A3B8" stroke-width="1.8" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="vis-label">Fans uniquement</div>
+          </div>
+          <div class="vis-card">
+            <div class="vis-top">
+              <!-- people-outline -->
+              <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="#94A3B8" stroke-width="1.8"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round"/><path d="M16 6.2A3 3 0 0 1 16 12M17 14c2.4.4 4 2.4 4 5" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="vis-label">Membres uniquement</div>
+          </div>
+          <div class="vis-card">
+            <div class="vis-top">
+              <!-- lock-closed-outline -->
+              <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2.5" stroke="#94A3B8" stroke-width="1.8"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="vis-label">Privé</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Participants ── -->
+      <div class="section">
+        <div class="section-title">Participants max</div>
+        <div class="half-row">
+          <div class="half-field">
+            <div class="field-label">Min</div>
+            <div class="num-input ph">1</div>
+          </div>
+          <div class="half-field">
+            <div class="field-label">Max</div>
+            <div class="num-input ph">20</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Age Minimum ── -->
+      <div class="section">
+        <div class="section-title">Âge minimum</div>
+        <div class="age-row">
+          <div class="age-input">No minimum</div>
+          <div class="age-unit">ans</div>
+        </div>
+      </div>
+
+      <!-- ── Accessibility ── -->
+      <div class="section">
+        <div class="section-title">Accessible</div>
+        <div class="toggle-row">
+          <div class="toggle-left">
+            <!-- accessibility-outline -->
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="4" r="1.8" fill="#33A089"/><path d="M4 8h16M9 8v5l-2 7M15 8v5l2 7M9 13h6" stroke="#33A089" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="toggle-label">Accessible en fauteuil roulant</div>
+          </div>
+          <div class="switch"><div class="knob"></div></div>
+        </div>
+      </div>
+
+      <!-- ── Cover Image ── -->
+      <div class="section">
+        <div class="section-title">Image de couverture</div>
+        <div class="cover-upload">
+          <div class="cover-ph">
+            <!-- cloud-upload-outline -->
+            <svg class="icon" width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M7 18a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17.5 9 4.5 4.5 0 0 1 17 18h-1" stroke="#33A089" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 21V11m0 0-3 3m3-3 3 3" stroke="#33A089" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="cover-ph-text">Appuyez pour ajouter une image</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Pricing ── -->
+      <div class="section">
+        <div class="section-title">Tarification</div>
+        <div class="toggle-row">
+          <div class="toggle-left">
+            <!-- pricetag-outline -->
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 11.5V4.5A1.5 1.5 0 0 1 4.5 3h7a2 2 0 0 1 1.4.6l7 7a1.8 1.8 0 0 1 0 2.5l-6.3 6.3a1.8 1.8 0 0 1-2.5 0l-7-7A2 2 0 0 1 3 11.5Z" stroke="#33A089" stroke-width="1.8" stroke-linejoin="round"/><circle cx="7.5" cy="7.5" r="1.4" fill="#33A089"/></svg>
+            <div class="toggle-label">Gratuit</div>
+          </div>
+          <div class="switch on"><div class="knob"></div></div>
+        </div>
+      </div>
+
+      <!-- ── Chat (groups only) ── -->
+      <div class="section">
+        <div class="section-title">Chat</div>
+        <div class="toggle-row">
+          <div class="toggle-left">
+            <!-- chatbubbles-outline -->
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h9A1.5 1.5 0 0 1 16 5.5v5A1.5 1.5 0 0 1 14.5 12H8l-4 3V5.5Z" stroke="#33A089" stroke-width="1.7" stroke-linejoin="round"/><path d="M18 9h.5A1.5 1.5 0 0 1 20 10.5V18l-3-2.2h-5A1.5 1.5 0 0 1 10.5 14.3" stroke="#33A089" stroke-width="1.7" stroke-linejoin="round"/></svg>
+            <div class="toggle-label">Activer le chat</div>
+          </div>
+          <div class="switch on"><div class="knob"></div></div>
+        </div>
+        <div class="chip-row">
+          <div class="mode-chip active">Tout le monde discute</div>
+          <div class="mode-chip">Diffusion uniquement</div>
+        </div>
+      </div>
+
+      <!-- ── Gallery ── -->
+      <div class="section">
+        <div class="section-title">Galerie</div>
+        <div class="toggle-row">
+          <div class="toggle-left">
+            <!-- images-outline -->
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="7" y="3" width="14" height="11" rx="2" stroke="#33A089" stroke-width="1.7"/><path d="M3 8v11a2 2 0 0 0 2 2h12" stroke="#33A089" stroke-width="1.7" stroke-linecap="round"/><circle cx="11" cy="7" r="1.5" fill="#33A089"/><path d="m9 13 3-3 4 4" stroke="#33A089" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="toggle-label">Activer la galerie</div>
+          </div>
+          <div class="switch"><div class="knob"></div></div>
+        </div>
+      </div>
+
+      <!-- ── Invitations ── -->
+      <div class="section">
+        <div class="section-title">Invitations</div>
+        <div class="toggle-row">
+          <div class="toggle-left">
+            <!-- mail-outline -->
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="#33A089" stroke-width="1.7"/><path d="m4 7 8 6 8-6" stroke="#33A089" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="toggle-label">Autoriser les invitations</div>
+          </div>
+          <div class="switch on"><div class="knob"></div></div>
+        </div>
+      </div>
+
+      <!-- ── Custom Fields ── -->
+      <div class="section">
+        <div class="section-title">Champs personnalisés</div>
+        <div class="cf-label">Custom Fields (1/10)</div>
+        <div class="cf-card">
+          <div class="cf-header">
+            <div class="cf-label-input">Niveau d'expérience</div>
+            <div class="cf-delete">✕</div>
+          </div>
+          <div class="cf-chip-row">
+            <div class="cf-chip"><span class="cf-chip-icon">T</span><span class="cf-chip-text">Text</span></div>
+            <div class="cf-chip"><span class="cf-chip-icon">#</span><span class="cf-chip-text">Number</span></div>
+            <div class="cf-chip active"><span class="cf-chip-icon">▼</span><span class="cf-chip-text">Select</span></div>
+            <div class="cf-chip"><span class="cf-chip-icon">✓</span><span class="cf-chip-text">Check</span></div>
+          </div>
+        </div>
+        <div class="cf-add">Add Custom Field</div>
+      </div>
+
+    </div>
+
+    <!-- sticky footer CTA -->
+    <div class="footer">
+      <div class="btn-secondary">Retour</div>
+      <div class="btn-cta">
+        Continuer
+        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

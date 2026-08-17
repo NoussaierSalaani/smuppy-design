@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RunShareView · V2 dark</title>
+<style>
+  :root{
+    --surface:#0A0E1A;
+    --surfaceContainer:#161B2A;
+    --surfaceContainerHigh:#1E2435;
+    --onSurface:#FFFFFF;
+    --onSurfaceVariant:#94A3B8;
+    --onSurfaceMuted:#5B6678;
+    --outline:#2A3142;
+    --mint:#33A089;
+    --danger:#F87171;
+    --hair:0.5px;
+    --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:#05070D;
+    font-family:var(--font);
+    display:flex;justify-content:center;align-items:flex-start;
+    min-height:100vh;padding:24px 0;-webkit-font-smoothing:antialiased;
+  }
+  .device{
+    width:393px;height:852px;
+    background:var(--surface);
+    border-radius:46px;
+    overflow:hidden;position:relative;
+    box-shadow:0 18px 60px rgba(0,0,0,0.6);
+    display:flex;flex-direction:column;
+  }
+
+  /* faux iOS status bar */
+  .statusbar{
+    height:54px;flex-shrink:0;
+    display:flex;align-items:flex-end;justify-content:space-between;
+    padding:0 26px 8px;
+    color:var(--onSurface);font-weight:600;font-size:14px;
+  }
+  .statusbar .clock{font-weight:700;letter-spacing:0.2px;}
+  .statusbar .right{display:flex;align-items:center;gap:6px;}
+  .statusbar svg{display:block;}
+
+  /* header: paddingH 14, paddingV 14, hairline bottom */
+  .header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px;
+    border-bottom:var(--hair) solid var(--outline);
+    flex-shrink:0;
+  }
+  .headerBtn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;}
+  .headerGlyph{font-size:22px;font-weight:800;color:var(--onSurface);line-height:1;}
+  .headerTitle{
+    flex:1;text-align:center;font-size:16px;font-weight:800;color:var(--onSurface);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+
+  /* scroll content: padding 16, paddingBottom 24 */
+  .scroll{flex:1;overflow-y:auto;padding:16px 16px 24px;}
+  .scroll::-webkit-scrollbar{display:none;}
+
+  /* shareable card preview slot: radius 24, hairline, marginBottom 18, minHeight 160 */
+  .cardPreview{
+    border-radius:24px;
+    border:var(--hair) solid var(--outline);
+    overflow:hidden;
+    margin-bottom:18px;
+    min-height:160px;
+    background:var(--surfaceContainer);
+    position:relative;
+    display:flex;align-items:center;justify-content:center;
+  }
+  /* faithful preview node (route map hero composed by caller) */
+  .cardMap{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(120% 80% at 70% 20%, rgba(51,160,137,0.18), transparent 60%),
+      linear-gradient(160deg,#11283A,#0C1422);
+  }
+  .cardRoute{position:absolute;inset:0;}
+  .cardOverlay{
+    position:absolute;left:0;right:0;bottom:0;
+    padding:16px;
+    background:linear-gradient(180deg,transparent,rgba(5,7,13,0.72));
+    display:flex;align-items:flex-end;justify-content:space-between;
+  }
+  .cardOverlay .brand{display:flex;align-items:center;gap:7px;color:#fff;font-weight:800;font-size:14px;letter-spacing:-0.2px;}
+  .cardOverlay .dist{color:#fff;font-weight:800;font-size:22px;letter-spacing:-0.6px;font-variant-numeric:tabular-nums;}
+  .cardOverlay .dist span{font-size:13px;font-weight:600;color:var(--onSurfaceVariant);margin-left:3px;}
+  .logoDot{width:18px;height:18px;border-radius:6px;background:var(--mint);display:flex;align-items:center;justify-content:center;}
+
+  /* Input field (V2 Input atom, md): height 44, paddingH spacing.lg(16), radius.md(14), hairline outline */
+  .field{
+    height:44px;
+    display:flex;align-items:center;
+    padding:0 16px;
+    background:var(--surface);
+    border:var(--hair) solid var(--outline);
+    border-radius:14px;
+  }
+  .field .ph{color:var(--onSurfaceMuted);font-size:15px;}
+  .field .val{color:var(--onSurface);font-size:15px;}
+  .spacer{height:12px;}
+
+  /* section title: fontSize 15 / 800, marginTop 20 marginBottom 12 */
+  .sectionTitle{
+    font-size:15px;font-weight:800;color:var(--onSurface);
+    margin:20px 0 12px;letter-spacing:-0.1px;
+  }
+
+  /* stats grid: row wrap, marginH -4; cells flexBasis 21% minWidth 72 */
+  .statsGrid{display:flex;flex-wrap:wrap;margin:0 -4px;}
+  .statCell{
+    flex:1 1 21%;min-width:72px;
+    margin:4px;
+    padding:12px 6px;
+    border-radius:16px;
+    border:var(--hair) solid var(--outline);
+    background:var(--surfaceContainer);
+    display:flex;flex-direction:column;align-items:center;
+  }
+  /* StatTile inner: value row (baseline) + label row */
+  .statValueRow{display:flex;align-items:baseline;justify-content:center;}
+  .statValue{
+    font-size:20px;font-weight:800;letter-spacing:-0.4px;color:var(--onSurface);
+    font-variant-numeric:tabular-nums;line-height:1;
+  }
+  .statValue.accent{color:var(--mint);}
+  .statUnit{
+    font-size:12px;font-weight:600;color:var(--onSurfaceVariant);
+    margin-left:3px;font-variant-numeric:tabular-nums;
+  }
+  .statLabel{
+    margin-top:5px;
+    font-size:11px;font-weight:700;color:var(--onSurfaceVariant);
+    text-transform:uppercase;letter-spacing:0.6px;
+  }
+
+  /* group card (privacy radios / target switches): marginTop 20, radius 16, hairline, paddingH 16, paddingV 2 */
+  .group{
+    margin-top:20px;
+    border-radius:16px;
+    border:var(--hair) solid var(--outline);
+    background:var(--surfaceContainer);
+    padding:2px 16px;
+  }
+
+  /* radio row: minHeight 48, paddingV 8 */
+  .radioRow{display:flex;align-items:center;min-height:48px;padding:8px 0;cursor:default;}
+  .radioOuter{
+    width:22px;height:22px;border-radius:11px;border:2px solid var(--outline);
+    display:flex;align-items:center;justify-content:center;margin-right:12px;flex-shrink:0;
+  }
+  .radioOuter.checked{border-color:var(--mint);}
+  .radioInner{width:11px;height:11px;border-radius:6px;background:var(--mint);}
+  .radioLabel{font-size:15px;font-weight:500;color:var(--onSurface);}
+
+  /* switch row: minHeight 48, paddingV 8, space-between */
+  .switchRow{display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:8px 0;}
+  .switchLabel{font-size:15px;font-weight:500;color:var(--onSurface);margin-right:12px;flex-shrink:1;}
+  .switchTrack{
+    width:46px;height:28px;border-radius:999px;flex-shrink:0;
+    display:flex;align-items:center;padding:0 3px;
+  }
+  .switchTrack.on{background:var(--mint);justify-content:flex-end;}
+  .switchTrack.off{background:var(--outline);border:var(--hair) solid var(--outline);justify-content:flex-start;}
+  .switchKnob{width:22px;height:22px;border-radius:999px;}
+  .switchKnob.on{background:#FFFFFF;}
+  .switchKnob.off{background:var(--onSurfaceVariant);}
+
+  /* footer: paddingH 16, paddingTop 12, paddingBottom 28, hairline top, gap 6 */
+  .footer{
+    flex-shrink:0;
+    padding:12px 16px 28px;
+    border-top:var(--hair) solid var(--outline);
+    display:flex;flex-direction:column;gap:6px;
+  }
+  /* Button gradient lg: height 52, radius pill(999), white ink, fontWeight 600 */
+  .btnGradient{
+    height:52px;border-radius:999px;
+    background:linear-gradient(135deg,#1A7D68,#157082);
+    display:flex;align-items:center;justify-content:center;
+    color:#FFFFFF;font-size:17px;font-weight:600;
+  }
+  /* Button ghost md: height 44, transparent, mint primary ink */
+  .btnGhost{
+    height:44px;border-radius:14px;margin-top:2px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--mint);font-size:15px;font-weight:600;background:transparent;
+  }
+  /* discard ghost pressable: minHeight 44, paddingV 10, danger ink, fontWeight 600 */
+  .discardBtn{
+    min-height:44px;margin-top:2px;padding:10px 0;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .discardLabel{font-size:15px;font-weight:600;color:var(--danger);text-align:center;}
+
+  .iconStroke{stroke:var(--onSurfaceVariant);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+</style>
+</head>
+<body>
+  <div class="device">
+
+    <!-- faux iOS status bar (top safe-area inset) -->
+    <div class="statusbar">
+      <span class="clock">9:41</span>
+      <span class="right">
+        <!-- signal -->
+        <svg width="18" height="12" viewBox="0 0 18 12"><g fill="#fff">
+          <rect x="0" y="8" width="3" height="4" rx="0.6"/>
+          <rect x="5" y="5" width="3" height="7" rx="0.6"/>
+          <rect x="10" y="2.5" width="3" height="9.5" rx="0.6"/>
+          <rect x="15" y="0" width="3" height="12" rx="0.6"/>
+        </g></svg>
+        <!-- wifi -->
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="#fff"><path d="M8.5 11.2l2-2.4a3 3 0 0 0-4 0l2 2.4zM3.7 5.6a8 8 0 0 1 9.6 0l1.5-1.8a10.5 10.5 0 0 0-12.6 0l1.5 1.8zM6 8.4a5 5 0 0 1 5 0l1.5-1.8a7.4 7.4 0 0 0-8 0L6 8.4z"/></svg>
+        <!-- battery -->
+        <svg width="26" height="13" viewBox="0 0 26 13"><rect x="0.5" y="0.5" width="22" height="12" rx="3" fill="none" stroke="#fff" stroke-opacity="0.5"/><rect x="2" y="2" width="18" height="9" rx="1.6" fill="#fff"/><rect x="23.5" y="4" width="2" height="5" rx="1" fill="#fff" fill-opacity="0.5"/></svg>
+      </span>
+    </div>
+
+    <!-- header -->
+    <div class="header">
+      <div class="headerBtn"><span class="headerGlyph">&times;</span></div>
+      <div class="headerTitle">Partager ton run</div>
+      <div class="headerBtn"></div>
+    </div>
+
+    <!-- scroll -->
+    <div class="scroll">
+
+      <!-- shareable card preview SLOT -->
+      <div class="cardPreview">
+        <div class="cardMap"></div>
+        <svg class="cardRoute" viewBox="0 0 361 160" preserveAspectRatio="none">
+          <path d="M30 120 C 70 60, 110 150, 150 90 S 240 30, 300 70 S 350 120, 340 40"
+                fill="none" stroke="#33A089" stroke-width="3.5" stroke-linecap="round" opacity="0.95"/>
+          <circle cx="30" cy="120" r="5" fill="#34D399"/>
+          <circle cx="340" cy="40" r="5" fill="#F87171"/>
+        </svg>
+        <div class="cardOverlay">
+          <div class="brand">
+            <span class="logoDot">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M4 14l5 5L20 6" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            Smuppy
+          </div>
+          <div class="dist">5,2<span>km</span></div>
+        </div>
+      </div>
+
+      <!-- title input -->
+      <div class="field"><span class="val">Run du matin</span></div>
+      <div class="spacer"></div>
+      <!-- description input -->
+      <div class="field"><span class="val">Premier 5K sous les 30 min, content de la forme.</span></div>
+
+      <!-- run summary -->
+      <div class="sectionTitle">Résumé du run</div>
+      <div class="statsGrid">
+        <div class="statCell">
+          <div class="statValueRow"><span class="statValue">5,2</span><span class="statUnit">km</span></div>
+          <div class="statLabel">Distance</div>
+        </div>
+        <div class="statCell">
+          <div class="statValueRow"><span class="statValue">28:30</span><span class="statUnit">temps</span></div>
+          <div class="statLabel">Temps</div>
+        </div>
+        <div class="statCell">
+          <div class="statValueRow"><span class="statValue accent">5'29"</span><span class="statUnit">/km</span></div>
+          <div class="statLabel">Allure</div>
+        </div>
+        <div class="statCell">
+          <div class="statValueRow"><span class="statValue">412</span><span class="statUnit">cal</span></div>
+          <div class="statLabel">Calories</div>
+        </div>
+      </div>
+
+      <!-- privacy radios (V1 RunPrivacy) -->
+      <div class="sectionTitle">Visibilité</div>
+      <div class="group">
+        <div class="radioRow">
+          <div class="radioOuter checked"><div class="radioInner"></div></div>
+          <div class="radioLabel">Public</div>
+        </div>
+        <div class="radioRow">
+          <div class="radioOuter"></div>
+          <div class="radioLabel">Abonnés</div>
+        </div>
+        <div class="radioRow">
+          <div class="radioOuter"></div>
+          <div class="radioLabel">Privé</div>
+        </div>
+      </div>
+
+      <!-- share-target switches (V1 ShareTargets) -->
+      <div class="group">
+        <div class="switchRow">
+          <div class="switchLabel">Publier comme post</div>
+          <div class="switchTrack on"><div class="switchKnob on"></div></div>
+        </div>
+        <div class="switchRow">
+          <div class="switchLabel">Ajouter un repère sur la carte</div>
+          <div class="switchTrack off"><div class="switchKnob off"></div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- footer -->
+    <div class="footer">
+      <div class="btnGradient">Partager</div>
+      <div class="btnGhost">Plus tard</div>
+      <div class="discardBtn"><span class="discardLabel">Supprimer ce run</span></div>
+    </div>
+
+  </div>
+</body>
+</html>

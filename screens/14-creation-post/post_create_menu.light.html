@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Smuppy — Créer (light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  /* ===== CANONICAL KIT · LIGHT theme tokens ===== */
+  :root {
+    --surface:#FFFFFF;      /* page */
+    --container:#F8FAFC;    /* card / sheet */
+    --text:#0F172A;
+    --variant:#475569;
+    --outline:#E2E8F0;
+    --mint:#33A089;
+    --logo:#0F172A;         /* wordmark — BLACK in light */
+    --grad-a:#1A7D68;
+    --grad-b:#157082;
+    --live:#FF4658;
+  }
+  * { box-sizing:border-box; -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
+  html, body { max-width:100%; overflow:hidden; background:#000; }
+  body {
+    width:393px; height:852px; overflow:hidden; position:relative;
+    background:var(--surface); color:var(--text);
+    font-family:'Plus Jakarta Sans',-apple-system,system-ui,sans-serif;
+    font-size:15px; line-height:1.5;
+  }
+  .device { position:relative; width:393px; height:852px; overflow:hidden; background:var(--surface); }
+
+  /* ===== G1 · faux iOS status bar (top inset 54px) ===== */
+  .statusbar {
+    position:absolute; top:0; left:0; right:0; height:54px; z-index:60;
+    display:flex; align-items:flex-end; justify-content:space-between;
+    padding:0 22px 8px; font-size:13px; font-weight:700; color:var(--text);
+    pointer-events:none;
+  }
+  .sb-time { letter-spacing:.02em; }
+  .sb-right { display:flex; align-items:center; gap:6px; }
+  .sb-right svg { display:block; }
+
+  /* ===== G6 · feed header (below 54px safe-area) ===== */
+  .header {
+    position:absolute; top:54px; left:0; right:0; height:52px; z-index:40;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 18px; background:var(--surface);
+  }
+  .h-icon { width:40px; height:40px; display:flex; align-items:center; justify-content:center;
+    border:none; background:transparent; cursor:pointer; color:var(--text); position:relative; }
+  .h-icon svg { display:block; }
+  .h-badge { position:absolute; top:7px; right:7px; width:8px; height:8px;
+    border-radius:999px; background:var(--live); border:1.5px solid var(--surface); }
+  .wordmark { font-size:22px; font-weight:800; letter-spacing:-.02em; color:var(--logo); }
+
+  /* Feed segmented pills (Fan / Vibes / Xplorer) */
+  .seg { position:absolute; top:106px; left:0; right:0; z-index:35;
+    display:flex; gap:8px; padding:6px 18px 8px; }
+  .seg-pill { padding:7px 16px; border-radius:999px; font-size:13px; font-weight:700;
+    background:transparent; border:1px solid var(--outline); color:var(--variant);
+    font-family:inherit; cursor:pointer; }
+  .seg-pill.on { color:var(--mint); border-color:var(--mint); background:transparent; }
+
+  /* ===== Feed backdrop silhouette (canonical, no external image) ===== */
+  .feed { position:absolute; top:152px; left:0; right:0; bottom:78px; z-index:1;
+    padding:8px 18px; overflow:hidden; }
+  .feed-card { border-radius:20px; border:1px solid var(--outline);
+    background:var(--container); margin-bottom:12px; padding:14px; }
+  .feed-card .fc-top { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .fc-av { width:34px; height:34px; border-radius:999px; background:var(--outline); flex-shrink:0; }
+  .fc-lines { flex:1; display:flex; flex-direction:column; gap:5px; }
+  .fc-l { height:8px; border-radius:999px; background:var(--outline); }
+  .fc-l.w40 { width:40%; } .fc-l.w24 { width:24%; }
+  .fc-media { height:120px; border-radius:14px; background:var(--outline);
+    background-image:linear-gradient(135deg, rgba(51,160,137,.14), rgba(21,112,130,.10)); }
+
+  /* ===== G5 · bottom nav ===== */
+  .bnav { position:absolute; left:0; right:0; bottom:0; height:78px; z-index:50;
+    display:flex; justify-content:space-around; align-items:center;
+    padding:10px 18px 18px; background:var(--container);
+    border-top:1px solid var(--outline); border-radius:24px 24px 0 0; }
+  .bnav-item { width:46px; height:46px; border:none; background:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--variant); position:relative; }
+  .bnav-item svg { display:block; }
+  .bnav-item.on { color:var(--mint); }
+  .bnav-create { width:46px; height:46px; border-radius:999px;
+    border:1.5px solid var(--mint); background:transparent; color:var(--mint);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; }
+
+  /* ===== Scrim over feed when sheet open ===== */
+  .scrim { position:absolute; inset:0; z-index:70; background:rgba(15,23,42,.40); }
+
+  /* ===== Create-menu bottom sheet ===== */
+  .sheet { position:absolute; left:0; right:0; bottom:0; z-index:80;
+    background:var(--container); border-radius:28px 28px 0 0;
+    padding:14px 18px 28px; border-top:1px solid var(--outline);
+    box-shadow:0 -12px 40px rgba(15,23,42,.14); }
+  .sheet-handle { width:42px; height:5px; border-radius:999px;
+    background:var(--outline); margin:0 auto 16px; }
+  .sheet-title { font-size:18px; font-weight:800; text-align:center;
+    color:var(--text); margin-bottom:18px; letter-spacing:-.01em; }
+
+  .rows { display:flex; flex-direction:column; gap:10px; }
+  /* CORRECTION : lignes = cartes bordées PERSISTANTES (contour toujours visible) */
+  .row {
+    display:flex; align-items:center; gap:14px; width:100%;
+    padding:14px 14px; border-radius:18px;
+    background:var(--surface);
+    border:1px solid var(--outline);
+    cursor:pointer; font-family:inherit; text-align:left;
+  }
+  .row-ic { width:44px; height:44px; border-radius:14px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; }
+  .row-text { flex:1; min-width:0; }
+  .row-title { font-size:15px; font-weight:700; color:var(--text);
+    display:flex; align-items:center; gap:7px; }
+  .row-sub { font-size:12px; font-weight:500; color:var(--variant); margin-top:2px; }
+  .row-chev { flex-shrink:0; color:var(--variant); display:flex; align-items:center; }
+  .live-dot { display:inline-block; width:8px; height:8px; border-radius:999px;
+    background:var(--live); }
+</style>
+</head>
+<body>
+<div class="device">
+
+  <!-- Feed backdrop (context the create-menu opens over) -->
+  <div class="feed">
+    <div class="feed-card">
+      <div class="fc-top"><div class="fc-av"></div><div class="fc-lines"><div class="fc-l w40"></div><div class="fc-l w24"></div></div></div>
+      <div class="fc-media"></div>
+    </div>
+    <div class="feed-card">
+      <div class="fc-top"><div class="fc-av"></div><div class="fc-lines"><div class="fc-l w40"></div><div class="fc-l w24"></div></div></div>
+      <div class="fc-media"></div>
+    </div>
+  </div>
+
+  <!-- G6 header -->
+  <div class="header">
+    <button class="h-icon" aria-label="Recherche">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <span class="wordmark">Smuppy</span>
+    <button class="h-icon" aria-label="Notifications">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="h-badge"></span>
+    </button>
+  </div>
+
+  <!-- G6 segmented pills -->
+  <div class="seg">
+    <button class="seg-pill on">Fan</button>
+    <button class="seg-pill">Vibes</button>
+    <button class="seg-pill">Xplorer</button>
+  </div>
+
+  <!-- G5 bottom nav -->
+  <div class="bnav">
+    <button class="bnav-item on" aria-label="Accueil">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>
+    </button>
+    <button class="bnav-item" aria-label="Recherche">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <button class="bnav-create" aria-label="Créer">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+    <button class="bnav-item" aria-label="Activités">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </button>
+    <button class="bnav-item" aria-label="Profil">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    </button>
+  </div>
+
+  <!-- Scrim -->
+  <div class="scrim"></div>
+
+  <!-- Create-menu sheet -->
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2 class="sheet-title">Que veux-tu créer&nbsp;?</h2>
+    <div class="rows">
+      <button class="row">
+        <span class="row-ic" style="background:rgba(17,198,255,.12);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0E97C2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="m21 15-5-5L5 21"/></svg></span>
+        <div class="row-text">
+          <div class="row-title">Post</div>
+          <div class="row-sub">Photo, carrousel, légende</div>
+        </div>
+        <span class="row-chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+      </button>
+      <button class="row">
+        <span class="row-ic" style="background:rgba(153,102,255,.12);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7E4EE6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><line x1="7" y1="5" x2="7" y2="19"/><line x1="17" y1="5" x2="17" y2="19"/><line x1="2.5" y1="12" x2="21.5" y2="12"/></svg></span>
+        <div class="row-text">
+          <div class="row-title">Peak</div>
+          <div class="row-sub">Vidéo verticale 15-60s</div>
+        </div>
+        <span class="row-chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+      </button>
+      <button class="row">
+        <span class="row-ic" style="background:rgba(255,70,88,.12);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E03345" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="13" height="12" rx="2.5"/><path d="m15.5 10 6-3.5v11l-6-3.5z"/></svg></span>
+        <div class="row-text">
+          <div class="row-title">Go Live <span class="live-dot" aria-label="LIVE"></span></div>
+          <div class="row-sub">Stream en direct avec ta tribu</div>
+        </div>
+        <span class="row-chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+      </button>
+      <button class="row">
+        <span class="row-ic" style="background:rgba(255,166,61,.12);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D9831F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4.5" r="1.8"/><path d="M11 9 7 11l1 4-3 4M11 9l3 1.5 2 3.5 3 1M11 9l-1 5"/></svg></span>
+        <div class="row-text">
+          <div class="row-title">Activity</div>
+          <div class="row-sub">Run, ride, training, hike</div>
+        </div>
+        <span class="row-chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- G1 faux iOS status bar (on top so it's never clipped) -->
+  <div class="statusbar">
+    <span class="sb-time">9:41</span>
+    <span class="sb-right">
+      <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4.5" width="3" height="7.5" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.5c2.3 0 4.4.9 6 2.4l-1.4 1.5A6.6 6.6 0 0 0 8 4.6 6.6 6.6 0 0 0 3.4 6.4L2 4.9A8.6 8.6 0 0 1 8 2.5Zm0 3.6c1.3 0 2.5.5 3.4 1.4L8 11 4.6 7.5A4.8 4.8 0 0 1 8 6.1Z"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="currentColor" opacity="0.5"/><rect x="2" y="2" width="16" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="4" width="1.5" height="4" rx="0.75" fill="currentColor" opacity="0.6"/></svg>
+    </span>
+  </div>
+
+</div>
+</body></html>

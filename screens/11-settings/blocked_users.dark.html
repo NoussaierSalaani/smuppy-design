@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=393, initial-scale=1" />
+<title>blocked_users_v2 — dark</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  html, body { background: #05070f; }
+  body {
+    display: flex; align-items: flex-start; justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .device {
+    width: 393px; height: 852px; overflow: hidden; position: relative;
+    background: #0A0E1A; color: #FFFFFF; display: flex; flex-direction: column;
+  }
+
+  /* ---- G1 SAFE-AREA: faux iOS status bar (54px top inset) ---- */
+  .statusbar {
+    height: 54px; flex: none; padding: 0 24px 0 30px;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding-bottom: 8px;
+  }
+  .statusbar .time { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; color: #FFFFFF; }
+  .statusbar .glyphs { display: flex; align-items: center; gap: 6px; }
+  .statusbar .glyphs svg { display: block; }
+
+  /* ---- SUB-SCREEN header: back chevron in circle + center title ---- */
+  .topbar {
+    flex: none; position: relative; display: flex; align-items: center; justify-content: center;
+    padding: 4px 14px 12px 14px;
+    border-bottom: 0.5px solid #2A3142;
+  }
+  .backBtn {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: #161B2A; border: 1px solid #2A3142;
+  }
+  .backBtn svg { display: block; }
+  .topbarTitle {
+    font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: #FFFFFF;
+  }
+
+  /* ---- body (list) ---- */
+  .body { flex: 1; overflow: hidden; }
+  .list { padding: 0 20px 24px 20px; }
+
+  /* ---- editorial hero ---- */
+  .hero { padding: 20px 4px 14px 4px; }
+  .superLabel {
+    font-size: 12.5px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+    color: #33A089; margin-bottom: 8px;
+  }
+  .h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.8px; line-height: 34px; color: #FFFFFF; }
+  .count { font-size: 15px; font-weight: 500; margin-top: 8px; color: #94A3B8; }
+
+  /* ---- card chrome (single rounded surface) ---- */
+  .card { border-radius: 20px; overflow: hidden; }
+
+  /* ---- row ---- */
+  .row {
+    display: flex; flex-direction: row; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 13px 14px;
+    background: #161B2A;
+    border-left: 0.5px solid #2A3142;
+    border-right: 0.5px solid #2A3142;
+    border-bottom: 0.5px solid #2A3142;
+  }
+  .row.first { border-top: 0.5px solid #2A3142; border-top-left-radius: 20px; border-top-right-radius: 20px; }
+  .row.last { border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
+
+  .rowInfo { flex: 1; display: flex; flex-direction: row; align-items: center; gap: 14px; min-height: 46px; min-width: 0; }
+  .avatar {
+    width: 50px; height: 50px; border-radius: 16px; flex: none;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+    background: #33A089;
+  }
+  .avatarInitials { font-size: 16px; font-weight: 700; letter-spacing: 0.3px; color: #03100C; }
+  .rowText { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .rowName {
+    font-size: 16px; font-weight: 700; letter-spacing: -0.2px; color: #FFFFFF;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .rowDate { font-size: 13.5px; font-weight: 500; color: #94A3B8; white-space: nowrap; }
+
+  /* ---- danger-tinted unblock pill ---- */
+  .unblockPill {
+    flex: none; min-width: 104px; min-height: 38px; padding: 0 18px; border-radius: 19px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(248, 113, 113, 0.12);
+  }
+  .unblockPillText { font-size: 14.5px; font-weight: 700; letter-spacing: -0.1px; color: #F87171; }
+  .spinner {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid rgba(248,113,113,0.25); border-top-color: #F87171;
+  }
+</style>
+</head>
+<body>
+  <div class="device">
+
+    <!-- G1 SAFE-AREA: faux iOS status bar -->
+    <div class="statusbar">
+      <span class="time">9:41</span>
+      <span class="glyphs">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+          <rect x="0" y="8" width="3" height="4" rx="1" fill="#FFFFFF"/>
+          <rect x="5" y="5.5" width="3" height="6.5" rx="1" fill="#FFFFFF"/>
+          <rect x="10" y="3" width="3" height="9" rx="1" fill="#FFFFFF"/>
+          <rect x="15" y="0.5" width="3" height="11.5" rx="1" fill="#FFFFFF"/>
+        </svg>
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+          <path d="M8.5 11.2c.7 0 1.3-.6 1.3-1.3S9.2 8.6 8.5 8.6 7.2 9.2 7.2 9.9 7.8 11.2 8.5 11.2z" fill="#FFFFFF"/>
+          <path d="M4.6 7.3a5.5 5.5 0 017.8 0l-1.3 1.3a3.7 3.7 0 00-5.2 0L4.6 7.3z" fill="#FFFFFF"/>
+          <path d="M2 4.7a9.2 9.2 0 0113 0l-1.3 1.3a7.4 7.4 0 00-10.4 0L2 4.7z" fill="#FFFFFF"/>
+        </svg>
+        <svg width="27" height="13" viewBox="0 0 27 13" fill="none">
+          <rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#FFFFFF" stroke-opacity="0.4"/>
+          <rect x="2" y="2" width="18" height="9" rx="2" fill="#FFFFFF"/>
+          <rect x="24" y="4" width="2" height="5" rx="1" fill="#FFFFFF" fill-opacity="0.4"/>
+        </svg>
+      </span>
+    </div>
+
+    <!-- SUB-SCREEN header: circle back chevron + center title -->
+    <div class="topbar">
+      <div class="backBtn">
+        <svg width="11" height="18" viewBox="0 0 11 18" fill="none">
+          <path d="M9 1L2 9l7 8" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="topbarTitle">Comptes bloqués</div>
+    </div>
+
+    <!-- body / list -->
+    <div class="body">
+      <div class="list">
+
+        <!-- editorial hero -->
+        <div class="hero">
+          <div class="superLabel">CONFIDENTIALITÉ</div>
+          <div class="h1">Comptes bloqués</div>
+          <div class="count">5 comptes bloqués</div>
+        </div>
+
+        <!-- single rounded card, rows divided by hairline -->
+        <div class="card">
+
+          <div class="row first">
+            <div class="rowInfo">
+              <div class="avatar"><span class="avatarInitials">LM</span></div>
+              <div class="rowText">
+                <div class="rowName">@jdupont</div>
+                <div class="rowDate">Bloqué le 2 juin</div>
+              </div>
+            </div>
+            <div class="unblockPill"><span class="unblockPillText">Débloquer</span></div>
+          </div>
+
+          <div class="row">
+            <div class="rowInfo">
+              <div class="avatar"><span class="avatarInitials">KB</span></div>
+              <div class="rowText">
+                <div class="rowName">@mkali</div>
+                <div class="rowDate">Bloqué le 28 mai</div>
+              </div>
+            </div>
+            <div class="unblockPill"><span class="unblockPillText">Débloquer</span></div>
+          </div>
+
+          <div class="row">
+            <div class="rowInfo">
+              <div class="avatar"><span class="avatarInitials">SR</span></div>
+              <div class="rowText">
+                <div class="rowName">@t.petit</div>
+                <div class="rowDate">Bloqué le 19 mai</div>
+              </div>
+            </div>
+            <div class="unblockPill"><span class="spinner"></span></div>
+          </div>
+
+          <div class="row">
+            <div class="rowInfo">
+              <div class="avatar"><span class="avatarInitials">M0</span></div>
+              <div class="rowText">
+                <div class="rowName">@membre0</div>
+                <div class="rowDate">Bloqué le 1 juin</div>
+              </div>
+            </div>
+            <div class="unblockPill"><span class="unblockPillText">Débloquer</span></div>
+          </div>
+
+          <div class="row last">
+            <div class="rowInfo">
+              <div class="avatar"><span class="avatarInitials">M1</span></div>
+              <div class="rowText">
+                <div class="rowName">@membre1</div>
+                <div class="rowDate">Bloqué le 1 juin</div>
+              </div>
+            </div>
+            <div class="unblockPill"><span class="unblockPillText">Débloquer</span></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

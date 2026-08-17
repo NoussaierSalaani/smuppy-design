@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=393, initial-scale=1" />
+<title>prescriptions_v2 — light</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 393px; height: 852px; overflow: hidden;
+    background: #FFFFFF;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen { width: 393px; height: 852px; background: #FFFFFF; position: relative; display: flex; flex-direction: column; }
+
+  /* ---- faux iOS status bar ---- */
+  .statusbar {
+    height: 54px; padding: 0 22px;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    color: #0F172A; flex-shrink: 0; padding-bottom: 6px;
+  }
+  .statusbar .time { font-size: 15px; font-weight: 600; letter-spacing: 0.2px; }
+  .statusbar .glyphs { display: flex; align-items: center; gap: 6px; }
+  .statusbar .glyphs svg { display: block; }
+
+  /* ---- SUB-SCREEN header: back chevron in circle + centered title ---- */
+  .header {
+    display: flex; flex-direction: row; align-items: center;
+    padding: 8px 12px 6px 12px; flex-shrink: 0;
+  }
+  .backCircle {
+    width: 38px; height: 38px; border-radius: 19px;
+    border: 1px solid #E2E8F0; background: #F8FAFC;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .backCircle svg { display: block; }
+  .headerTitle {
+    flex: 1; text-align: center; font-size: 17px; font-weight: 800; color: #0F172A;
+    letter-spacing: -0.3px;
+  }
+  .headerSpacer { width: 38px; height: 38px; }
+
+  /* ---- context row ---- */
+  .weatherRow {
+    display: flex; flex-direction: row; align-items: center;
+    padding: 0 20px 6px 20px; gap: 8px; flex-shrink: 0;
+  }
+  .weatherIcon { display: flex; align-items: center; justify-content: center; color: #33A089; }
+  .weatherIcon svg { display: block; }
+  .weatherText { font-size: 13px; font-weight: 500; color: #475569; }
+
+  /* ---- filter chips (G7) ---- */
+  .chipsRow {
+    display: flex; flex-direction: row; align-items: center; gap: 8px;
+    padding: 4px 20px 8px 20px; flex-shrink: 0;
+  }
+  .chip {
+    border-radius: 999px; padding: 5px 14px;
+    border: 1px solid #33A089; background: transparent;
+    font-size: 12.5px; font-weight: 600; color: #33A089; white-space: nowrap;
+  }
+  .chip.selected { background: rgba(51,160,137,0.12); }
+
+  /* ---- list ---- */
+  .list {
+    flex: 1; overflow: hidden;
+    padding: 4px 20px 20px 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .card {
+    border-radius: 18px; border: 1px solid #E2E8F0; padding: 14px;
+    background: #F8FAFC;
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .cardHeader {
+    display: flex; flex-direction: row; align-items: center;
+    justify-content: space-between; gap: 8px;
+  }
+  .categoryWrap {
+    display: flex; flex-direction: row; align-items: center; gap: 6px; flex-shrink: 1;
+  }
+  .categoryIcon {
+    display: flex; align-items: center; justify-content: center;
+    color: #33A089;
+  }
+  .categoryIcon svg { display: block; }
+  .categoryWord {
+    font-size: 12.5px; font-weight: 700; letter-spacing: 0.3px; color: #33A089;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .duration { font-size: 12.5px; font-weight: 600; color: #475569; white-space: nowrap; }
+  .title {
+    font-size: 16px; font-weight: 800; letter-spacing: -0.3px; color: #0F172A;
+    line-height: 21px;
+  }
+  .description { font-size: 13px; font-weight: 400; line-height: 19px; color: #475569; }
+  .cardFooter {
+    display: flex; flex-direction: row; align-items: center;
+    justify-content: space-between; gap: 8px; margin-top: 3px;
+  }
+  .difficultyRow {
+    display: flex; flex-direction: row; align-items: center; gap: 8px; flex-shrink: 1;
+  }
+  .dotsRow { display: flex; flex-direction: row; align-items: center; gap: 4px; }
+  .dot { width: 7px; height: 7px; border-radius: 3.5px; background: #33A089; }
+  .difficultyWord { font-size: 12.5px; font-weight: 500; color: #475569; }
+  .completedRow { display: flex; flex-direction: row; align-items: center; gap: 5px; }
+  .completedIcon { display: flex; align-items: center; justify-content: center; color: #33A089; }
+  .completedWord { font-size: 13px; font-weight: 700; color: #33A089; }
+
+  /* ---- start button: gradient CTA, white ink ---- */
+  .startBtn {
+    height: 36px; padding: 0 14px;
+    border-radius: 14px;
+    background: linear-gradient(135deg,#1A7D68,#157082);
+    display: flex; align-items: center; justify-content: center;
+    border: none;
+  }
+  .startBtn .startLabel {
+    color: #FFFFFF; font-size: 13px; font-weight: 700; line-height: 18px;
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <!-- faux iOS status bar -->
+  <div class="statusbar">
+    <span class="time">9:41</span>
+    <span class="glyphs">
+      <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+        <rect x="0" y="8" width="3" height="4" rx="1" fill="#0F172A"/>
+        <rect x="5" y="5.5" width="3" height="6.5" rx="1" fill="#0F172A"/>
+        <rect x="10" y="3" width="3" height="9" rx="1" fill="#0F172A"/>
+        <rect x="15" y="0.5" width="3" height="11.5" rx="1" fill="#0F172A"/>
+      </svg>
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+        <path d="M8.5 2.2c2.7 0 5.2 1 7 2.7l-1.5 1.6A7.8 7.8 0 0 0 8.5 4.3 7.8 7.8 0 0 0 3 6.5L1.5 4.9A10 10 0 0 1 8.5 2.2Z" fill="#0F172A"/>
+        <path d="M8.5 6.2c1.6 0 3 .6 4.1 1.6l-1.6 1.6A3.6 3.6 0 0 0 8.5 8.3c-1 0-1.9.4-2.6 1.1L4.4 7.8A5.8 5.8 0 0 1 8.5 6.2Z" fill="#0F172A"/>
+        <circle cx="8.5" cy="11" r="1.2" fill="#0F172A"/>
+      </svg>
+      <svg width="27" height="13" viewBox="0 0 27 13" fill="none">
+        <rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#0F172A" stroke-opacity="0.5"/>
+        <rect x="2" y="2" width="18" height="9" rx="2" fill="#0F172A"/>
+        <rect x="24" y="4" width="2" height="5" rx="1" fill="#0F172A" fill-opacity="0.5"/>
+      </svg>
+    </span>
+  </div>
+
+  <!-- SUB-SCREEN header: back chevron in circle + centered title -->
+  <div class="header">
+    <div class="backCircle">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M15 5l-7 7 7 7" stroke="#0F172A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="headerTitle">Missions bien-&ecirc;tre</div>
+    <div class="headerSpacer"></div>
+  </div>
+
+  <!-- context row -->
+  <div class="weatherRow">
+    <span class="weatherIcon">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="4.5" stroke="#33A089" stroke-width="2"/>
+        <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M5 5l1.8 1.8M17.2 17.2L19 19M19 5l-1.8 1.8M6.8 17.2L5 19" stroke="#33A089" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <span class="weatherText">18 &deg;C &middot; Ciel d&eacute;gag&eacute;</span>
+  </div>
+
+  <!-- filter chips (G7) -->
+  <div class="chipsRow">
+    <span class="chip selected">Toutes</span>
+    <span class="chip">Mouvement</span>
+    <span class="chip">Esprit</span>
+    <span class="chip">Social</span>
+  </div>
+
+  <!-- mission list -->
+  <div class="list">
+
+    <!-- movement / easy (1 dot) -->
+    <div class="card">
+      <div class="cardHeader">
+        <div class="categoryWrap">
+          <span class="categoryIcon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <circle cx="13" cy="4" r="2" fill="#33A089"/>
+              <path d="M11 8l-3 4 3 2 1 5M11 8l4 1 2 4M8 12l-3 1" stroke="#33A089" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="categoryWord">Mouvement</span>
+        </div>
+        <span class="duration">15 min</span>
+      </div>
+      <div class="title">Balade au soleil</div>
+      <div class="description">Marche 15 minutes dehors. Remarque 3 choses que tu trouves belles sur ton chemin.</div>
+      <div class="cardFooter">
+        <div class="difficultyRow">
+          <div class="dotsRow"><span class="dot"></span></div>
+          <span class="difficultyWord">Facile</span>
+        </div>
+        <div class="startBtn"><span class="startLabel">Commencer</span></div>
+      </div>
+    </div>
+
+    <!-- mindfulness / easy (1 dot) -->
+    <div class="card">
+      <div class="cardHeader">
+        <div class="categoryWrap">
+          <span class="categoryIcon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="#33A089" stroke-width="2"/>
+              <circle cx="12" cy="12" r="3.5" fill="#33A089"/>
+            </svg>
+          </span>
+          <span class="categoryWord">Pleine conscience</span>
+        </div>
+        <span class="duration">5 min</span>
+      </div>
+      <div class="title">Respiration en carr&eacute;</div>
+      <div class="description">Inspire 4 s, retiens 4 s, expire 4 s, retiens 4 s. R&eacute;p&egrave;te pendant 5 minutes pour apaiser ton mental.</div>
+      <div class="cardFooter">
+        <div class="difficultyRow">
+          <div class="dotsRow"><span class="dot"></span></div>
+          <span class="difficultyWord">Facile</span>
+        </div>
+        <div class="startBtn"><span class="startLabel">Commencer</span></div>
+      </div>
+    </div>
+
+    <!-- nutrition / moderate (2 dots) -->
+    <div class="card">
+      <div class="cardHeader">
+        <div class="categoryWrap">
+          <span class="categoryIcon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M12 21c-4-3-7-6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4-3 7-7 10Z" stroke="#33A089" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="categoryWord">Nutrition</span>
+        </div>
+        <span class="duration">10 min</span>
+      </div>
+      <div class="title">Pause hydratation</div>
+      <div class="description">Bois un grand verre d&rsquo;eau et pr&eacute;pare ton prochain repas autour d&rsquo;un l&eacute;gume de saison.</div>
+      <div class="cardFooter">
+        <div class="difficultyRow">
+          <div class="dotsRow"><span class="dot"></span><span class="dot"></span></div>
+          <span class="difficultyWord">Mod&eacute;r&eacute;</span>
+        </div>
+        <div class="startBtn"><span class="startLabel">Commencer</span></div>
+      </div>
+    </div>
+
+    <!-- social / moderate (2 dots) -->
+    <div class="card">
+      <div class="cardHeader">
+        <div class="categoryWrap">
+          <span class="categoryIcon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <circle cx="9" cy="8" r="3" stroke="#33A089" stroke-width="2"/>
+              <path d="M3.5 19a5.5 5.5 0 0 1 11 0M16 6a3 3 0 0 1 0 6M17 19a5.5 5.5 0 0 0-3-5" stroke="#33A089" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="categoryWord">Social</span>
+        </div>
+        <span class="duration">15 min</span>
+      </div>
+      <div class="title">Prendre des nouvelles</div>
+      <div class="description">Appelle une personne qui compte pour toi. Pose-lui une vraie question et &eacute;coute.</div>
+      <div class="cardFooter">
+        <div class="difficultyRow">
+          <div class="dotsRow"><span class="dot"></span><span class="dot"></span></div>
+          <span class="difficultyWord">Mod&eacute;r&eacute;</span>
+        </div>
+        <div class="startBtn"><span class="startLabel">Commencer</span></div>
+      </div>
+    </div>
+
+    <!-- recovery / challenging (3 dots) — COMPLETED -->
+    <div class="card">
+      <div class="cardHeader">
+        <div class="categoryWrap">
+          <span class="categoryIcon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M4 15a8 8 0 0 1 16 0" stroke="#33A089" stroke-width="2" stroke-linecap="round"/>
+              <path d="M12 15l3-3" stroke="#33A089" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="12" cy="15" r="1.5" fill="#33A089"/>
+            </svg>
+          </span>
+          <span class="categoryWord">R&eacute;cup&eacute;ration</span>
+        </div>
+        <span class="duration">10 min</span>
+      </div>
+      <div class="title">&Eacute;tirements du soir</div>
+      <div class="description">&Eacute;tire doucement nuque, &eacute;paules et dos pendant 10 minutes pour rel&acirc;cher les tensions.</div>
+      <div class="cardFooter">
+        <div class="difficultyRow">
+          <div class="dotsRow"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <span class="difficultyWord">Exigeant</span>
+        </div>
+        <div class="completedRow">
+          <span class="completedIcon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="#33A089" stroke-width="2"/>
+              <path d="M8 12.5l2.5 2.5L16 9.5" stroke="#33A089" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="completedWord">Termin&eacute;</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=393, initial-scale=1" />
+<title>live_preview_v2 — ViewerLiveStreamView (dark)</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { background:#05070d; }
+  .device {
+    position:relative;
+    width:393px; height:852px;
+    overflow:hidden;
+    background:#0A0E1A;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ── Full-bleed creator remote video slot (faux) ── */
+  .video {
+    position:absolute; inset:0;
+    background:
+      radial-gradient(120% 80% at 70% 20%, #2a4a55 0%, rgba(42,74,85,0) 55%),
+      radial-gradient(140% 90% at 20% 95%, #1d3340 0%, rgba(29,51,64,0) 60%),
+      linear-gradient(160deg, #143544 0%, #0e2330 45%, #0A0E1A 100%);
+  }
+  .video::after {
+    content:""; position:absolute; left:50%; top:42%;
+    transform:translate(-50%,-50%);
+    width:150px; height:300px;
+    background:radial-gradient(50% 50% at 50% 35%, rgba(0,0,0,0.35), rgba(0,0,0,0) 70%);
+    border-radius:50%;
+  }
+  .scrim { position:absolute; inset:0; background:rgba(0,0,0,0.55); pointer-events:none; }
+
+  /* ── iOS status bar ── */
+  .statusbar {
+    position:absolute; top:0; left:0; right:0; height:54px;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 22px 0; z-index:50;
+    color:#FFFFFF; font-size:15px; font-weight:600;
+    text-shadow:0 1px 4px rgba(0,0,0,0.85);
+  }
+  .statusbar .glyphs { display:flex; align-items:center; gap:6px; }
+
+  /* ── Top chrome (below 54px safe-area) ── */
+  .top {
+    position:absolute; top:66px; left:16px; right:16px;
+    display:flex; flex-direction:row; align-items:center; gap:10px; z-index:30;
+  }
+  /* G: leave = back chevron in a circle (sub-screen header convention) */
+  .leave {
+    width:44px; height:44px; border-radius:999px;
+    background:rgba(10,14,26,0.72); border:1px solid #2A3142;
+    display:flex; align-items:center; justify-content:center;
+    flex:0 0 auto;
+  }
+
+  .identity { flex:1 1 auto; display:flex; flex-direction:row; align-items:center; gap:8px; min-height:44px; min-width:0; }
+  .identity-avatar {
+    width:36px; height:36px; border-radius:12px; overflow:hidden; flex:0 0 auto;
+    background:linear-gradient(135deg,#33A089,#176A5A);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-size:15px; font-weight:800;
+  }
+  .identity-text { flex:1 1 auto; min-width:0; }
+  .identity-row { display:flex; flex-direction:row; align-items:center; gap:8px; }
+  .streamer-name {
+    color:#FFFFFF; font-size:15px; font-weight:800; flex-shrink:1;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    text-shadow:0 1px 4px rgba(0,0,0,0.85);
+  }
+  .live-badge {
+    display:inline-flex; flex-direction:row; align-items:center; gap:6px;
+    padding:4px 9px; border-radius:999px; background:#D81F32; flex:0 0 auto;
+  }
+  .live-dot { width:6px; height:6px; border-radius:999px; background:#FFFFFF; }
+  .live-text { color:#FFFFFF; font-size:11px; font-weight:800; letter-spacing:0.5px; }
+  .title {
+    color:rgba(255,255,255,0.92); font-size:12px; font-weight:600; margin-top:2px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    text-shadow:0 1px 4px rgba(0,0,0,0.85);
+  }
+  .viewers {
+    display:flex; flex-direction:row; align-items:center; gap:5px;
+    padding:5px 10px; border-radius:999px; background:rgba(10,14,26,0.72); border:1px solid #2A3142;
+    min-height:32px; flex:0 0 auto;
+  }
+  .viewer-text { color:#FFFFFF; font-size:12px; font-weight:700; text-shadow:0 1px 4px rgba(0,0,0,0.85); }
+
+  /* ── Bottom region ── */
+  .bottom {
+    position:absolute; left:0; right:0; bottom:28px;
+    padding:0 12px; display:flex; flex-direction:column; gap:10px; z-index:20;
+  }
+  .chat-wrap {
+    border-radius:16px; max-height:240px;
+    padding:6px 8px; background:rgba(10,14,26,0.55);
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  .chat-list { display:flex; flex-direction:column; gap:8px; padding:4px 0; }
+  .chat-row { display:flex; flex-direction:row; align-items:flex-start; gap:8px; }
+  .chat-body { flex:1 1 auto; min-width:0; }
+  .chat-user {
+    color:rgba(255,255,255,0.92); font-size:12px; font-weight:800;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    text-shadow:0 1px 4px rgba(0,0,0,0.85);
+  }
+  .chat-user.creator { color:#33A089; }
+  .chat-text { color:#FFFFFF; font-size:14px; font-weight:500; text-shadow:0 1px 4px rgba(0,0,0,0.85); }
+
+  .send-row { display:flex; flex-direction:column; gap:10px; }
+  .input-wrap {
+    display:flex; flex-direction:row; align-items:center; gap:8px;
+    border-radius:999px; padding:0 6px 0 16px; min-height:48px;
+    background:rgba(10,14,26,0.7); border:1px solid #2A3142;
+  }
+  .input {
+    flex:1 1 auto; color:#94A3B8; font-size:15px;
+    padding:10px 0; min-width:0;
+  }
+  .send {
+    width:40px; height:40px; min-width:44px; min-height:44px; border-radius:999px;
+    display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+    background:linear-gradient(135deg,#1A7D68,#157082);
+    opacity:0.55;
+  }
+
+  .reactions { display:flex; flex-direction:row; align-items:center; gap:10px; flex-wrap:wrap; }
+  .reaction {
+    width:44px; height:44px; border-radius:999px;
+    background:rgba(10,14,26,0.55); border:1px solid #2A3142;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .home-indicator {
+    position:absolute; bottom:8px; left:50%; transform:translateX(-50%);
+    width:134px; height:5px; border-radius:999px; background:rgba(255,255,255,0.5); z-index:60;
+  }
+</style>
+</head>
+<body>
+  <div class="device">
+    <div class="video"></div>
+    <div class="scrim"></div>
+
+    <!-- iOS status bar -->
+    <div class="statusbar">
+      <span>9:41</span>
+      <span class="glyphs">
+        <!-- signal -->
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="8" width="3" height="4" rx="1" fill="#FFFFFF"/><rect x="5" y="5" width="3" height="7" rx="1" fill="#FFFFFF"/><rect x="10" y="2" width="3" height="10" rx="1" fill="#FFFFFF"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#FFFFFF"/></svg>
+        <!-- battery -->
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="#FFFFFF" opacity="0.5"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="#FFFFFF"/><rect x="24" y="4" width="2" height="4" rx="1" fill="#FFFFFF" opacity="0.5"/></svg>
+      </span>
+    </div>
+
+    <!-- Top chrome: leave (back chevron in circle) + streamer identity + LIVE + viewer pill -->
+    <div class="top">
+      <div class="leave">
+        <!-- G4: flat SVG chevron, mint -->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#33A089" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+
+      <div class="identity">
+        <div class="identity-avatar">CL</div>
+        <div class="identity-text">
+          <div class="identity-row">
+            <span class="streamer-name">Coach Lina</span>
+            <span class="live-badge"><span class="live-dot"></span><span class="live-text">LIVE</span></span>
+          </div>
+          <div class="title">Yoga du matin</div>
+        </div>
+      </div>
+
+      <div class="viewers">
+        <!-- G4: flat SVG eye glyph -->
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="#FFFFFF" stroke-width="2"/></svg>
+        <span class="viewer-text">184</span>
+      </div>
+    </div>
+
+    <!-- Bottom: live chat (Agora) + send + reactions -->
+    <div class="bottom">
+      <div class="chat-wrap">
+        <div class="chat-list">
+          <div class="chat-row">
+            <div class="chat-body">
+              <div class="chat-user">Theo</div>
+              <div class="chat-text">Salut tout le monde &#128075;</div>
+            </div>
+          </div>
+          <div class="chat-row">
+            <div class="chat-body">
+              <div class="chat-user">In&egrave;s</div>
+              <div class="chat-text">On garde le rythme &#128170;</div>
+            </div>
+          </div>
+          <div class="chat-row">
+            <div class="chat-body">
+              <div class="chat-user">Marc</div>
+              <div class="chat-text">Premi&egrave;re fois en live, &ccedil;a pique &#128517;</div>
+            </div>
+          </div>
+          <div class="chat-row">
+            <div class="chat-body">
+              <div class="chat-user">Sofia</div>
+              <div class="chat-text">Trop bien cette s&eacute;ance&nbsp;!</div>
+            </div>
+          </div>
+          <div class="chat-row">
+            <div class="chat-body">
+              <div class="chat-user creator">Coach Lina (Cr&eacute;ateur)</div>
+              <div class="chat-text">Respirez profond&eacute;ment &#127780;&#65039;</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="send-row">
+        <div class="input-wrap">
+          <span class="input">Dis quelque chose&hellip;</span>
+          <div class="send">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 12h15M12 5l7 7-7 7" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+        <div class="reactions">
+          <div class="reaction"><span style="font-size:22px;line-height:1;">&#10084;&#65039;</span></div>
+          <div class="reaction"><span style="font-size:22px;line-height:1;">&#128293;</span></div>
+          <div class="reaction"><span style="font-size:22px;line-height:1;">&#128079;</span></div>
+          <div class="reaction"><span style="font-size:22px;line-height:1;">&#128170;</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="home-indicator"></div>
+  </div>
+</body>
+</html>

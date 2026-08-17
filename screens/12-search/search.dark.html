@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=393, initial-scale=1" />
+<title>SearchView — search_v2 (dark)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 393px; height: 852px; overflow: hidden;
+    background: #0A0E1A;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen { position: relative; width: 393px; height: 852px; background: #0A0E1A; overflow: hidden; }
+
+  /* ── faux iOS status bar ── */
+  .statusbar {
+    height: 54px;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 0 22px 8px 26px;
+    color: #FFFFFF; font-size: 15px; font-weight: 600;
+  }
+  .statusbar .glyphs { display: flex; align-items: center; gap: 6px; }
+
+  /* ── G6 feed header: search · wordmark · bell (below 54px safe-area) ── */
+  .header {
+    display: flex; flex-direction: row; align-items: center; justify-content: space-between;
+    padding: 4px 16px 8px 16px;
+  }
+  .hIcon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; position: relative; }
+  .hIcon.right { justify-content: flex-end; }
+  .hIcon.left  { justify-content: flex-start; }
+  .brandWord { font-size: 21px; font-weight: 800; letter-spacing: -0.4px; color: #33A089; }
+  .badge { position: absolute; top: 4px; right: 6px; width: 8px; height: 8px; border-radius: 4px; background: #D81F32; border: 1.5px solid #0A0E1A; }
+
+  /* ── search field ── */
+  .searchBar { padding: 2px 16px 6px 16px; }
+  .field {
+    display: flex; flex-direction: row; align-items: center; gap: 10px;
+    height: 44px; padding: 0 14px;
+    background: #161B2A;
+    border: 1px solid #2A3142;
+    border-radius: 14px;
+  }
+  .field .placeholder { color: #94A3B8; font-size: 15px; line-height: 22px; }
+
+  /* ── G7 segment chips (Tendances filter) ── */
+  .chipsRow { display: flex; flex-direction: row; gap: 8px; padding: 4px 16px 0 16px; }
+  .chip {
+    display: flex; align-items: center; justify-content: center;
+    height: 32px; padding: 0 14px; border-radius: 999px;
+    background: transparent; border: 1px solid #33A089;
+  }
+  .chip.sel { background: rgba(51,160,137,0.14); }
+  .chipText { font-size: 13px; font-weight: 700; color: #33A089; }
+
+  /* ── body (no scroll, compact) ── */
+  .body { padding: 0 0 84px 0; }
+  .section { margin-top: 16px; }
+  .sectionTitle { font-size: 16px; font-weight: 800; color: #FFFFFF; padding: 0 16px; margin-bottom: 10px; }
+
+  .rail { display: flex; flex-direction: row; gap: 12px; padding: 0 16px; overflow: hidden; }
+
+  /* ── UNIFORM CARD: live + creator/friend suggestion share the SAME footprint (132x186) ── */
+  .card {
+    position: relative; width: 132px; height: 186px; flex-shrink: 0;
+    border-radius: 24px; overflow: hidden;
+  }
+
+  /* live variant */
+  .card.live { background: #000; }
+  .card.live .img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .card.live .scrim { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.72) 100%); }
+  .liveBadge { position: absolute; top: 10px; left: 10px; padding: 3px 7px; border-radius: 6px; background: #D81F32; }
+  .liveBadge span { color: #fff; font-size: 9px; font-weight: 800; letter-spacing: 0.5px; }
+  .card.live .name {
+    position: absolute; left: 12px; right: 12px; bottom: 12px;
+    color: #fff; font-size: 13px; font-weight: 700; text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .mintRing { position: absolute; inset: 0; border-radius: 24px; border: 2px solid #33A089; }
+
+  /* creator / friend-suggestion variant — SAME 132x186 box */
+  .card.creator {
+    background: #161B2A; border: 1px solid #2A3142;
+    padding: 16px 12px;
+    display: flex; flex-direction: column; align-items: center; gap: 7px;
+  }
+  .avatarRing {
+    width: 60px; height: 60px; border-radius: 30px;
+    border: 2px solid #33A089; padding: 2px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .avatar {
+    width: 52px; height: 52px; border-radius: 26px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 17px; font-weight: 700;
+  }
+  .creatorName { font-size: 13px; font-weight: 800; color: #FFFFFF; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .creatorSub { font-size: 11px; font-weight: 500; color: #94A3B8; text-align: center; }
+  .cta {
+    margin-top: auto; align-self: stretch; height: 34px; border-radius: 12px;
+    background: linear-gradient(135deg, #1A7D68, #157082);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cta span { color: #FFFFFF; font-size: 12px; font-weight: 700; }
+  .fanTag { margin-top: auto; align-self: stretch; height: 34px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+  .fanTag span { color: #33A089; font-size: 12px; font-weight: 700; }
+
+  /* image / avatar stand-ins */
+  .img-1 { background: linear-gradient(135deg, #4A6B5C, #2E4A3D); }
+  .img-2 { background: linear-gradient(135deg, #6B4A5C, #4A2E3D); }
+  .av-1 { background: linear-gradient(135deg, #5B7DB1, #3D5680); }
+  .av-2 { background: linear-gradient(135deg, #B15B7D, #803D56); }
+  .av-3 { background: linear-gradient(135deg, #7DB15B, #56803D); }
+
+  /* ── places list (Card-wrapped ListRows) ── */
+  .placesCard { margin: 0 16px; background: #161B2A; border: 1px solid #2A3142; border-radius: 18px; overflow: hidden; }
+  .listRow { min-height: 56px; display: flex; align-items: center; padding: 11px 14px; gap: 12px; }
+  .listRow + .listRow { border-top: 1px solid #2A3142; }
+  .iconSquare {
+    width: 34px; height: 34px; border-radius: 11px;
+    background: rgba(51,160,137,0.13);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .rowTexts { flex: 1; min-width: 0; }
+  .rowTitle { font-size: 15px; font-weight: 600; color: #FFFFFF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rowSub { font-size: 12.5px; font-weight: 500; color: #94A3B8; margin-top: 2px; }
+  .chevron { color: #94A3B8; flex-shrink: 0; }
+
+  /* ── G5 bottom-nav ── */
+  .bottomnav {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 76px;
+    display: flex; flex-direction: row; align-items: flex-start; justify-content: space-around;
+    padding: 10px 18px 0 18px;
+    background: #0A0E1A; border-top: 1px solid #2A3142;
+  }
+  .navItem { display: flex; flex-direction: column; align-items: center; gap: 3px; width: 56px; }
+  .navLabel { font-size: 10px; font-weight: 600; color: #94A3B8; }
+  .navItem.active .navLabel { color: #33A089; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <!-- faux iOS status bar -->
+    <div class="statusbar">
+      <span>9:41</span>
+      <span class="glyphs">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="#fff"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="#fff"><path d="M8.5 2.5c2.2 0 4.2.8 5.7 2.2l1.3-1.4C13.7 1.5 11.2.5 8.5.5S3.3 1.5 1.5 3.3l1.3 1.4C4.3 3.3 6.3 2.5 8.5 2.5z" opacity="0.9"/><path d="M8.5 6c1.2 0 2.3.5 3.1 1.3l1.3-1.4C11.8 4.7 10.2 4 8.5 4S5.2 4.7 4.1 5.9l1.3 1.4C6.2 6.5 7.3 6 8.5 6z"/><circle cx="8.5" cy="10" r="1.6"/></svg>
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#fff" opacity="0.5"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="#fff"/><rect x="23" y="3.5" width="2" height="5" rx="1" fill="#fff" opacity="0.5"/></svg>
+      </span>
+    </div>
+
+    <!-- G6 feed header -->
+    <div class="header">
+      <div class="hIcon left">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#FFFFFF" stroke-width="2"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <span class="brandWord">Smuppy</span>
+      <div class="hIcon right">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3a6 6 0 0 0-6 6c0 4-1.5 5.5-2 6.5h16c-.5-1-2-2.5-2-6.5a6 6 0 0 0-6-6z" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round"/><path d="M10 19a2 2 0 0 0 4 0" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="badge"></span>
+      </div>
+    </div>
+
+    <!-- Search field -->
+    <div class="searchBar">
+      <div class="field">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#94A3B8" stroke-width="2"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="placeholder">Chercher créateurs, hashtags, lieux</span>
+      </div>
+    </div>
+
+    <!-- G7 trending chips -->
+    <div class="chipsRow">
+      <div class="chip sel"><span class="chipText">#yogaflow</span></div>
+      <div class="chip"><span class="chipText">#padel</span></div>
+      <div class="chip"><span class="chipText">#hyrox</span></div>
+    </div>
+
+    <!-- body -->
+    <div class="body">
+
+      <!-- En direct -->
+      <div class="section">
+        <div class="sectionTitle">En direct</div>
+        <div class="rail">
+          <div class="card live">
+            <div class="img img-1"></div>
+            <div class="scrim"></div>
+            <div class="liveBadge"><span>LIVE</span></div>
+            <div class="name">Maya</div>
+            <div class="mintRing"></div>
+          </div>
+          <div class="card live">
+            <div class="img img-2"></div>
+            <div class="scrim"></div>
+            <div class="liveBadge"><span>LIVE</span></div>
+            <div class="name">Sara</div>
+            <div class="mintRing"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Créateurs suggérés -->
+      <div class="section">
+        <div class="sectionTitle">Créateurs suggérés</div>
+        <div class="rail">
+          <div class="card creator">
+            <div class="avatarRing"><div class="avatar av-1">AR</div></div>
+            <div class="creatorName">Alex Rossi</div>
+            <div class="creatorSub">Digital Art</div>
+            <div class="cta"><span>Devenir fan</span></div>
+          </div>
+          <!-- Luna Chen isFan=true → mint tag, no CTA -->
+          <div class="card creator">
+            <div class="avatarRing"><div class="avatar av-2">LC</div></div>
+            <div class="creatorName">Luna Chen</div>
+            <div class="creatorSub">Yoga &amp; Mind</div>
+            <div class="fanTag">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#33A089" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Fan</span>
+            </div>
+          </div>
+          <div class="card creator">
+            <div class="avatarRing"><div class="avatar av-3">NK</div></div>
+            <div class="creatorName">Noah Kim</div>
+            <div class="creatorSub">Strength</div>
+            <div class="cta"><span>Devenir fan</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lieux près de toi -->
+      <div class="section">
+        <div class="sectionTitle">Lieux près de toi</div>
+        <div class="placesCard">
+          <div class="listRow">
+            <div class="iconSquare">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z" stroke="#33A089" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.5" stroke="#33A089" stroke-width="2"/></svg>
+            </div>
+            <div class="rowTexts">
+              <div class="rowTitle">Studio Verde</div>
+              <div class="rowSub">0.8 km · Yoga &amp; Pilates</div>
+            </div>
+            <svg class="chevron" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="listRow">
+            <div class="iconSquare">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z" stroke="#33A089" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.5" stroke="#33A089" stroke-width="2"/></svg>
+            </div>
+            <div class="rowTexts">
+              <div class="rowTitle">Café Recover</div>
+              <div class="rowSub">1.2 km · Healthy Eats</div>
+            </div>
+            <svg class="chevron" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- G5 bottom-nav -->
+    <div class="bottomnav">
+      <div class="navItem">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6h-6v6H5a1 1 0 0 1-1-1z" stroke="#94A3B8" stroke-width="2" stroke-linejoin="round"/></svg>
+        <span class="navLabel">Accueil</span>
+      </div>
+      <div class="navItem active">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" fill="rgba(51,160,137,0.16)" stroke="#33A089" stroke-width="2"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="#33A089" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="navLabel">Recherche</span>
+      </div>
+      <div class="navItem">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#94A3B8" stroke-width="2"/><path d="M12 8v8M8 12h8" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="navLabel">Créer</span>
+      </div>
+      <div class="navItem">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l2-5 4 12 2-7h6" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="navLabel">Activités</span>
+      </div>
+      <div class="navItem">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94A3B8" stroke-width="2"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="navLabel">Profil</span>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

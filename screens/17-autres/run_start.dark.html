@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RunStartView · V2 dark</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: #05070D;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 24px;
+  }
+
+  /* ── Device frame 393×852 ─────────────────────────── */
+  .device {
+    width: 393px; height: 852px;
+    position: relative; overflow: hidden;
+    border-radius: 44px;
+    /* root: full-screen overlay ON TOP of a dark map (#000) */
+    background: #000;
+    box-shadow: 0 22px 70px rgba(0,0,0,0.6);
+  }
+
+  /* Faux dark map underlay (the real MapView/NeonRoads is the mapSlot). */
+  .map {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 80% at 30% 18%, #0E1422 0%, #05070D 60%, #000 100%);
+  }
+  /* a couple of faint neon roads to evoke the map (decorative) */
+  .road {
+    position: absolute; height: 3px; border-radius: 999px;
+    background: linear-gradient(90deg, rgba(51,160,137,0) 0%, rgba(51,160,137,0.45) 50%, rgba(51,160,137,0) 100%);
+    filter: blur(0.3px);
+  }
+  .road.r1 { top: 300px; left: -40px; width: 360px; transform: rotate(-22deg); }
+  .road.r2 { top: 470px; left: 120px; width: 320px; transform: rotate(14deg); opacity: 0.7; }
+  .road.r3 { top: 560px; left: -10px; width: 260px; transform: rotate(40deg); opacity: 0.5; }
+
+  /* ── iOS status bar ───────────────────────────────── */
+  .statusbar {
+    position: absolute; top: 0; left: 0; right: 0; height: 54px;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 0 26px 8px; z-index: 50;
+    pointer-events: none;
+  }
+  .statusbar .time { color: #fff; font-size: 15px; font-weight: 600; letter-spacing: 0.2px; }
+  .statusbar .icons { display: flex; align-items: center; gap: 6px; }
+  .statusbar .icons svg { display: block; }
+
+  /* ── overlay content stack (mirrors JSX flex column) ─ */
+  .overlay {
+    position: absolute; inset: 0;
+    /* SAFE-AREA: content begins below the 54px status-bar inset.
+       topRow paddingTop:54 in RN == this inset. */
+    display: flex; flex-direction: column;
+  }
+
+  /* topRow: flexDirection row, alignItems center, gap 10, paddingH 16, paddingTop 54 */
+  .topRow {
+    display: flex; flex-direction: row; align-items: center;
+    gap: 10px; padding: 54px 16px 0;
+  }
+  /* closeBtn 40×40 pill */
+  .closeBtn {
+    width: 40px; height: 40px; border-radius: 999px;
+    background: rgba(0,0,0,0.4);
+    display: flex; align-items: center; justify-content: center;
+    flex: 0 0 auto;
+  }
+  .closeGlyph { color: #fff; font-size: 18px; font-weight: 700; line-height: 1; }
+  /* title flex 1, centered, extrabold 16 */
+  .title {
+    flex: 1; text-align: center; color: #fff;
+    font-size: 16px; font-weight: 800;
+    text-shadow: 0 0 6px rgba(0,0,0,0.5);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  /* gpsPill: ready → primaryDeep bg; paddingV 6, paddingH 11, radius 999 */
+  .gpsPill {
+    display: flex; flex-direction: row; align-items: center;
+    padding: 6px 11px; border-radius: 999px;
+    background: #157082; /* primaryDeep (gradient end ink) */
+    flex: 0 0 auto;
+  }
+  .gpsText { color: #fff; font-size: 11px; font-weight: 800; white-space: nowrap; }
+
+  /* chips: row, justify center, gap 8, marginTop 16, paddingH 16 */
+  .chips {
+    display: flex; flex-direction: row; justify-content: center;
+    gap: 8px; margin-top: 16px; padding: 0 16px;
+  }
+  .chip {
+    padding: 8px 16px; border-radius: 999px;
+    background: rgba(255,255,255,0.14);
+  }
+  .chip.on { background: #157082; } /* selected → primaryDeep, white ink = AA */
+  .chipText { font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap; }
+
+  /* center: flex 1, alignItems center, justify center */
+  .center {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  /* startWrap 168×168 */
+  .startWrap {
+    width: 168px; height: 168px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  /* halo: absolute fill, radius 999, primaryAccent, pulse opacity≈0.35 at rest */
+  .halo {
+    position: absolute; inset: 0; border-radius: 999px;
+    background: #33A089; opacity: 0.35;
+  }
+  /* startBtn 150×150 round, CTA gradient 135deg, white ink */
+  .startBtn {
+    position: relative;
+    width: 150px; height: 150px; border-radius: 999px;
+    background: linear-gradient(135deg, #1A7D68 0%, #157082 100%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    box-shadow: 0 10px 30px rgba(21,112,130,0.45);
+  }
+  .startGlyph { color: #fff; font-size: 30px; line-height: 1; margin-bottom: 2px; }
+  .startLabel { color: #fff; font-size: 18px; font-weight: 800; letter-spacing: 1px; }
+  /* hint: marginTop 18, fontSize 13, weight 600, white 0.85 */
+  .hint {
+    color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 600;
+    margin-top: 18px; text-align: center; max-width: 280px;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+  }
+
+  /* toggles: row, justify center, gap 22, paddingBottom 40, paddingTop 8 */
+  .toggles {
+    display: flex; flex-direction: row; justify-content: center;
+    gap: 22px; padding: 8px 0 40px;
+  }
+  .toggle { display: flex; flex-direction: row; align-items: center; gap: 6px; }
+  .toggleText { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.7); }
+  .toggleText.on { color: #33A089; }
+
+  /* home indicator */
+  .home {
+    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+    width: 134px; height: 5px; border-radius: 999px;
+    background: rgba(255,255,255,0.35); z-index: 60;
+  }
+</style>
+</head>
+<body>
+  <div class="device">
+    <!-- dark map underlay (mapSlot) -->
+    <div class="map">
+      <div class="road r1"></div>
+      <div class="road r2"></div>
+      <div class="road r3"></div>
+    </div>
+
+    <!-- faux iOS status bar -->
+    <div class="statusbar">
+      <span class="time">9:41</span>
+      <span class="icons">
+        <!-- cellular -->
+        <svg width="18" height="11" viewBox="0 0 18 11" fill="#fff"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="6" rx="1"/><rect x="10" y="2.5" width="3" height="8.5" rx="1"/><rect x="15" y="0" width="3" height="11" rx="1"/></svg>
+        <!-- wifi -->
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="#fff"><path d="M8.5 2C5.4 2 2.6 3.2.5 5.2L0 4.6C2.3 2.4 5.3 1 8.5 1s6.2 1.4 8.5 3.6l-.5.6C14.4 3.2 11.6 2 8.5 2z"/><path d="M8.5 5.2c-1.9 0-3.6.7-4.9 1.9l-.6-.6C4.4 5.1 6.4 4.2 8.5 4.2s4.1.9 5.5 2.3l-.6.6C12.1 5.9 10.4 5.2 8.5 5.2z"/><circle cx="8.5" cy="9.8" r="1.6"/></svg>
+        <!-- battery -->
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#fff" stroke-opacity="0.5"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="#fff"/><path d="M23 4v4c.9-.4.9-3.6 0-4z" fill="#fff" fill-opacity="0.5"/></svg>
+      </span>
+    </div>
+
+    <!-- overlay content -->
+    <div class="overlay">
+      <!-- Top bar: close + title + GPS pill -->
+      <div class="topRow">
+        <div class="closeBtn"><span class="closeGlyph">&#10005;</span></div>
+        <span class="title">Prêt à courir ?</span>
+        <div class="gpsPill"><span class="gpsText">GPS prêt</span></div>
+      </div>
+
+      <!-- Mode chips -->
+      <div class="chips">
+        <div class="chip on"><span class="chipText">Libre</span></div>
+        <div class="chip"><span class="chipText">5 km</span></div>
+        <div class="chip"><span class="chipText">10 km</span></div>
+        <div class="chip"><span class="chipText">Temps</span></div>
+      </div>
+
+      <!-- Big DÉPART -->
+      <div class="center">
+        <div class="startWrap">
+          <div class="halo"></div>
+          <div class="startBtn">
+            <span class="startGlyph">&#9654;</span>
+            <span class="startLabel">DÉPART</span>
+          </div>
+        </div>
+        <div class="hint">Appuie pour lancer · décompte 3-2-1</div>
+      </div>
+
+      <!-- Option toggles (off state, white 0.7 ink) -->
+      <div class="toggles">
+        <div class="toggle"><span class="toggleText">Coach vocal</span></div>
+        <div class="toggle"><span class="toggleText">Écran allumé</span></div>
+      </div>
+    </div>
+
+    <div class="home"></div>
+  </div>
+</body>
+</html>

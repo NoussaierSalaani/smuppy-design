@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=393, initial-scale=1" />
+<title>activity_attendees_v2 — dark</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 393px;
+    height: 852px;
+    overflow: hidden;
+    background: #FFFFFF;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .screen {
+    width: 393px;
+    height: 852px;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* faux iOS status bar */
+  .statusbar {
+    height: 44px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px 0 28px;
+    color: #0F172A;
+  }
+  .statusbar .time { font-size: 15px; font-weight: 600; letter-spacing: -0.2px; }
+  .statusbar .glyphs { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .statusbar .bars { letter-spacing: 1px; }
+  .statusbar .batt {
+    width: 24px; height: 12px; border: 1px solid #0F172A; border-radius: 3px;
+    position: relative; display: inline-block;
+  }
+  .statusbar .batt::after {
+    content: ""; position: absolute; right: -3px; top: 3px;
+    width: 2px; height: 6px; background: #0F172A; border-radius: 0 1px 1px 0;
+  }
+  .statusbar .batt::before {
+    content: ""; position: absolute; left: 1px; top: 1px; bottom: 1px;
+    width: 16px; background: #0F172A; border-radius: 1px;
+  }
+
+  /* settings_topbar — back + centered title */
+  .header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 12px 6px 12px;
+    flex-shrink: 0;
+  }
+  .backBtn {
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .back {
+    font-size: 30px; line-height: 34px; font-weight: 400;
+    color: #0F172A; text-align: center;
+  }
+  .headerTitle {
+    flex: 1; text-align: center;
+    font-size: 18px; font-weight: 800; letter-spacing: -0.3px;
+    color: #0F172A;
+  }
+  .headerSpacer { width: 44px; }
+
+  /* count header */
+  .countWrap {
+    padding: 6px 20px 12px 20px;
+    border-bottom: 0.5px solid #E2E8F0;
+    flex-shrink: 0;
+  }
+  .countText {
+    font-size: 14px; font-weight: 600; letter-spacing: -0.2px;
+    color: #475569;
+  }
+
+  /* list */
+  .list {
+    flex: 1;
+    padding: 8px 20px 40px 20px;
+    overflow: hidden;
+  }
+  .row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 0.5px solid #E2E8F0;
+    gap: 12px;
+    min-height: 44px;
+  }
+  .rowInfo {
+    display: flex; flex-direction: row; align-items: center;
+    gap: 12px; flex: 1; min-width: 0;
+  }
+  /* Avatar md — mini-card rounded square */
+  .avatar {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .avatar img { width: 44px; height: 44px; object-fit: cover; display: block; }
+  .avatar.initials {
+    background: #F1F5F9;
+  }
+  .avatar .ini {
+    color: #0F172A; font-size: 17px; font-weight: 600;
+  }
+  .rowText { flex: 1; min-width: 0; }
+  .nameRow { display: flex; flex-direction: row; align-items: center; gap: 4px; }
+  .rowName {
+    font-size: 15px; font-weight: 600; letter-spacing: -0.2px;
+    color: #0F172A;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .verified {
+    font-size: 13px; font-weight: 700; line-height: 16px;
+    color: #33A089;
+    flex-shrink: 0;
+  }
+  .rowHandle {
+    font-size: 13px; font-weight: 500; margin-top: 1px;
+    color: #475569;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* role badge — per-mode dark graphic chip (>=3:1) */
+  .roleBadge {
+    padding: 5px 10px;
+    border-radius: 12px;
+    border-width: 1.5px;
+    border-style: solid;
+    align-self: center;
+    flex-shrink: 0;
+  }
+  .roleText {
+    font-size: 12px; font-weight: 700; letter-spacing: -0.1px;
+    white-space: nowrap;
+  }
+  /* dark-mode role ink: host #10B981, going #93C5FD, waitlist #F59E0B */
+  .role-host    { border-color: #10B981; }
+  .role-host    .roleText { color: #10B981; }
+  .role-going   { border-color: #93C5FD; }
+  .role-going   .roleText { color: #93C5FD; }
+  .role-waitlist{ border-color: #F59E0B; }
+  .role-waitlist .roleText { color: #F59E0B; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <!-- faux iOS status bar -->
+    <div class="statusbar">
+      <span class="time">9:41</span>
+      <span class="glyphs">
+        <span class="bars">&#9646;&#9646;&#9646;&#9646;</span>
+        <span>&#128246;</span>
+        <span class="batt"></span>
+      </span>
+    </div>
+
+    <!-- settings_topbar -->
+    <div class="header">
+      <div class="backBtn"><span class="back">&lsaquo;</span></div>
+      <div class="headerTitle">Participants</div>
+      <div class="headerSpacer"></div>
+    </div>
+
+    <!-- count header -->
+    <div class="countWrap">
+      <div class="countText">42 participants</div>
+    </div>
+
+    <!-- list -->
+    <div class="list">
+
+      <!-- a1: host, verified, photo -->
+      <div class="row">
+        <div class="rowInfo">
+          <div class="avatar initials" style="background:#176A5A;">
+            <span class="ini">LT</span>
+          </div>
+          <div class="rowText">
+            <div class="nameRow">
+              <span class="rowName">L&eacute;a Tremblay</span>
+              <span class="verified">&#10003;</span>
+            </div>
+            <div class="rowHandle">@lea.run</div>
+          </div>
+        </div>
+        <div class="roleBadge role-host"><span class="roleText">H&ocirc;te</span></div>
+      </div>
+
+      <!-- a2: going, initials fallback -->
+      <div class="row">
+        <div class="rowInfo">
+          <div class="avatar initials">
+            <span class="ini">MB</span>
+          </div>
+          <div class="rowText">
+            <div class="nameRow">
+              <span class="rowName">Marco Bianchi</span>
+            </div>
+            <div class="rowHandle">@marco.lift</div>
+          </div>
+        </div>
+        <div class="roleBadge role-going"><span class="roleText">Confirm&eacute;</span></div>
+      </div>
+
+      <!-- a3: waitlist, verified, photo -->
+      <div class="row">
+        <div class="rowInfo">
+          <div class="avatar initials" style="background:#475569;">
+            <span class="ini">AD</span>
+          </div>
+          <div class="rowText">
+            <div class="nameRow">
+              <span class="rowName">A&iuml;cha Diallo</span>
+              <span class="verified">&#10003;</span>
+            </div>
+            <div class="rowHandle">@aicha.yoga</div>
+          </div>
+        </div>
+        <div class="roleBadge role-waitlist"><span class="roleText">Liste d'attente</span></div>
+      </div>
+
+      <!-- a4: going, photo -->
+      <div class="row">
+        <div class="rowInfo">
+          <div class="avatar initials" style="background:#1D4ED8;">
+            <span class="ini">NC</span>
+          </div>
+          <div class="rowText">
+            <div class="nameRow">
+              <span class="rowName">Noah C&ocirc;t&eacute;</span>
+            </div>
+            <div class="rowHandle">@noah.swim</div>
+          </div>
+        </div>
+        <div class="roleBadge role-going"><span class="roleText">Confirm&eacute;</span></div>
+      </div>
+
+      <!-- extra realistic rows to fill the roster -->
+      <div class="row">
+        <div class="rowInfo">
+          <div class="avatar initials" style="background:#176A5A;">
+            <span class="ini">SR</span>
+          </div>
+          <div class="rowText">
+            <div class="nameRow">
+              <span class="rowName">Sofia Rossi</span>
+              <span class="verified">&#10003;</span>
+            </div>
+            <div class="rowHandle">@sofia.cycle</div>
+          </div>
+        </div>
+        <div class="roleBadge role-going"><span class="roleText">Confirm&eacute;</span></div>
+      </div>
+
+      <div class="row">
+        <div class="rowInfo">
+          <div class="avatar initials" style="background:#64748B;">
+            <span class="ini">TK</span>
+          </div>
+          <div class="rowText">
+            <div class="nameRow">
+              <span class="rowName">Thomas Keller</span>
+            </div>
+            <div class="rowHandle">@thomas.trail</div>
+          </div>
+        </div>
+        <div class="roleBadge role-waitlist"><span class="roleText">Liste d'attente</span></div>
+      </div>
+
+    </div>
+
+  </div>
+</body>
+</html>

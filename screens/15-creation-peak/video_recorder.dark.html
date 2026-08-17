@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=393, initial-scale=1" />
+<title>video_recorder_v2 — dark</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 393px; height: 852px; overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #000;
+  }
+  /* ── Stage: full-bleed camera feed + scrims ── */
+  .stage { position: relative; width: 393px; height: 852px; background: #000; overflow: hidden; }
+
+  /* Camera fallback (constant dark base #0A0E1A) with a faint subject scene */
+  .camera {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 80% at 50% 30%, #1b2233 0%, #11151f 55%, #0A0E1A 100%);
+  }
+  .camera::after {
+    /* faint silhouette so the feed reads like a real preview */
+    content: ""; position: absolute; left: 50%; bottom: 0;
+    width: 220px; height: 420px; transform: translateX(-50%);
+    background: radial-gradient(60% 50% at 50% 35%, rgba(255,255,255,0.06), transparent 70%);
+    border-radius: 110px 110px 0 0;
+  }
+  .scrim { position: absolute; left: 0; right: 0; height: 150px; }
+  .scrim-top { top: 0; background: rgba(0,0,0,0.45); }
+  .scrim-bottom { bottom: 0; background: rgba(0,0,0,0.5); }
+
+  /* ── iOS status bar ── */
+  .statusbar {
+    position: absolute; top: 0; left: 0; right: 0; height: 54px; z-index: 50;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 22px 0; color: #FFFFFF;
+  }
+  .sb-time { font-size: 15px; font-weight: 600; letter-spacing: 0.2px; }
+  .sb-right { display: flex; align-items: center; gap: 6px; }
+  .sb-right svg { display: block; }
+
+  /* ── Top bar: close · segment badge · flip ── */
+  .topbar {
+    position: absolute; top: 60px; left: 16px; right: 16px; z-index: 30;
+    display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .iconBtn {
+    width: 44px; height: 44px; border-radius: 999px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.4);
+  }
+  .iconGlyph { color: #FFFFFF; font-size: 20px; line-height: 1; }
+  .segmentBadge {
+    display: flex; flex-direction: row; align-items: center; gap: 6px;
+    min-height: 44px; padding: 0 14px; border-radius: 999px;
+    max-width: 220px; justify-content: center;
+    background: rgba(0,0,0,0.6);
+  }
+  .segmentGlyph { color: #FFFFFF; font-size: 15px; line-height: 1; }
+  .segmentText { color: #FFFFFF; font-size: 14px; font-weight: 600; white-space: nowrap; }
+
+  /* ── Progress (current segment) ── */
+  .progressContainer {
+    position: absolute; top: 122px; left: 20px; right: 20px; z-index: 25;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .progressTrack {
+    width: 100%; height: 4px; border-radius: 2px; overflow: hidden;
+    background: rgba(255,255,255,0.3);
+  }
+  .progressFill { height: 100%; border-radius: 2px; background: #D81F32; width: 46.6%; }
+  .timerText { color: #FFFFFF; font-size: 12px; font-weight: 600; margin-top: 8px; }
+
+  /* ── REC badge ── */
+  .recBadge {
+    position: absolute; top: 154px; left: 50%; transform: translateX(-50%); z-index: 25;
+    display: flex; flex-direction: row; align-items: center; gap: 7px;
+    padding: 5px 12px; border-radius: 999px; background: #D81F32;
+  }
+  .recDot { width: 8px; height: 8px; border-radius: 999px; background: #FFFFFF; }
+  .recText { color: #FFFFFF; font-size: 13px; font-weight: 800; letter-spacing: 1px; }
+
+  /* ── Bottom: record (stop) ── */
+  .bottom {
+    position: absolute; bottom: 40px; left: 24px; right: 24px; z-index: 30;
+    display: flex; flex-direction: column; align-items: center; gap: 18px;
+  }
+  .record {
+    width: 80px; height: 80px; border-radius: 999px; border: 5px solid rgba(255,255,255,0.9);
+    display: flex; align-items: center; justify-content: center;
+  }
+  /* recording → inner morphs to a rounded stop square */
+  .recordInnerStop { width: 30px; height: 30px; border-radius: 6px; background: #D81F32; }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <!-- Camera feed (caller-owned slot) — fallback constant-dark base -->
+    <div class="camera"></div>
+    <div class="scrim scrim-top"></div>
+    <div class="scrim scrim-bottom"></div>
+
+    <!-- iOS status bar -->
+    <div class="statusbar">
+      <span class="sb-time">9:41</span>
+      <span class="sb-right">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="#FFFFFF"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M8.5 2.5C11 2.5 13.2 3.5 14.8 5.1L13.6 6.4C12.3 5.1 10.5 4.3 8.5 4.3C6.5 4.3 4.7 5.1 3.4 6.4L2.2 5.1C3.8 3.5 6 2.5 8.5 2.5Z" fill="#FFFFFF"/><path d="M8.5 6.2C9.6 6.2 10.6 6.6 11.4 7.3L8.5 10.2L5.6 7.3C6.4 6.6 7.4 6.2 8.5 6.2Z" fill="#FFFFFF"/></svg>
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="#FFFFFF" opacity="0.5"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="#FFFFFF"/><rect x="23.5" y="4" width="1.5" height="4" rx="0.75" fill="#FFFFFF" opacity="0.5"/></svg>
+      </span>
+    </div>
+
+    <!-- Top bar: close · segment badge · flip -->
+    <div class="topbar">
+      <div class="iconBtn"><span class="iconGlyph">&#10005;</span></div>
+      <div class="segmentBadge">
+        <span class="segmentGlyph">&#127909;</span>
+        <span class="segmentText">Max 15s par segment</span>
+      </div>
+      <div class="iconBtn"><span class="iconGlyph">&#10227;</span></div>
+    </div>
+
+    <!-- Progress bar (recording state) -->
+    <div class="progressContainer">
+      <div class="progressTrack"><div class="progressFill"></div></div>
+      <div class="timerText">7s / 15s</div>
+    </div>
+
+    <!-- REC badge (recording state) -->
+    <div class="recBadge">
+      <div class="recDot"></div>
+      <span class="recText">REC</span>
+    </div>
+
+    <!-- Bottom: record button morphed to stop -->
+    <div class="bottom">
+      <div class="record"><div class="recordInnerStop"></div></div>
+    </div>
+  </div>
+</body>
+</html>

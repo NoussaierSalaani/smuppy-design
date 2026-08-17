@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html class="dark" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Smuppy V2 — Wallet Smups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --mint: #33A089;
+    --surface: #0A0E1A;
+    --container: #161B2A;
+    --text: #FFFFFF;
+    --variant: #94A3B8;
+    --outline: #2A3142;
+    --grad-a: #1A7D68;
+    --grad-b: #157082;
+  }
+  * { box-sizing:border-box; -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent; }
+  html { background:var(--surface); }
+  html, body { max-width:100%; overflow-x:hidden; }
+  body {
+    margin:0; width:393px; height:852px; overflow:hidden;
+    background:var(--surface); color:var(--text);
+    font-family:'Plus Jakarta Sans',-apple-system,system-ui,sans-serif;
+    font-size:15px; line-height:1.5; position:relative;
+  }
+
+  /* ── iOS status bar (faux) ─────────────────────────────────── */
+  .ios-status { position:absolute; top:0; left:0; right:0; height:54px; z-index:30;
+    display:flex; align-items:flex-end; justify-content:space-between;
+    padding:0 22px 8px; pointer-events:none; }
+  .ios-time { font-size:15px; font-weight:700; color:var(--text); letter-spacing:.02em; }
+  .ios-icons { display:flex; align-items:center; gap:6px; color:var(--text); }
+
+  /* ── Sub-screen header (below 54px safe-area) ──────────────── */
+  .v2-header { position:absolute; top:54px; left:0; right:0; z-index:20;
+    height:56px; padding:0 14px;
+    display:flex; align-items:center; gap:10px;
+    background:rgba(10,14,26,.86);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    backdrop-filter:blur(20px) saturate(180%);
+    border-bottom:1px solid var(--outline); }
+  .v2-back { width:40px; height:40px; border:none; border-radius:999px;
+    background:var(--container); border:1px solid var(--outline); color:var(--text);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; flex-shrink:0; transition:background .15s ease; }
+  .v2-back:active { background:rgba(51,160,137,.14); }
+  .v2-header-title { flex:1; text-align:center; font-size:16px;
+    font-weight:800; margin:0; color:var(--text); letter-spacing:-.01em; }
+  .v2-header-spacer { width:40px; flex-shrink:0; }
+
+  /* ── Scrollless content (fits one screen) ──────────────────── */
+  .v2-main { position:absolute; top:110px; left:0; right:0; bottom:0;
+    padding:14px 18px 18px; overflow:hidden; }
+
+  .v2-sec-title { font-size:11px; font-weight:800;
+    color:var(--variant); margin:14px 0 8px 4px;
+    text-transform:uppercase; letter-spacing:.10em; }
+
+  /* ── Smups balance hero ────────────────────────────────────── */
+  .smup-hero { display:flex; flex-direction:column; align-items:center;
+    background:linear-gradient(135deg, rgba(51,160,137,.18), rgba(51,160,137,.06));
+    border:1.5px solid rgba(51,160,137,.45);
+    border-radius:24px; padding:18px;
+    margin:0 0 12px;
+    box-shadow:0 0 28px rgba(51,160,137,.16); }
+  .smup-icon { width:48px; height:48px; border-radius:14px;
+    background:rgba(51,160,137,.16); border:1px solid rgba(51,160,137,.35);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:8px; }
+  .smup-amount { font-size:40px; font-weight:900; color:var(--text);
+    letter-spacing:-.03em; line-height:1; }
+  .smup-lbl { font-size:11px; font-weight:800; color:var(--mint);
+    letter-spacing:.10em; text-transform:uppercase; margin-top:6px; }
+  .smup-equiv { font-size:12px; font-weight:600; color:var(--variant); margin-top:8px; }
+
+  /* ── Actions ───────────────────────────────────────────────── */
+  .smup-actions { display:flex; gap:10px; margin:0 0 14px; }
+  .smup-btn { flex:1; display:inline-flex; align-items:center; justify-content:center; gap:7px;
+    padding:13px; border-radius:14px;
+    background:var(--container); border:1.5px solid rgba(51,160,137,.45);
+    color:var(--mint); font-family:inherit; font-size:13.5px; font-weight:800;
+    cursor:pointer; }
+  .smup-btn-primary {
+    background:linear-gradient(135deg, var(--grad-a), var(--grad-b));
+    color:#FFFFFF; border:none;
+    box-shadow:0 4px 14px rgba(21,112,130,.40); }
+
+  /* ── Filter chips (G7) ─────────────────────────────────────── */
+  .chips { display:flex; gap:6px; margin:0 0 12px; overflow-x:auto; scrollbar-width:none; }
+  .chips::-webkit-scrollbar { display:none; }
+  .chip { padding:7px 14px; border-radius:999px;
+    background:transparent; border:1.5px solid var(--outline);
+    font-size:12.5px; font-weight:700; color:var(--variant);
+    white-space:nowrap; cursor:pointer; }
+  .chip-on { background:rgba(51,160,137,.10);
+    color:var(--mint); border-color:var(--mint); }
+
+  /* ── Transactions ──────────────────────────────────────────── */
+  .txn { display:flex; align-items:center; gap:12px;
+    padding:11px 12px; border-radius:14px;
+    background:var(--container); border:1px solid var(--outline);
+    margin-bottom:8px; }
+  .txn-ic { width:32px; height:32px; border-radius:10px; flex-shrink:0;
+    display:inline-flex; align-items:center; justify-content:center; }
+  .txn-text { flex:1; min-width:0; }
+  .txn-lbl { font-size:13px; font-weight:700; color:var(--text); }
+  .txn-meta { font-size:11px; font-weight:500; color:var(--variant); margin-top:2px; }
+  .txn-count { font-size:13px; font-weight:800; flex-shrink:0; }
+  .txn-count-pos { color:var(--mint); }
+  .txn-count-neg { color:var(--variant); }
+</style>
+</head><body>
+
+<div class="ios-status">
+  <span class="ios-time">9:41</span>
+  <span class="ios-icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1.5" width="3" height="10.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+    <svg width="17" height="12" viewBox="0 0 17 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8.5 3.2C10.6 3.2 12.5 4 14 5.4M8.5 .6C11.7 .6 14.6 1.9 16.7 4M8.5 5.9C9.6 5.9 10.6 6.3 11.3 7M8.5 9.4l.01 0" stroke-linecap="round"/></svg>
+    <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="1" y="1" width="21" height="11" rx="3" stroke="currentColor" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="8" rx="1.5" fill="currentColor"/><rect x="23.5" y="4" width="1.8" height="5" rx=".9" fill="currentColor" fill-opacity=".5"/></svg>
+  </span>
+</div>
+
+<header class="v2-header">
+  <button class="v2-back" aria-label="Retour">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <h1 class="v2-header-title">Wallet Smups</h1>
+  <span class="v2-header-spacer"></span>
+</header>
+
+<main class="v2-main">
+  <div class="smup-hero">
+    <span class="smup-icon">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#33A089" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12.5V9a2 2 0 0 1 4 0M10 9V7a2 2 0 0 1 4 0v2M14 9.5V8a2 2 0 0 1 4 0v6.5a6 6 0 0 1-6 6h-1.6a4 4 0 0 1-2.9-1.25l-3.1-3.3a1.8 1.8 0 0 1 2.6-2.5L6 14"/></svg>
+    </span>
+    <div class="smup-amount">412</div>
+    <div class="smup-lbl">Smups disponibles</div>
+    <div class="smup-equiv">&asymp; $20.55 en valeur d&rsquo;envoi</div>
+  </div>
+
+  <div class="smup-actions">
+    <button class="smup-btn smup-btn-primary">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Acheter
+    </button>
+    <button class="smup-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#33A089" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+      Envoyer
+    </button>
+  </div>
+
+  <div class="chips">
+    <span class="chip chip-on">Tous &middot; 24</span>
+    <span class="chip">Achet&eacute;s &middot; 8</span>
+    <span class="chip">Envoy&eacute;s &middot; 12</span>
+    <span class="chip">Re&ccedil;us &middot; 4</span>
+  </div>
+
+  <h3 class="v2-sec-title">Historique</h3>
+
+  <div class="txn">
+    <span class="txn-ic" style="background:rgba(51,160,137,.14);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#33A089" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    </span>
+    <div class="txn-text">
+      <div class="txn-lbl">Achat &middot; 3 Smups</div>
+      <div class="txn-meta">$4.99</div>
+    </div>
+    <div class="txn-count txn-count-pos">+100</div>
+  </div>
+
+  <div class="txn">
+    <span class="txn-ic" style="background:rgba(148,163,184,.14);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="16" x2="12" y2="8"/><polyline points="8 12 12 8 16 12"/></svg>
+    </span>
+    <div class="txn-text">
+      <div class="txn-lbl">Envoy&eacute; &agrave; Sara Khan</div>
+    </div>
+    <div class="txn-count txn-count-neg">&minus;50</div>
+  </div>
+
+  <div class="txn">
+    <span class="txn-ic" style="background:rgba(51,160,137,.14);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#33A089" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><polyline points="8 12 12 16 16 12"/></svg>
+    </span>
+    <div class="txn-text">
+      <div class="txn-lbl">Re&ccedil;u de Marc Dubois</div>
+    </div>
+    <div class="txn-count txn-count-pos">+25</div>
+  </div>
+
+  <div class="txn">
+    <span class="txn-ic" style="background:rgba(51,160,137,.14);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#33A089" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    </span>
+    <div class="txn-text">
+      <div class="txn-lbl">Achat &middot; 10 Smups</div>
+      <div class="txn-meta">$14.99</div>
+    </div>
+    <div class="txn-count txn-count-pos">+50</div>
+  </div>
+</main>
+
+</body></html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=393, initial-scale=1" />
+<title>help_v2 — Centre d'aide (V2 dark)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body {
+    width: 393px;
+    height: 852px;
+    overflow: hidden;
+    background: #0A0E1A;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .screen {
+    width: 393px;
+    height: 852px;
+    background: #0A0E1A;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── faux iOS status bar (54px safe-area top inset) ── */
+  .statusbar {
+    height: 54px;
+    flex: 0 0 54px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 22px 8px;
+    color: #FFFFFF;
+  }
+  .statusbar .time { font-size: 15px; font-weight: 600; letter-spacing: -0.2px; }
+  .statusbar .glyphs { display: flex; align-items: center; gap: 6px; }
+  .statusbar .glyphs svg { display: block; }
+
+  /* ── SUB-SCREEN header: back chevron in circle + centered title ── */
+  .header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 6px 14px 6px;
+  }
+  .backBtn {
+    width: 38px; height: 38px;
+    border-radius: 19px;
+    background: #161B2A;
+    border: 1px solid #2A3142;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 38px;
+  }
+  .backGlyph { font-size: 22px; font-weight: 600; line-height: 22px; color: #FFFFFF; margin-left: -2px; }
+  .headerTitle {
+    flex: 1;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    color: #FFFFFF;
+  }
+  .headerSpacer { width: 38px; flex: 0 0 38px; }
+
+  /* ── search field ──────────────────────────────────── */
+  .searchWrap { padding: 6px 20px 6px; }
+  .searchField {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 14px;
+    border: 1px solid #2A3142;
+    background: #161B2A;
+    padding: 0 14px;
+    min-height: 44px;
+    gap: 8px;
+  }
+  .searchIcon { color: #94A3B8; display: flex; align-items: center; }
+  .searchInput {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 500;
+    color: #94A3B8;
+    padding: 9px 0;
+  }
+
+  /* ── list area (fits one screen, no scroll) ── */
+  .list {
+    flex: 1;
+    overflow: hidden;
+    padding: 2px 20px 16px;
+  }
+  .description {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #94A3B8;
+    margin-bottom: 10px;
+  }
+  .sectionTitle {
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    color: #94A3B8;
+    margin: 14px 0 7px 4px;
+  }
+
+  /* ── CANONICAL card (DS: single container, 1px outline, 16px radius) ── */
+  .card {
+    background: #161B2A;
+    border: 1px solid #2A3142;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  /* ── ListRow atom ──────────────────────────────────── */
+  .row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 11px 14px;
+    gap: 12px;
+    min-height: 54px;
+  }
+  .iconSquare {
+    width: 34px; height: 34px;
+    border-radius: 11px;
+    background: rgba(51,160,137,0.13);
+    display: flex; align-items: center; justify-content: center;
+    flex: 0 0 34px;
+  }
+  .texts { flex: 1; min-width: 0; }
+  .rowTitle {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #FFFFFF;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .rowSubtitle {
+    font-size: 12px;
+    font-weight: 500;
+    color: #94A3B8;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .chevron { font-size: 21px; font-weight: 400; color: #94A3B8; margin-left: 2px; margin-top: -2px; }
+  .divider { height: 1px; background: #2A3142; margin-left: 60px; }
+
+  /* ── footer contact CTA (gradient, white ink) ── */
+  .footer {
+    margin-top: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .contactIcon {
+    width: 38px; height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    color: #33A089;
+  }
+  .contactBtn {
+    align-self: stretch;
+    height: 52px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #1A7D68, #157082);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .contactBtn span {
+    color: #FFFFFF;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <!-- faux iOS status bar -->
+    <div class="statusbar">
+      <span class="time">9:41</span>
+      <span class="glyphs">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="#FFFFFF"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="6" width="3" height="6" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="#FFFFFF"><path d="M8.5 2C5.4 2 2.6 3.2.5 5.2l1.4 1.4C3.6 4.9 5.9 3.9 8.5 3.9s4.9 1 6.6 2.7l1.4-1.4C14.4 3.2 11.6 2 8.5 2zm0 3.8c-1.7 0-3.3.7-4.4 1.8l1.4 1.4c.8-.8 1.9-1.3 3-1.3s2.2.5 3 1.3l1.4-1.4c-1.1-1.1-2.7-1.8-4.4-1.8zm0 3.7L7 11l1.5 1.5L10 11 8.5 9.5z"/></svg>
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="#FFFFFF" opacity="0.5"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="#FFFFFF"/><rect x="24" y="4" width="1.5" height="4" rx="0.75" fill="#FFFFFF" opacity="0.5"/></svg>
+      </span>
+    </div>
+
+    <!-- sub-screen header: back chevron in circle + centered title -->
+    <div class="header">
+      <div class="backBtn"><span class="backGlyph">‹</span></div>
+      <div class="headerTitle">Centre d’aide</div>
+      <div class="headerSpacer"></div>
+    </div>
+
+    <!-- search field -->
+    <div class="searchWrap">
+      <div class="searchField">
+        <span class="searchIcon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+        </span>
+        <span class="searchInput">Rechercher une question</span>
+      </div>
+    </div>
+
+    <!-- list body -->
+    <div class="list">
+      <div class="description">Réponses aux questions courantes.</div>
+
+      <!-- Section: Compte -->
+      <div class="sectionTitle">Compte</div>
+      <div class="card">
+        <div class="row">
+          <div class="iconSquare">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#33A089" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div class="texts">
+            <div class="rowTitle">Comment réinitialiser mon mot de passe&nbsp;?</div>
+            <div class="rowSubtitle">Paramètres → Gestionnaire de mot de passe.</div>
+          </div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="divider"></div>
+        <div class="row">
+          <div class="iconSquare">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#33A089" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          </div>
+          <div class="texts">
+            <div class="rowTitle">Comment supprimer mon compte&nbsp;?</div>
+            <div class="rowSubtitle">Paramètres → Supprimer le compte. C’est permanent.</div>
+          </div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="divider"></div>
+        <div class="row">
+          <div class="iconSquare">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#33A089" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
+          </div>
+          <div class="texts">
+            <div class="rowTitle">Comment changer la langue de l’appli&nbsp;?</div>
+            <div class="rowSubtitle">Paramètres → Sélecteur de langue.</div>
+          </div>
+          <span class="chevron">›</span>
+        </div>
+      </div>
+
+      <!-- Section: Sécurité & confidentialité -->
+      <div class="sectionTitle">Sécurité &amp; confidentialité</div>
+      <div class="card">
+        <div class="row">
+          <div class="iconSquare">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#33A089" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.5 3.6 5.9V11c0 4.6 3 7.9 6.7 9 3.7-1.1 6.7-4.4 6.7-9V5.9l-6.7-2.4z"/><line x1="10.3" y1="8" x2="10.3" y2="12"/><line x1="10.3" y1="15" x2="10.3" y2="15"/></svg>
+          </div>
+          <div class="texts">
+            <div class="rowTitle">Comment signaler un utilisateur ou une publication&nbsp;?</div>
+            <div class="rowSubtitle">Menu ⋯ → Signaler. On examine sous 24 h.</div>
+          </div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="divider"></div>
+        <div class="row">
+          <div class="iconSquare">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#33A089" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 12 0v1"/><line x1="19" y1="8" x2="23" y2="12"/><line x1="23" y1="8" x2="19" y2="12"/></svg>
+          </div>
+          <div class="texts">
+            <div class="rowTitle">Pourquoi je ne peux pas devenir Fan d’un profil&nbsp;?</div>
+            <div class="rowSubtitle">Les profils privés nécessitent une demande acceptée.</div>
+          </div>
+          <span class="chevron">›</span>
+        </div>
+      </div>
+
+      <!-- footer: contact support CTA -->
+      <div class="footer">
+        <div class="contactIcon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#33A089" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h13A2.5 2.5 0 0 1 21 6.5v9A2.5 2.5 0 0 1 18.5 18H8l-5 4z"/></svg>
+        </div>
+        <div class="contactBtn"><span>Contacter le support</span></div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

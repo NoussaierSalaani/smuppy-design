@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=393, initial-scale=1" />
+<title>my_subscriptions_v2 — light</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 393px; height: 852px; overflow: hidden;
+    background: #FFFFFF;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .device { width: 393px; height: 852px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+
+  /* ── G1 SAFE-AREA: 54px top inset + faux iOS status bar ── */
+  .statusbar {
+    height: 54px; padding: 14px 22px 0; display: flex; align-items: center;
+    justify-content: space-between; color: #0F172A; flex-shrink: 0;
+  }
+  .statusbar .time { font-size: 15px; font-weight: 600; letter-spacing: -0.2px; }
+  .statusbar .glyphs { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .statusbar .bars { display: flex; align-items: flex-end; gap: 2px; height: 11px; }
+  .statusbar .bars i { width: 3px; background: #0F172A; border-radius: 1px; display: block; }
+  .statusbar .bars i:nth-child(1){ height: 4px; } .statusbar .bars i:nth-child(2){ height: 6px; }
+  .statusbar .bars i:nth-child(3){ height: 8px; } .statusbar .bars i:nth-child(4){ height: 11px; }
+  .batt { width: 24px; height: 12px; border: 1px solid rgba(15,23,42,0.5); border-radius: 3px; position: relative; padding: 1px; }
+  .batt::after { content:''; position:absolute; right:-3px; top:3px; width:2px; height:5px; background:rgba(15,23,42,0.5); border-radius:0 1px 1px 0; }
+  .batt i { display:block; width: 70%; height: 100%; background: #0F172A; border-radius: 1px; }
+
+  /* ── SUB-SCREEN header — back chevron in a circle + centered title ── */
+  .header { display: flex; flex-direction: row; align-items: center; padding: 6px 16px 8px; flex-shrink: 0; }
+  .backBtn {
+    width: 38px; height: 38px; border-radius: 19px; border: 1px solid #E2E8F0;
+    background: #F8FAFC; display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .backBtn svg { display: block; }
+  .headerTitle { flex: 1; text-align: center; font-size: 17px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px; }
+  .headerSpacer { width: 38px; }
+
+  /* ── List ── */
+  .list { flex: 1; overflow: hidden; padding: 6px 18px 20px; display: flex; flex-direction: column; gap: 11px; }
+
+  /* ── Stats card ── */
+  .statsCard {
+    display: flex; flex-direction: row; border-radius: 16px; border: 1px solid #E2E8F0;
+    background: #F8FAFC; padding: 16px; margin-bottom: 2px;
+  }
+  .statItem { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .statValue { font-size: 22px; font-weight: 800; color: #0F172A; }
+  .statLabel { font-size: 12.5px; font-weight: 500; color: #475569; }
+  .statDivider { width: 1px; margin: 0 16px; background: #E2E8F0; }
+
+  /* ── Subscription card ── */
+  .card { border-radius: 18px; border: 1px solid #E2E8F0; background: #F8FAFC; padding: 14px; }
+  .cardPress { display: flex; flex-direction: column; gap: 8px; }
+  .cardHeader { display: flex; flex-direction: row; align-items: center; gap: 10px; }
+  .logoSlot {
+    width: 44px; height: 44px; border-radius: 12px; overflow: hidden; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: #FFFFFF; font-weight: 700;
+  }
+  .titleCol { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .businessName { font-size: 16px; font-weight: 800; letter-spacing: -0.3px; color: #0F172A; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .planName { font-size: 13px; font-weight: 500; color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .statusWrap { display: flex; flex-direction: row; align-items: center; gap: 6px; flex-shrink: 0; }
+  .dot { width: 8px; height: 8px; border-radius: 4px; }
+  .statusWord { font-size: 12.5px; font-weight: 600; color: #0F172A; }
+
+  .warningBox { border-radius: 12px; padding: 9px 10px; background: #FEF3C7; border: 1px solid #FDE68A; }
+  .warningText { font-size: 12.5px; font-weight: 600; line-height: 18px; color: #92400E; }
+
+  .pricingRow { display: flex; flex-direction: row; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .pricingCol { display: flex; flex-direction: column; gap: 2px; }
+  .sessionsCol { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+  .metaLabel { font-size: 12px; font-weight: 500; color: #475569; }
+  .priceText { font-size: 19px; font-weight: 800; color: #0F172A; }
+  .sessionsText { font-size: 16px; font-weight: 700; color: #0F172A; }
+  .renewalText { font-size: 12.5px; font-weight: 500; color: #475569; }
+
+  .cardActions { display: flex; flex-direction: row; gap: 10px; margin-top: 12px; }
+  .actionBtn {
+    flex: 1; height: 42px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 600; cursor: pointer;
+  }
+  /* G7/G6: mint text + mint contour, transparent bg — never solid green */
+  .btn-ghost { background: transparent; color: #33A089; }
+  .btn-outline { background: transparent; border: 1px solid #33A089; color: #33A089; }
+  /* Primary reactivate = gradient CTA, white ink */
+  .btn-grad { background: linear-gradient(135deg,#1A7D68,#157082); color: #FFFFFF; }
+</style>
+</head>
+<body>
+  <div class="device">
+    <!-- G1 safe-area + iOS status bar -->
+    <div class="statusbar">
+      <div class="time">9:41</div>
+      <div class="glyphs">
+        <div class="bars"><i></i><i></i><i></i><i></i></div>
+        <span>&#xF8FF;</span>
+        <div class="batt"><i></i></div>
+      </div>
+    </div>
+
+    <!-- SUB-SCREEN header -->
+    <div class="header">
+      <div class="backBtn">
+        <svg width="11" height="18" viewBox="0 0 11 18" fill="none">
+          <path d="M9.5 1.5L2 9l7.5 7.5" stroke="#0F172A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="headerTitle">Mes abonnements</div>
+      <div class="headerSpacer"></div>
+    </div>
+
+    <!-- List -->
+    <div class="list">
+      <!-- Stats summary header -->
+      <div class="statsCard">
+        <div class="statItem">
+          <div class="statValue">3</div>
+          <div class="statLabel">Actifs</div>
+        </div>
+        <div class="statDivider"></div>
+        <div class="statItem">
+          <div class="statValue">169,90 &euro;</div>
+          <div class="statLabel">Par mois</div>
+        </div>
+      </div>
+
+      <!-- s1 — active, can cancel -->
+      <div class="card">
+        <div class="cardPress">
+          <div class="cardHeader">
+            <div class="logoSlot" style="background:#176A5A;">SL</div>
+            <div class="titleCol">
+              <div class="businessName">Studio Lumi&egrave;re</div>
+              <div class="planName">Illimit&eacute; mensuel</div>
+            </div>
+            <div class="statusWrap">
+              <div class="dot" style="background:#10B981;"></div>
+              <div class="statusWord">Actif</div>
+            </div>
+          </div>
+          <div class="pricingRow">
+            <div class="pricingCol">
+              <div class="metaLabel">Abonnement</div>
+              <div class="priceText">49,90 &euro;/mois</div>
+            </div>
+            <div class="sessionsCol">
+              <div class="metaLabel">S&eacute;ances</div>
+              <div class="sessionsText">3/10</div>
+            </div>
+          </div>
+          <div class="renewalText">Se renouvelle le 5 juin</div>
+        </div>
+        <div class="cardActions">
+          <div class="actionBtn btn-ghost">Voir</div>
+          <div class="actionBtn btn-outline">Annuler</div>
+        </div>
+      </div>
+
+      <!-- s2 — trial, warning, can cancel -->
+      <div class="card">
+        <div class="cardPress">
+          <div class="cardHeader">
+            <div class="logoSlot" style="background:#94A3B8;">CB</div>
+            <div class="titleCol">
+              <div class="businessName">CrossFit Bastille</div>
+              <div class="planName">Essai 7 jours</div>
+            </div>
+            <div class="statusWrap">
+              <div class="dot" style="background:#F59E0B;"></div>
+              <div class="statusWord">Essai</div>
+            </div>
+          </div>
+          <div class="warningBox">
+            <div class="warningText">Ton essai se termine dans 2 jours</div>
+          </div>
+          <div class="pricingRow">
+            <div class="pricingCol">
+              <div class="metaLabel">Abonnement</div>
+              <div class="priceText">18,00 &euro;/semaine</div>
+            </div>
+          </div>
+          <div class="renewalText">Se renouvelle le 9 juin</div>
+        </div>
+        <div class="cardActions">
+          <div class="actionBtn btn-ghost">Voir</div>
+          <div class="actionBtn btn-outline">Annuler</div>
+        </div>
+      </div>
+
+      <!-- s3 — active, scheduled cancel, can reactivate -->
+      <div class="card">
+        <div class="cardPress">
+          <div class="cardHeader">
+            <div class="logoSlot" style="background:#176A5A;">PR</div>
+            <div class="titleCol">
+              <div class="businessName">Pilates R&eacute;publique</div>
+              <div class="planName">Pack 8 s&eacute;ances</div>
+            </div>
+            <div class="statusWrap">
+              <div class="dot" style="background:#10B981;"></div>
+              <div class="statusWord">Actif</div>
+            </div>
+          </div>
+          <div class="pricingRow">
+            <div class="pricingCol">
+              <div class="metaLabel">Abonnement</div>
+              <div class="priceText">120,00 &euro;/mois</div>
+            </div>
+            <div class="sessionsCol">
+              <div class="metaLabel">S&eacute;ances</div>
+              <div class="sessionsText">5/8</div>
+            </div>
+          </div>
+          <div class="renewalText">Se termine le 28 juin</div>
+        </div>
+        <div class="cardActions">
+          <div class="actionBtn btn-ghost">Voir</div>
+          <div class="actionBtn btn-grad">R&eacute;activer</div>
+        </div>
+      </div>
+
+      <!-- s4 — expired, terminal, no CTA -->
+      <div class="card">
+        <div class="cardPress">
+          <div class="cardHeader">
+            <div class="logoSlot" style="background:#94A3B8;">NL</div>
+            <div class="titleCol">
+              <div class="businessName">Nutrition Lab</div>
+              <div class="planName">Suivi annuel</div>
+            </div>
+            <div class="statusWrap">
+              <div class="dot" style="background:#EF4444;"></div>
+              <div class="statusWord">Expir&eacute;</div>
+            </div>
+          </div>
+          <div class="pricingRow">
+            <div class="pricingCol">
+              <div class="metaLabel">Abonnement</div>
+              <div class="priceText">299,00 &euro;/an</div>
+            </div>
+          </div>
+          <div class="renewalText">Termin&eacute; le 15 mai</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

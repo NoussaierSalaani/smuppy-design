@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=393, initial-scale=1">
+<title>data_export_v2 — dark</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 393px;
+    height: 852px;
+    overflow: hidden;
+    background: #0A0E1A;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .device {
+    width: 393px;
+    height: 852px;
+    background: #0A0E1A;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── iOS status bar (faux) ── */
+  .statusbar {
+    height: 54px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 22px 8px 22px;
+  }
+  .statusbar .time {
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+  }
+  .statusbar .glyphs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .statusbar .glyphs svg { display: block; }
+
+  /* ── Sub-screen header (back chevron in circle + centered title) ── */
+  .header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 52px;
+    padding: 0 16px;
+    border-bottom: 0.5px solid #2A3142;
+    flex-shrink: 0;
+  }
+  .backBtn {
+    position: absolute;
+    left: 16px;
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    border: 1px solid #2A3142;
+    background: #161B2A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .backBtn svg { display: block; }
+  .headerTitle {
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+  }
+
+  /* ── Body (no scroll, content fits) ── */
+  .body {
+    flex: 1;
+    overflow: hidden;
+    padding: 22px 20px 16px 20px;
+  }
+
+  .eyebrow {
+    color: #33A089;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .heading {
+    color: #FFFFFF;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.6px;
+    line-height: 34px;
+    margin-top: 8px;
+  }
+  .gdpr {
+    color: #94A3B8;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 22px;
+    margin-top: 12px;
+  }
+
+  /* ── Cards (outlined, container surface) ── */
+  .cardBlock { margin-top: 18px; }
+  .card {
+    background: #161B2A;
+    border: 1px solid #2A3142;
+    border-radius: 20px;
+    padding: 16px;
+  }
+  .cardRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .cardIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(51,160,137,0.12);
+    border: 1px solid rgba(51,160,137,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .cardIcon svg { display: block; }
+  .cardTitle {
+    color: #FFFFFF;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+  }
+  .cardBody {
+    color: #94A3B8;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    margin-top: 4px;
+  }
+
+  /* ── Sticky CTA footer (gradient, white ink) ── */
+  .footer {
+    flex-shrink: 0;
+    background: #0A0E1A;
+    border-top: 0.5px solid #2A3142;
+    padding: 14px 20px 22px 20px;
+  }
+  .ctaBtn {
+    height: 52px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #1A7D68, #157082);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    overflow: hidden;
+  }
+  .ctaBtn svg { display: block; }
+  .ctaBtn .label {
+    color: #FFFFFF;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+  }
+</style>
+</head>
+<body>
+  <div class="device">
+
+    <!-- iOS status bar -->
+    <div class="statusbar">
+      <span class="time">9:41</span>
+      <span class="glyphs">
+        <svg width="18" height="11" viewBox="0 0 18 11" fill="none">
+          <rect x="0" y="7" width="3" height="4" rx="0.6" fill="#FFFFFF"/>
+          <rect x="4.5" y="5" width="3" height="6" rx="0.6" fill="#FFFFFF"/>
+          <rect x="9" y="2.5" width="3" height="8.5" rx="0.6" fill="#FFFFFF"/>
+          <rect x="13.5" y="0" width="3" height="11" rx="0.6" fill="#FFFFFF"/>
+        </svg>
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="none">
+          <path d="M8 2.2c2.6 0 5 1 6.8 2.7l-1.4 1.5A7.6 7.6 0 0 0 8 4.3 7.6 7.6 0 0 0 2.6 6.4L1.2 4.9A9.7 9.7 0 0 1 8 2.2z" fill="#FFFFFF"/>
+          <path d="M8 5.7c1.4 0 2.7.5 3.7 1.5l-1.5 1.5A3.1 3.1 0 0 0 8 7.8c-.8 0-1.6.3-2.2.9L4.3 7.2A5.2 5.2 0 0 1 8 5.7z" fill="#FFFFFF"/>
+          <circle cx="8" cy="10" r="1.2" fill="#FFFFFF"/>
+        </svg>
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none">
+          <rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="#FFFFFF" stroke-opacity="0.5"/>
+          <rect x="2" y="2" width="18" height="8" rx="1.6" fill="#FFFFFF"/>
+          <rect x="24" y="3.5" width="1.5" height="5" rx="0.75" fill="#FFFFFF" fill-opacity="0.6"/>
+        </svg>
+      </span>
+    </div>
+
+    <!-- Sub-screen header -->
+    <div class="header">
+      <div class="backBtn">
+        <svg width="11" height="18" viewBox="0 0 11 18" fill="none">
+          <path d="M9 1.5 1.5 9 9 16.5" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="headerTitle">Mes données</span>
+    </div>
+
+    <!-- Body -->
+    <div class="body">
+      <div class="eyebrow">TES DONNÉES</div>
+      <div class="heading">Exporter mes données</div>
+      <div class="gdpr">Reçois une copie de toutes tes données Smuppy (profil, posts, activités) au format ZIP.</div>
+
+      <!-- Card — Dernière demande -->
+      <div class="cardBlock">
+        <div class="card">
+          <div class="cardRow">
+            <div class="cardIcon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="8" stroke="#33A089" stroke-width="1.6"/>
+                <path d="M10 5.5V10l3 2" stroke="#33A089" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <div class="cardTitle">Dernière demande</div>
+              <div class="cardBody">Aucune demande en cours.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card — Inclus dans l'export -->
+      <div class="cardBlock">
+        <div class="card">
+          <div class="cardRow">
+            <div class="cardIcon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M3.5 6.5 10 3l6.5 3.5v7L10 17l-6.5-3.5v-7Z" stroke="#33A089" stroke-width="1.6" stroke-linejoin="round"/>
+                <path d="M3.5 6.5 10 10m0 0 6.5-3.5M10 10v7" stroke="#33A089" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <div class="cardTitle">Inclus dans l'export</div>
+              <div class="cardBody">Profil · Posts · Peaks · Activités · Messages · Paiements</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sticky CTA -->
+    <div class="footer">
+      <div class="ctaBtn">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M9 2v9m0 0 3.2-3.2M9 11 5.8 7.8M3 13.5V15a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-1.5" stroke="#FFFFFF" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="label">Demander l'export</span>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

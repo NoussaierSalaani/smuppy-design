@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=393, initial-scale=1" />
+<title>payout_onboarding_v2 — verified (dark)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body {
+    width: 393px; height: 852px; overflow: hidden;
+    background: #0A0E1A;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .device { width: 393px; height: 852px; background: #0A0E1A; position: relative; display: flex; flex-direction: column; }
+
+  /* ── iOS status bar ── */
+  .statusbar {
+    height: 54px; flex-shrink: 0;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 0 24px 8px; color: #FFFFFF;
+  }
+  .statusbar .time { font-size: 15px; font-weight: 600; letter-spacing: 0.2px; }
+  .statusbar .glyphs { display: flex; align-items: center; gap: 7px; }
+  .statusbar .glyphs svg { display: block; }
+
+  /* ── Header ── */
+  .header {
+    display: flex; flex-direction: row; align-items: center;
+    padding: 8px 12px 6px;
+  }
+  .header .back {
+    width: 56px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    color: #33A089; font-size: 26px; font-weight: 600; line-height: 1;
+  }
+  .header .title {
+    flex: 1; text-align: center; color: #FFFFFF;
+    font-size: 16px; font-weight: 800; letter-spacing: -0.2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .header .spacer { width: 56px; }
+
+  /* ── Scroll area ── */
+  .scroll { flex: 1; overflow: hidden; padding: 0 20px 40px; }
+
+  /* ── Gradient balance card ── */
+  .balance-card {
+    background: #176A5A;
+    border-radius: 22px;
+    padding: 22px;
+    display: flex; flex-direction: column; align-items: center;
+    margin-top: 8px;
+  }
+  .verified-pill {
+    display: inline-flex; flex-direction: row; align-items: center;
+    padding: 5px 13px; border-radius: 999px;
+    background: rgba(0,0,0,0.2);
+  }
+  .verified-pill .txt {
+    color: #FFFFFF; font-size: 11.5px; font-weight: 800;
+    white-space: nowrap; letter-spacing: 0.2px;
+  }
+  .balance-hint {
+    color: rgba(255,255,255,0.85); font-size: 12.5px; font-weight: 600;
+    margin-top: 16px;
+  }
+  .balance-amount {
+    color: #FFFFFF; font-size: 40px; font-weight: 800;
+    letter-spacing: -1px; margin-top: 2px;
+    font-variant-numeric: tabular-nums;
+  }
+  .balance-sub {
+    color: rgba(255,255,255,0.8); font-size: 12px; font-weight: 500;
+    margin-top: 4px; text-align: center;
+  }
+
+  /* ── CTA ── */
+  .cta { margin-top: 18px; }
+  .btn-gradient {
+    height: 56px; border-radius: 999px;
+    background: linear-gradient(135deg, #1A7D68, #157082);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .btn-gradient .label {
+    color: #FFFFFF; font-size: 17px; font-weight: 600; letter-spacing: -0.2px;
+  }
+
+  /* ── Card (rows container) ── */
+  .card {
+    border-radius: 20px;
+    border: 0.5px solid #2A3142;
+    background: #161B2A;
+    padding: 0 16px;
+    margin-top: 22px;
+  }
+
+  /* ── ListRow ── */
+  .row {
+    display: flex; flex-direction: row; align-items: center;
+    gap: 13px; padding: 12px 0; min-height: 56px;
+  }
+  .row + .row { border-top: 0.5px solid #2A3142; }
+  .icon-square {
+    width: 34px; height: 34px; border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(51,160,137,0.13);
+    color: #33A089; font-size: 16px; line-height: 1;
+    flex-shrink: 0;
+  }
+  .row .texts { flex: 1; min-width: 0; }
+  .row .row-title {
+    color: #FFFFFF; font-size: 15px; font-weight: 600;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .row .row-value {
+    color: #94A3B8; font-size: 13px; font-weight: 500;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .row .chevron {
+    color: #94A3B8; font-size: 22px; font-weight: 400;
+    margin-left: 2px; margin-top: -2px; line-height: 1;
+  }
+</style>
+</head>
+<body>
+  <div class="device">
+
+    <!-- iOS status bar -->
+    <div class="statusbar">
+      <span class="time">9:41</span>
+      <span class="glyphs">
+        <!-- cellular -->
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+          <rect x="0" y="8" width="3" height="4" rx="1" fill="#FFFFFF"/>
+          <rect x="5" y="5.5" width="3" height="6.5" rx="1" fill="#FFFFFF"/>
+          <rect x="10" y="3" width="3" height="9" rx="1" fill="#FFFFFF"/>
+          <rect x="15" y="0.5" width="3" height="11.5" rx="1" fill="#FFFFFF"/>
+        </svg>
+        <!-- wifi -->
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+          <path d="M8.5 2.2c2.6 0 5 1 6.8 2.7l1.2-1.3C14.4 1.4 11.6 0.2 8.5 0.2S2.6 1.4 0.5 3.6l1.2 1.3C3.5 3.2 5.9 2.2 8.5 2.2z" fill="#FFFFFF"/>
+          <path d="M8.5 5.6c1.5 0 2.9 0.6 3.9 1.6l1.2-1.3C12.2 4.5 10.4 3.8 8.5 3.8s-3.7 0.7-5.1 2.1l1.2 1.3c1-1 2.4-1.6 3.9-1.6z" fill="#FFFFFF"/>
+          <path d="M8.5 9c0.7 0 1.4 0.3 1.9 0.8l-1.9 2-1.9-2C7.1 9.3 7.8 9 8.5 9z" fill="#FFFFFF"/>
+        </svg>
+        <!-- battery -->
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none">
+          <rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="#FFFFFF" stroke-opacity="0.5"/>
+          <rect x="2" y="2" width="18" height="8" rx="1.5" fill="#FFFFFF"/>
+          <rect x="24" y="4" width="1.5" height="4" rx="0.75" fill="#FFFFFF" fill-opacity="0.5"/>
+        </svg>
+      </span>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+      <div class="back" aria-label="Retour">‹</div>
+      <div class="title">Mes paiements</div>
+      <div class="spacer"></div>
+    </div>
+
+    <!-- Scroll content (verified state) -->
+    <div class="scroll">
+
+      <!-- Gradient balance card -->
+      <div class="balance-card">
+        <div class="verified-pill"><span class="txt">✓ VÉRIFIÉ · TU PEUX ENCAISSER</span></div>
+        <div class="balance-hint">Solde disponible</div>
+        <div class="balance-amount">$248.50</div>
+        <div class="balance-sub">Prochain virement automatique le 7 juin</div>
+      </div>
+
+      <!-- Withdraw CTA -->
+      <div class="cta">
+        <div class="btn-gradient"><span class="label">Retirer maintenant</span></div>
+      </div>
+
+      <!-- Rows -->
+      <div class="card">
+        <div class="row">
+          <div class="icon-square">▦</div>
+          <div class="texts"><div class="row-title">Tableau de bord Stripe</div></div>
+          <span class="chevron">›</span>
+        </div>
+        <div class="row">
+          <div class="icon-square">▢</div>
+          <div class="texts"><div class="row-title">Compte bancaire</div></div>
+          <span class="row-value">•••• 4291</span>
+        </div>
+        <div class="row">
+          <div class="icon-square">⟲</div>
+          <div class="texts"><div class="row-title">Historique des virements</div></div>
+          <span class="chevron">›</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

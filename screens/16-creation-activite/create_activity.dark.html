@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CreateActivityV2View — Récap (dark)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: #05070D;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 24px;
+  }
+
+  /* ── Device frame 393×852 ── */
+  .device {
+    width: 393px;
+    height: 852px;
+    background: #0A0E1A;            /* surface */
+    border-radius: 44px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── faux iOS status bar (lives inside the 54px top safe-area inset) ── */
+  .statusbar {
+    height: 54px;                  /* TOP SAFE-AREA inset — header never clipped */
+    flex: 0 0 54px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 26px 6px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .statusbar .time { letter-spacing: 0.3px; }
+  .statusbar .icons { display: flex; align-items: center; gap: 6px; }
+  .statusbar svg { display: block; }
+
+  /* ── root (flex:1 column) ── */
+  .root { flex: 1; display: flex; flex-direction: column; min-height: 0; background: #0A0E1A; }
+
+  /* ── header (Settings-style top bar) ── */
+  /* RN: paddingHorizontal 12, paddingTop 8, paddingBottom 6 */
+  .header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 12px 6px;
+  }
+  /* ghost Button size=sm → height control.sm 36, paddingHorizontal spacing.md(12) */
+  .btn-ghost-sm {
+    height: 36px;
+    min-width: 36px;
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 0;
+    border-radius: 14px;            /* radius.md */
+    color: #33A089;                 /* ghost ink = primary */
+    font-size: 14px;                /* label-md */
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .header-title {
+    flex: 1;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 800;
+    color: #FFFFFF;                 /* onSurface */
+    margin: 0 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .header-counter {
+    min-width: 44px;
+    text-align: right;
+    font-size: 13px;
+    font-weight: 600;
+    color: #94A3B8;                 /* onSurfaceVariant */
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── stepped progress indicator ── */
+  /* RN: row, space-between, paddingHorizontal 20, marginTop 8, marginBottom 4 */
+  .steps {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 20px;
+    margin-top: 8px;
+    margin-bottom: 4px;
+  }
+  .step { flex: 1; display: flex; flex-direction: column; align-items: center; }
+  .step-dot {
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    border: 1.5px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* done / current → primary fill + primary border */
+  .dot-done, .dot-current {
+    background: #33A089;            /* primary */
+    border-color: #33A089;
+  }
+  /* upcoming → surfaceContainerHigh fill + outline border */
+  .dot-upcoming {
+    background: #1E2435;            /* surfaceContainerHigh */
+    border-color: #2A3142;          /* outline */
+  }
+  .step-dot-text { font-size: 13px; font-weight: 800; }
+  .ink-onprimary { color: #04130F; }       /* onPrimary (dark ink on mint) */
+  .ink-variant  { color: #94A3B8; }        /* onSurfaceVariant */
+  .step-label {
+    font-size: 11px;
+    font-weight: 500;
+    margin-top: 6px;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .label-current { color: #FFFFFF; font-weight: 700; }
+  .label-other   { color: #94A3B8; font-weight: 500; }
+
+  /* ── scroll content ── */
+  /* RN: paddingHorizontal 20, paddingTop 16, paddingBottom 28 */
+  .scroll {
+    flex: 1;
+    overflow: hidden;
+    padding: 16px 20px 28px;
+  }
+  .section-heading {
+    font-size: 20px;
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+  .section-subheading {
+    font-size: 13px;
+    font-weight: 500;
+    color: #94A3B8;
+    margin-top: 4px;
+    line-height: 19px;
+  }
+
+  /* ── editable summary field rows (ghost Button size=lg) ── */
+  /* RN fieldRowBtn: marginTop 12, minHeight 56, width 100% */
+  .field-row {
+    margin-top: 12px;
+    min-height: 56px;
+    width: 100%;
+    border-radius: 14px;            /* radius.md (ghost) */
+    background: transparent;
+    border: 0;
+    padding: 0 20px;                /* lg paddingHorizontal spacing.xl */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: #33A089;                 /* ghost ink = primary */
+    font-size: 17px;                /* body-lg */
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    gap: 0;
+  }
+  /* The RN child is a single template string "{label}  {value}  ›" rendered
+     in one Text. Reproduced with spaced spans for faithful layout. */
+  .field-row .frow-label { white-space: pre; }
+  .field-row .frow-value { white-space: pre; }
+  .field-row .frow-chev  { white-space: pre; }
+
+  /* ── sticky footer nav ── */
+  /* RN footer: paddingHorizontal 20, paddingTop 12, paddingBottom 20,
+     surfaceContainerHigh bg, hairline top border outline */
+  .footer {
+    flex: 0 0 auto;
+    background: #1E2435;            /* surfaceContainerHigh */
+    border-top: 0.5px solid #2A3142;/* outline hairline */
+    padding: 12px 20px 20px;
+  }
+  /* gradient Button size=lg → height control.lg 52, radius pill 999, white ink */
+  .btn-gradient-lg {
+    width: 100%;
+    height: 52px;
+    border-radius: 999px;          /* radius.pill */
+    border: 0;
+    background: linear-gradient(135deg, #1A7D68, #157082); /* CTA gradient */
+    color: #FFFFFF;                 /* GRADIENT_INK constant white */
+    font-size: 17px;                /* body-lg */
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+  <div class="device">
+
+    <!-- faux iOS status bar + top safe-area inset (54px) -->
+    <div class="statusbar">
+      <span class="time">9:41</span>
+      <span class="icons">
+        <!-- cellular -->
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="#FFFFFF">
+          <rect x="0"  y="8" width="3" height="4" rx="0.7"/>
+          <rect x="5"  y="6" width="3" height="6" rx="0.7"/>
+          <rect x="10" y="3" width="3" height="9" rx="0.7"/>
+          <rect x="15" y="0" width="3" height="12" rx="0.7"/>
+        </svg>
+        <!-- wifi -->
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+          <path d="M8.5 11.2 10.6 8.7a3 3 0 0 0-4.2 0L8.5 11.2Z" fill="#FFFFFF"/>
+          <path d="M3.8 6.1a7.2 7.2 0 0 1 9.4 0" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M1.2 3.4a11 11 0 0 1 14.6 0" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <!-- battery -->
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none">
+          <rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#FFFFFF" stroke-opacity="0.5"/>
+          <rect x="2"   y="2"   width="18" height="8" rx="1.8" fill="#FFFFFF"/>
+          <rect x="23"  y="4"   width="2" height="4" rx="1" fill="#FFFFFF" fill-opacity="0.6"/>
+        </svg>
+      </span>
+    </div>
+
+    <div class="root">
+
+      <!-- ── Settings-style top bar ── -->
+      <div class="header">
+        <button class="btn-ghost-sm" aria-label="Retour">‹</button>
+        <div class="header-title" role="heading" aria-level="1">Créer une activité</div>
+        <!-- stepCounterTemplate "{{current}}/{{total}}" → currentStep 4 (+1) / 5 -->
+        <div class="header-counter">5/5</div>
+      </div>
+
+      <!-- ── Stepped progress indicator (STEPS_AT(4): 4 done, last current) ── -->
+      <div class="steps">
+        <!-- step 0 Quoi → done -->
+        <div class="step">
+          <div class="step-dot dot-done"><span class="step-dot-text ink-onprimary">✓</span></div>
+          <span class="step-label label-other">Quoi</span>
+        </div>
+        <!-- step 1 Quand → done -->
+        <div class="step">
+          <div class="step-dot dot-done"><span class="step-dot-text ink-onprimary">✓</span></div>
+          <span class="step-label label-other">Quand</span>
+        </div>
+        <!-- step 2 Où → done -->
+        <div class="step">
+          <div class="step-dot dot-done"><span class="step-dot-text ink-onprimary">✓</span></div>
+          <span class="step-label label-other">Où</span>
+        </div>
+        <!-- step 3 Détails → done -->
+        <div class="step">
+          <div class="step-dot dot-done"><span class="step-dot-text ink-onprimary">✓</span></div>
+          <span class="step-label label-other">Détails</span>
+        </div>
+        <!-- step 4 Récap → current -->
+        <div class="step">
+          <div class="step-dot dot-current"><span class="step-dot-text ink-onprimary">5</span></div>
+          <span class="step-label label-current">Récap</span>
+        </div>
+      </div>
+
+      <!-- ── scroll content (Review step) ── -->
+      <div class="scroll">
+        <div class="section-heading" role="heading" aria-level="2">Récap</div>
+        <div class="section-subheading">Vérifie avant de publier.</div>
+
+        <!-- REVIEW_FIELDS: editable ghost-Button rows.
+             RN child = "{label}  {value}  ›" (two spaces between segments). -->
+        <button class="field-row" aria-label="Type, Sortie de groupe, modifier">
+          <span class="frow-label">Type</span><span class="frow-value">  Sortie de groupe</span><span class="frow-chev">  ›</span>
+        </button>
+        <button class="field-row" aria-label="Catégorie, Course à pied, modifier">
+          <span class="frow-label">Catégorie</span><span class="frow-value">  Course à pied</span><span class="frow-chev">  ›</span>
+        </button>
+        <button class="field-row" aria-label="Quand, mer. 4 juin 2026 · 18:30, modifier">
+          <span class="frow-label">Quand</span><span class="frow-value">  mer. 4 juin 2026 · 18:30</span><span class="frow-chev">  ›</span>
+        </button>
+        <button class="field-row" aria-label="Lieu, Parc La Fontaine, Montréal, modifier">
+          <span class="frow-label">Lieu</span><span class="frow-value">  Parc La Fontaine, Montréal</span><span class="frow-chev">  ›</span>
+        </button>
+        <button class="field-row" aria-label="Capacité, 12 participants, modifier">
+          <span class="frow-label">Capacité</span><span class="frow-value">  12 participants</span><span class="frow-chev">  ›</span>
+        </button>
+        <button class="field-row" aria-label="Prix, Gratuit, modifier">
+          <span class="frow-label">Prix</span><span class="frow-value">  Gratuit</span><span class="frow-chev">  ›</span>
+        </button>
+      </div>
+
+      <!-- ── sticky footer nav (last step → gradient Create CTA) ── -->
+      <div class="footer">
+        <button class="btn-gradient-lg" aria-label="Créer l’activité et la publier">Créer l’activité</button>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

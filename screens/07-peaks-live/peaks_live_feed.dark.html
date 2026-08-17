@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=393, initial-scale=1" />
+<title>peaks_live_feed_v2</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 393px; height: 852px; overflow: hidden;
+    background: #0A0E1A;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #FFFFFF;
+  }
+  .screen { width: 393px; height: 852px; background: #0A0E1A; display: flex; flex-direction: column; position: relative; }
+
+  /* ---- faux iOS status bar ---- */
+  .statusbar {
+    height: 54px; display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 0 22px 8px; font-size: 15px; font-weight: 600; color: #FFFFFF;
+  }
+  .statusbar .glyphs { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+
+  /* ---- G6 feed header: search · wordmark · bell ---- */
+  .header { display: flex; flex-direction: row; align-items: center; padding: 6px 16px 4px; }
+  .header-side { width: 40px; height: 40px; display: flex; align-items: center; }
+  .header-side.right { justify-content: flex-end; position: relative; }
+  .wordmark { flex: 1; text-align: center; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: #33A089; }
+  .bell-badge { position: absolute; top: 4px; right: 2px; width: 8px; height: 8px; border-radius: 4px; background: #DC2626; border: 1.5px solid #0A0E1A; }
+
+  /* ---- segmented sub-tabs: TEXT + 1px contour, active = mint text + mint contour (NO solid fill) ---- */
+  .subtabs-wrap { display: flex; justify-content: center; padding: 6px 16px 4px; }
+  .subtabs { display: flex; flex-direction: row; gap: 8px; }
+  .subtab {
+    padding: 8px 20px; border-radius: 999px; font-size: 15px; font-weight: 700;
+    border: 1px solid #2A3142; background: transparent; color: #94A3B8;
+  }
+  .subtab.active {
+    color: #33A089; border-color: #33A089; background: rgba(51,160,137,0.10);
+  }
+
+  /* ---- G7 category filter chips: mint text + mint contour, transparent / subtle tint when selected ---- */
+  .chips {
+    display: flex; flex-direction: row; gap: 8px;
+    padding: 6px 16px 8px; overflow-x: hidden; white-space: nowrap;
+  }
+  .chip {
+    height: 36px; padding: 0 16px; border-radius: 999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; border: 1px solid #2A3142;
+    flex: 0 0 auto; background: transparent; color: #94A3B8;
+  }
+  .chip.on { background: rgba(51,160,137,0.12); border-color: #33A089; color: #33A089; }
+
+  /* ---- 2-col grid ---- */
+  .grid {
+    flex: 1; overflow: hidden;
+    padding: 0 14px 100px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .row { display: flex; flex-direction: row; justify-content: space-between; }
+  .cell { width: 48.5%; position: relative; }
+
+  /* PeakLiveCard: aspectRatio 7/10, radius 28 */
+  .card {
+    width: 100%; aspect-ratio: 7 / 10; border-radius: 28px; overflow: hidden;
+    background: #000; position: relative; display: block;
+  }
+  .card .img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .card .scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, transparent 55%, rgba(0,0,0,0.7) 100%);
+  }
+  .play-pill {
+    position: absolute; top: 10px; left: 10px;
+    display: flex; flex-direction: row; align-items: center; gap: 3px;
+    padding: 3px 8px; border-radius: 999px; background: rgba(0,0,0,0.45);
+  }
+  .play-glyph { color: #fff; font-size: 9px; }
+  .play-text { color: #fff; font-size: 11px; font-weight: 700; }
+  .card .name {
+    position: absolute; left: 11px; right: 11px; bottom: 10px;
+    color: #fff; font-size: 12px; font-weight: 700;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* ---- G5 bottom nav ---- */
+  .bottomnav-wrap { width: 100%; position: absolute; left: 0; bottom: 0; padding: 0 0 26px; }
+  .bottomnav {
+    margin: 0 16px; height: 62px; background: #161B2A;
+    border: 1px solid #2A3142; border-radius: 28px;
+    display: flex; flex-direction: row; align-items: center; justify-content: space-around;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; color: #64748B; }
+  .nav-item.active { color: #33A089; }
+  .nav-lbl { font-size: 10px; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <!-- status bar -->
+    <div class="statusbar">
+      <span>9:41</span>
+      <span class="glyphs">
+        <svg width="18" height="11" viewBox="0 0 18 11" fill="#fff"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="#fff"><path d="M8 2.2c2 0 3.8.8 5.1 2L14.4 2.9C12.7 1.2 10.4.2 8 .2S3.3 1.2 1.6 2.9L2.9 4.2C4.2 3 6 2.2 8 2.2z" opacity=".4"/><path d="M8 5.2c1.1 0 2.1.4 2.9 1.1l1.3-1.3C11 3.9 9.6 3.3 8 3.3s-3 .6-4.2 1.7l1.3 1.3C5.9 5.6 6.9 5.2 8 5.2z" opacity=".7"/><circle cx="8" cy="9" r="1.7"/></svg>
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="#fff" opacity=".5"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="#fff"/><rect x="23.5" y="3.5" width="1.5" height="5" rx="0.75" fill="#fff" opacity=".5"/></svg>
+      </span>
+    </div>
+
+    <!-- G6 header: search · Smuppy wordmark · bell -->
+    <div class="header">
+      <div class="header-side">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16" y1="16" x2="21" y2="21"/></svg>
+      </div>
+      <div class="wordmark">Smuppy</div>
+      <div class="header-side right">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="bell-badge"></span>
+      </div>
+    </div>
+
+    <!-- segmented sub-tabs (text + mint contour, NO solid fill) -->
+    <div class="subtabs-wrap">
+      <div class="subtabs" role="tablist" aria-label="Peaks ou Live">
+        <div class="subtab active" role="tab" aria-selected="true">Peaks</div>
+        <div class="subtab" role="tab" aria-selected="false">Live</div>
+      </div>
+    </div>
+
+    <!-- filter chips -->
+    <div class="chips" aria-label="Filtres">
+      <span class="chip on">Tous</span>
+      <span class="chip">Challenge</span>
+      <span class="chip">Following</span>
+      <span class="chip">Trending</span>
+    </div>
+
+    <!-- grid -->
+    <div class="grid">
+      <div class="row">
+        <div class="cell">
+          <div class="card">
+            <img class="img" src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=70" alt="" />
+            <div class="scrim"></div>
+            <div class="play-pill"><span class="play-glyph">&#9654;</span><span class="play-text">12k</span></div>
+            <div class="name">Hamza15up Djebiri</div>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="card">
+            <img class="img" src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=400&q=70" alt="" />
+            <div class="scrim"></div>
+            <div class="play-pill"><span class="play-glyph">&#9654;</span><span class="play-text">8.4k</span></div>
+            <div class="name">Coach Nou</div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="cell">
+          <div class="card">
+            <img class="img" src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=70" alt="" />
+            <div class="scrim"></div>
+            <div class="play-pill"><span class="play-glyph">&#9654;</span><span class="play-text">21k</span></div>
+            <div class="name">Sara K.</div>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="card">
+            <img class="img" src="https://images.unsplash.com/photo-1530549387789-4c1017266635?w=400&q=70" alt="" />
+            <div class="scrim"></div>
+            <div class="play-pill"><span class="play-glyph">&#9654;</span><span class="play-text">5.1k</span></div>
+            <div class="name">Mia W.</div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="cell">
+          <div class="card">
+            <img class="img" src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=70" alt="" />
+            <div class="scrim"></div>
+            <div class="play-pill"><span class="play-glyph">&#9654;</span><span class="play-text">9.7k</span></div>
+            <div class="name">L&#233;o &#183; Strength</div>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="card">
+            <img class="img" src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=70" alt="" />
+            <div class="scrim"></div>
+            <div class="play-pill"><span class="play-glyph">&#9654;</span><span class="play-text">3.2k</span></div>
+            <div class="name">Nutrition Lab</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- G5 bottom nav -->
+    <div class="bottomnav-wrap">
+      <div class="bottomnav">
+        <div class="nav-item">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9"/></svg>
+          <span class="nav-lbl">Feed</span>
+        </div>
+        <div class="nav-item active">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#33A089" stroke="#33A089" stroke-width="1.5" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>
+          <span class="nav-lbl">Peaks</span>
+        </div>
+        <div class="nav-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span class="nav-lbl">Cr&#233;er</span>
+        </div>
+        <div class="nav-item">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+          <span class="nav-lbl">Map</span>
+        </div>
+        <div class="nav-item">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/></svg>
+          <span class="nav-lbl">Profil</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

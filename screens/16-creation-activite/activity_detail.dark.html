@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ActivityDetailView — V2 Dark</title>
+<style>
+  /* ── V2 DARK tokens ───────────────────────────────────────────── */
+  :root{
+    --surface:#0A0E1A;
+    --surfaceContainer:#161B2A;
+    --surfaceContainerHigh:#1E2435;
+    --onSurface:#FFFFFF;
+    --onSurfaceVariant:#94A3B8;
+    --outline:#2A3142;
+    --mint:#33A089;
+    --onPrimary:#FFFFFF;
+    --info:#60A5FA;
+    --success:#34D399;
+    --warning:#FBBF24;
+    --danger:#F87171;
+    --star:#FBBF24;          /* dark star color from STAR_COLOR.dark */
+    --catBg:#5BB8A6;         /* CATEGORY_COLOR.dark */
+    --catInk:#0A0E1A;        /* pickInkForBg(#5BB8A6) → near-black wins */
+    --gradFrom:#1A7D68;
+    --gradTo:#157082;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:#05070D;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;
+    display:flex;align-items:center;justify-content:center;
+    min-height:100vh;padding:24px;
+  }
+  /* ── Device 393x852 ───────────────────────────────────────────── */
+  .device{
+    width:393px;height:852px;
+    background:var(--surface);
+    border-radius:46px;
+    overflow:hidden;position:relative;
+    box-shadow:0 20px 60px rgba(0,0,0,.6);
+    display:flex;flex-direction:column;
+  }
+  /* faux iOS status bar */
+  .statusbar{
+    height:54px;flex:0 0 54px;
+    display:flex;align-items:flex-end;justify-content:space-between;
+    padding:0 28px 8px;
+    font-size:14px;font-weight:600;color:var(--onSurface);
+    letter-spacing:.2px;
+  }
+  .sb-right{display:flex;align-items:center;gap:6px;}
+  .sb-right svg{display:block;}
+
+  /* ── root (View flex:1) ──────────────────────────────────────── */
+  .root{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;background:var(--surface);}
+
+  /* ── header ──────────────────────────────────────────────────── */
+  .header{
+    display:flex;flex-direction:row;align-items:center;justify-content:space-between;
+    padding:14px;
+    border-bottom:0.5px solid var(--outline);
+  }
+  .headerBtn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;}
+  .headerGlyph{font-size:22px;font-weight:800;color:var(--onSurface);line-height:1;}
+  .headerTitle{
+    flex:1;text-align:center;font-size:16px;font-weight:800;color:var(--onSurface);
+    margin:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+
+  /* ── scroll body ─────────────────────────────────────────────── */
+  .scroll{flex:1 1 auto;overflow:hidden;padding:16px;padding-bottom:30px;}
+
+  /* ── cover/map hero SLOT ─────────────────────────────────────── */
+  .hero{
+    height:200px;border-radius:20px;overflow:hidden;margin-bottom:16px;
+    background:var(--surfaceContainer);
+    position:relative;display:flex;align-items:center;justify-content:center;
+  }
+  .hero .map-illus{position:absolute;inset:0;}
+  .hero .pin{
+    position:relative;z-index:2;width:34px;height:34px;
+  }
+
+  /* ── badge row ───────────────────────────────────────────────── */
+  .badgeRow{
+    display:flex;flex-direction:row;align-items:center;justify-content:space-between;
+    gap:10px;margin-bottom:16px;
+  }
+  .categoryChip{
+    display:flex;flex-direction:row;align-items:center;gap:6px;
+    padding:7px 12px;border-radius:999px;flex-shrink:1;
+    background:var(--catBg);
+  }
+  .categoryIcon{display:flex;align-items:center;}
+  .categoryText{font-size:13px;font-weight:700;color:var(--catInk);white-space:nowrap;}
+  .priceChip{
+    padding:7px 14px;border-radius:999px;
+    border:0.5px solid var(--outline);background:var(--surfaceContainerHigh);
+  }
+  .priceText{font-size:14px;font-weight:800;color:var(--onSurface);
+    font-variant-numeric:tabular-nums;white-space:nowrap;}
+
+  /* ── host row ────────────────────────────────────────────────── */
+  .hostRow{
+    display:flex;flex-direction:row;align-items:center;
+    border-radius:18px;border:0.5px solid var(--outline);
+    padding:12px;min-height:44px;margin-bottom:16px;
+    background:var(--surfaceContainer);cursor:pointer;
+  }
+  .hostAvatar{margin-right:12px;width:44px;height:44px;border-radius:999px;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#1A7D68,#157082);
+    color:#fff;font-weight:800;font-size:17px;}
+  .hostText{flex:1;min-width:0;}
+  .hostNameRow{display:flex;flex-direction:row;align-items:center;gap:6px;}
+  .hostName{font-size:15px;font-weight:700;color:var(--onSurface);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .verifiedGlyph{font-size:13px;font-weight:800;color:var(--mint);}
+  .hostRole{font-size:13px;font-weight:500;color:var(--onSurfaceVariant);margin-top:2px;white-space:nowrap;}
+
+  /* ── stats card ──────────────────────────────────────────────── */
+  .statsCard{
+    display:flex;flex-direction:row;flex-wrap:wrap;
+    border-radius:20px;border:0.5px solid var(--outline);
+    padding:14px 6px;margin-bottom:8px;background:var(--surfaceContainer);
+  }
+  .statCell{
+    flex-grow:1;flex-basis:46%;padding:10px 8px;
+    display:flex;flex-direction:column;align-items:center;
+  }
+  /* StatTile atom */
+  .st-wrap{display:flex;flex-direction:column;align-items:center;flex-shrink:1;max-width:100%;}
+  .st-valueRow{display:flex;flex-direction:row;align-items:baseline;justify-content:center;}
+  .st-value{font-size:20px;font-weight:800;letter-spacing:-0.4px;color:var(--onSurface);
+    font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;}
+  .st-value.accent{color:var(--mint);}
+  .st-unit{margin-left:3px;font-size:12px;font-weight:600;color:var(--onSurfaceVariant);
+    font-variant-numeric:tabular-nums;}
+  .st-labelRow{display:flex;flex-direction:row;align-items:center;justify-content:center;margin-top:3px;}
+  .st-label{font-size:11px;font-weight:700;color:var(--onSurfaceVariant);
+    text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;}
+
+  /* ── sections ────────────────────────────────────────────────── */
+  .section{margin-top:16px;}
+  .heading{font-size:15px;font-weight:700;color:var(--onSurface);margin-bottom:12px;}
+  .body{font-size:14px;line-height:22px;color:var(--onSurfaceVariant);}
+
+  /* ── attendees ───────────────────────────────────────────────── */
+  .attendees{display:flex;flex-direction:row;flex-wrap:wrap;gap:10px;}
+  .attendee{
+    width:44px;height:44px;border-radius:12px;border:0.5px solid var(--outline);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+    background:var(--surfaceContainerHigh);cursor:pointer;
+  }
+  .attendeeInitial{font-size:16px;font-weight:700;color:var(--onSurface);}
+  .overflowText{font-size:13px;font-weight:700;color:var(--onSurface);font-variant-numeric:tabular-nums;}
+
+  /* ── link rows ───────────────────────────────────────────────── */
+  .linkRow{
+    display:flex;flex-direction:row;align-items:center;gap:10px;
+    border-radius:16px;border:0.5px solid var(--outline);
+    padding:14px;min-height:52px;margin-top:16px;
+    background:var(--surfaceContainer);cursor:pointer;
+  }
+  .stars{display:flex;flex-direction:row;gap:2px;}
+  .star{font-size:16px;color:var(--star);line-height:1;}
+  .linkText{flex:1;font-size:14px;font-weight:600;color:var(--onSurface);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .leaderboardText{flex:0 0 auto;font-weight:700;color:var(--mint);}
+
+  /* ── bottom action bar ───────────────────────────────────────── */
+  .bottomBar{
+    display:flex;flex-direction:row;align-items:center;
+    padding:12px 20px 20px;gap:16px;
+    border-top:0.5px solid var(--outline);
+    background:var(--surfaceContainerHigh);
+  }
+  .bottomPrice{display:flex;flex-direction:column;align-items:flex-start;min-width:0;}
+  .bottomFree{font-size:16px;font-weight:700;color:var(--mint);white-space:nowrap;}
+  .bottomCta{flex:1;}
+  /* Button atom — lg solid (mint outline-contour fill) */
+  .btn{
+    width:100%;min-height:52px;border-radius:16px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;font-weight:700;border:none;cursor:pointer;
+  }
+  .btn.solid{background:var(--mint);color:var(--onPrimary);
+    box-shadow:0 0 0 1px rgba(51,160,137,.55), 0 6px 18px rgba(51,160,137,.22);}
+  .btn.gradient{
+    background:linear-gradient(135deg,var(--gradFrom),var(--gradTo));
+    color:#FFFFFF;
+  }
+</style>
+</head>
+<body>
+  <div class="device">
+    <!-- faux iOS status bar (also serves as top safe-area inset, 54px) -->
+    <div class="statusbar">
+      <span>9:41</span>
+      <span class="sb-right">
+        <!-- signal -->
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="8" width="3" height="4" rx="1" fill="#fff"/><rect x="5" y="5" width="3" height="7" rx="1" fill="#fff"/><rect x="10" y="2.5" width="3" height="9.5" rx="1" fill="#fff"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#fff" opacity=".4"/></svg>
+        <!-- wifi -->
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M8.5 2C5.2 2 2.3 3.3 0 5.4L8.5 12 17 5.4C14.7 3.3 11.8 2 8.5 2Z" fill="#fff"/></svg>
+        <!-- battery -->
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="#fff" opacity=".5"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="#fff"/><rect x="24" y="4" width="1.5" height="4" rx="0.75" fill="#fff" opacity=".5"/></svg>
+      </span>
+    </div>
+
+    <div class="root">
+      <!-- ── header: close · title · share ── -->
+      <div class="header">
+        <div class="headerBtn"><span class="headerGlyph">&times;</span></div>
+        <div class="headerTitle">Sortie running matinale</div>
+        <div class="headerBtn"><span class="headerGlyph">&#8599;</span></div>
+      </div>
+
+      <!-- ── scroll body ── -->
+      <div class="scroll">
+
+        <!-- ── cover / map hero SLOT ── -->
+        <div class="hero">
+          <svg class="map-illus" viewBox="0 0 361 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <rect width="361" height="200" fill="#11233A"/>
+            <path d="M0 60 H361 M0 120 H361 M0 165 H361" stroke="#1C3550" stroke-width="1"/>
+            <path d="M80 0 V200 M180 0 V200 M270 0 V200" stroke="#1C3550" stroke-width="1"/>
+            <path d="M40 170 C110 150 120 90 200 80 C260 72 290 40 340 30" stroke="#33A089" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <circle cx="40" cy="170" r="5" fill="#157082" stroke="#0A0E1A" stroke-width="2"/>
+          </svg>
+          <svg class="pin" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C7.6 2 4 5.6 4 10c0 5.2 8 12 8 12s8-6.8 8-12c0-4.4-3.6-8-8-8Z" fill="#33A089" stroke="#0A0E1A" stroke-width="1.5"/>
+            <circle cx="12" cy="10" r="3" fill="#0A0E1A"/>
+          </svg>
+        </div>
+
+        <!-- ── category + price badge row ── -->
+        <div class="badgeRow">
+          <div class="categoryChip">
+            <span class="categoryIcon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="13.5" cy="4" r="2" fill="#0A0E1A"/>
+                <path d="M5 21l3-5 3 1 1-4-3-2 4-3 2 3 3 1" stroke="#0A0E1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </span>
+            <span class="categoryText">Course à pied</span>
+          </div>
+          <div class="priceChip"><span class="priceText">Gratuit</span></div>
+        </div>
+
+        <!-- ── organizer (host) row ── -->
+        <div class="hostRow">
+          <div class="hostAvatar">C</div>
+          <div class="hostText">
+            <div class="hostNameRow">
+              <span class="hostName">Coach Léa</span>
+              <span class="verifiedGlyph">&#10003;</span>
+            </div>
+            <span class="hostRole">Organisateur</span>
+          </div>
+        </div>
+
+        <!-- ── details card (bounded stats) ── -->
+        <div class="statsCard">
+          <div class="statCell">
+            <div class="st-wrap">
+              <div class="st-valueRow"><span class="st-value">12 juin · 07:30</span></div>
+              <div class="st-labelRow"><span class="st-label">Date</span></div>
+            </div>
+          </div>
+          <div class="statCell">
+            <div class="st-wrap">
+              <div class="st-valueRow"><span class="st-value">Parc de la Tête d&rsquo;or</span></div>
+              <div class="st-labelRow"><span class="st-label">Lieu</span></div>
+            </div>
+          </div>
+          <div class="statCell">
+            <div class="st-wrap">
+              <div class="st-valueRow"><span class="st-value accent">5,2</span><span class="st-unit">km</span></div>
+              <div class="st-labelRow"><span class="st-label">Distance</span></div>
+            </div>
+          </div>
+          <div class="statCell">
+            <div class="st-wrap">
+              <div class="st-valueRow"><span class="st-value">12 / 20</span></div>
+              <div class="st-labelRow"><span class="st-label">Participants</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── description ── -->
+        <div class="section">
+          <div class="heading">À propos</div>
+          <div class="body">Un run tranquille de 5 km autour du parc, allure modérée, ouvert à tous les niveaux. On se retrouve à l&rsquo;entrée principale.</div>
+        </div>
+
+        <!-- ── attendees preview (bounded) ── -->
+        <div class="section">
+          <div class="heading">Participants</div>
+          <div class="attendees">
+            <div class="attendee"><span class="attendeeInitial">M</span></div>
+            <div class="attendee"><span class="attendeeInitial">K</span></div>
+            <div class="attendee"><span class="attendeeInitial">S</span></div>
+            <div class="attendee"><span class="attendeeInitial">T</span></div>
+            <div class="attendee"><span class="attendeeInitial">L</span></div>
+            <div class="attendee"><span class="overflowText">+7</span></div>
+          </div>
+        </div>
+
+        <!-- ── rating summary link ── -->
+        <div class="linkRow">
+          <div class="stars">
+            <span class="star">&#9733;</span>
+            <span class="star">&#9733;</span>
+            <span class="star">&#9733;</span>
+            <span class="star">&#9733;</span>
+            <span class="star">&#9734;</span>
+          </div>
+          <span class="linkText">4,5 (42 avis)</span>
+        </div>
+
+        <!-- ── leaderboard link ── -->
+        <div class="linkRow">
+          <span class="linkText leaderboardText">Voir le classement</span>
+        </div>
+
+      </div>
+
+      <!-- ── bottom action bar (join / leave / pay) — FREE, not joined → solid Join ── -->
+      <div class="bottomBar">
+        <div class="bottomPrice"><span class="bottomFree">Gratuit</span></div>
+        <div class="bottomCta">
+          <button class="btn solid">Rejoindre</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=393, initial-scale=1">
+<title>vibes_feed_v2 — light</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; }
+  :root{
+    --surface:#FFFFFF; --container:#F8FAFC; --text:#0F172A; --variant:#475569;
+    --outline:#E2E8F0; --mint:#33A089; --logo:#0F172A;
+  }
+  html,body{ width:393px; height:852px; overflow:hidden; background:var(--surface); }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    color:var(--text); position:relative; }
+
+  /* ── faux iOS status bar (within 54px top inset) ── */
+  .statusbar{ height:54px; display:flex; align-items:flex-end; justify-content:space-between;
+    padding:0 26px 8px; font-size:15px; font-weight:700; letter-spacing:.3px; }
+  .statusbar .glyphs{ display:flex; align-items:center; gap:6px; }
+
+  /* ── G6 canonical header (search · Smuppy · notif) ── */
+  .topbar{ height:52px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 16px; }
+  .topBtn{ width:40px; height:40px; display:flex; align-items:center; justify-content:center;
+    position:relative; color:var(--text); }
+  .topBrand{ flex:1; text-align:center; font-size:22px; font-weight:800; letter-spacing:-.5px;
+    color:var(--logo); }
+  .notifBadge{ position:absolute; top:4px; right:4px; min-width:15px; height:15px;
+    border-radius:8px; background:#FF3B30; display:flex; align-items:center; justify-content:center;
+    padding:0 3px; color:#fff; font-size:9px; font-weight:800; }
+
+  /* ── Fan/Vibes/Xplorer segmented pills (text + contour, mint active) ── */
+  .seg{ padding:6px 16px 8px; display:flex; gap:8px; }
+  .pill{ flex:1; text-align:center; padding:9px 0; border-radius:999px; font-size:13.5px;
+    font-weight:600; color:var(--variant); border:1px solid var(--outline); background:transparent; }
+  .pill.active{ color:var(--mint); border-color:var(--mint); font-weight:700; }
+
+  /* ── body (G3 no scroll, content fits) ── */
+  .body{ height:calc(852px - 54px - 52px - 50px - 62px); padding:2px 16px 0; }
+
+  /* ── Ta vibe (mood) card ── */
+  .mood{ display:flex; align-items:center; gap:13px; border-radius:20px; padding:15px 16px;
+    border:1px solid var(--outline);
+    background:linear-gradient(135deg, rgba(51,160,137,.10), rgba(51,160,137,.03), transparent); }
+  .moodIcon{ width:50px; height:50px; border-radius:25px; display:flex; align-items:center;
+    justify-content:center; background:rgba(51,160,137,.12); flex:none; }
+  .moodText{ flex:1; min-width:0; }
+  .moodLabelRow{ display:flex; align-items:center; gap:8px; }
+  .moodLabel{ font-size:11.5px; font-weight:600; color:var(--variant); }
+  .moodLevel{ border-radius:999px; padding:2px 9px; background:rgba(51,160,137,.12); }
+  .moodLevelText{ font-size:10.5px; font-weight:700; color:var(--mint); }
+  .moodValue{ font-size:17px; font-weight:800; letter-spacing:-.3px; color:var(--mint); margin-top:3px; }
+  .moodDesc{ font-size:12px; font-weight:500; line-height:16px; color:var(--variant); margin-top:3px; }
+
+  /* ── G7 filter chips row ── */
+  .chips{ display:flex; align-items:center; gap:8px; margin-top:18px; }
+  .addChip{ width:36px; height:34px; border-radius:17px; border:1px dashed var(--mint);
+    display:flex; align-items:center; justify-content:center; color:var(--mint); flex:none; }
+  .chip{ height:34px; display:flex; align-items:center; gap:6px; padding:0 13px; border-radius:17px;
+    border:1px solid var(--mint); background:transparent; color:var(--mint);
+    font-size:12.5px; font-weight:600; white-space:nowrap; flex:none; }
+  .chip.sel{ background:rgba(51,160,137,.10); }
+  .chip .dot{ width:7px; height:7px; border-radius:4px; background:var(--mint); }
+
+  /* ── masonry 2-col grid ── */
+  .grid{ column-count:2; column-gap:0; margin-top:18px; }
+  .cell{ break-inside:avoid; padding:0 6px 12px; }
+
+  /* media tile */
+  .media{ position:relative; width:100%; border-radius:24px; overflow:hidden; background:#000; }
+  .media .ph{ display:block; width:100%; height:100%;
+    background:linear-gradient(160deg,#243042,#11161f); }
+  .mediaScrim{ position:absolute; inset:0;
+    background:linear-gradient(to bottom, transparent 55%, rgba(0,0,0,.7)); }
+  .mediaName{ position:absolute; left:11px; right:11px; bottom:10px; color:#fff; font-size:12px;
+    font-weight:700; text-shadow:0 1px 4px rgba(0,0,0,.5); overflow:hidden; text-overflow:ellipsis;
+    white-space:nowrap; }
+  .playPill{ position:absolute; top:10px; left:10px; display:flex; align-items:center; gap:4px;
+    padding:3px 9px; border-radius:999px; background:rgba(0,0,0,.45); color:#fff; font-size:11px;
+    font-weight:700; }
+  .authorChip{ position:absolute; left:11px; bottom:10px; display:inline-flex; align-items:center;
+    gap:6px; padding:3px 10px 3px 3px; border-radius:999px; background:rgba(0,0,0,.42);
+    max-width:calc(100% - 22px); }
+  .authorChip .av{ width:22px; height:22px; border-radius:11px; flex:none; display:flex;
+    align-items:center; justify-content:center; font-size:9px; font-weight:700; color:#fff;
+    background:linear-gradient(135deg,#176A5A,#0d3f35); }
+  .authorChip .nm{ color:#fff; font-size:11.5px; font-weight:600; text-shadow:0 1px 3px rgba(0,0,0,.5);
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  /* soft card */
+  .soft{ width:100%; padding:15px; border-radius:20px; border:1px solid var(--outline);
+    background:var(--container); display:flex; flex-direction:column; }
+  .badge{ align-self:flex-start; display:inline-flex; align-items:center; padding:4px 9px;
+    border-radius:999px; font-size:11px; font-weight:700; }
+  .softTitle{ font-size:15px; font-weight:800; letter-spacing:-.3px; margin-top:10px; color:var(--text);
+    line-height:1.25; }
+  .quoteText{ font-size:15px; font-weight:600; line-height:22px; color:var(--text); }
+  .softMeta{ font-size:12.5px; font-weight:500; margin-top:6px; line-height:18px; color:var(--variant); }
+  .softCta{ margin-top:12px; align-self:flex-start; padding:7px 14px; border-radius:12px;
+    border:1px solid var(--outline); font-size:13px; font-weight:600; color:var(--text);
+    background:transparent; }
+  .authorRow{ display:flex; align-items:center; gap:6px; padding:0 2px; margin-top:12px; }
+  .authorRow .av{ width:22px; height:22px; border-radius:11px; flex:none; display:flex;
+    align-items:center; justify-content:center; font-size:9px; font-weight:700; color:#fff;
+    background:linear-gradient(135deg,#176A5A,#0d3f35); }
+  .authorRow .nm{ flex:1; font-size:11.5px; font-weight:600; color:var(--variant); overflow:hidden;
+    text-overflow:ellipsis; white-space:nowrap; }
+
+  /* ── G5 bottom-nav ── */
+  .bnav{ position:absolute; left:0; right:0; bottom:0; height:62px; display:flex;
+    align-items:center; justify-content:space-around; padding:0 8px 6px;
+    background:var(--container); border-top:1px solid var(--outline); }
+  .nav{ width:48px; height:48px; display:flex; align-items:center; justify-content:center;
+    color:var(--variant); }
+  .nav.active{ color:var(--mint); }
+</style>
+</head>
+<body>
+
+  <!-- status bar (54px inset) -->
+  <div class="statusbar">
+    <div>9:41</div>
+    <div class="glyphs">
+      <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="6" width="3" height="6" rx="1" fill="currentColor"/><rect x="5" y="3.5" width="3" height="8.5" rx="1" fill="currentColor"/><rect x="10" y="1" width="3" height="11" rx="1" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor" opacity=".4"/></svg>
+      <svg width="24" height="12" viewBox="0 0 24 12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="15" height="7" rx="1.5" fill="currentColor"/><rect x="22" y="4" width="1.5" height="4" rx=".75" fill="currentColor"/></svg>
+    </div>
+  </div>
+
+  <!-- G6 header -->
+  <div class="topbar">
+    <div class="topBtn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </div>
+    <div class="topBrand">smuppy</div>
+    <div class="topBtn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3a6 6 0 0 0-6 6c0 3.5-1.2 5-2 6h16c-.8-1-2-2.5-2-6a6 6 0 0 0-6-6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 20a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <div class="notifBadge">3</div>
+    </div>
+  </div>
+
+  <!-- Fan / Vibes / Xplorer segmented pills -->
+  <div class="seg">
+    <div class="pill">Fan</div>
+    <div class="pill active">Vibes</div>
+    <div class="pill">Xplorer</div>
+  </div>
+
+  <div class="body">
+
+    <!-- Ta vibe (mood) card -->
+    <div class="mood">
+      <div class="moodIcon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#33A089" stroke-width="2"/><path d="M8 14c1 1.3 2.4 2 4 2s3-.7 4-2" stroke="#33A089" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="9.5" r="1.1" fill="#33A089"/><circle cx="15" cy="9.5" r="1.1" fill="#33A089"/></svg>
+      </div>
+      <div class="moodText">
+        <div class="moodLabelRow">
+          <div class="moodLabel">Ta vibe</div>
+          <div class="moodLevel"><span class="moodLevelText">Explorer</span></div>
+        </div>
+        <div class="moodValue">Calme &middot; concentr&eacute;</div>
+        <div class="moodDesc">Tu rayonnes une &eacute;nergie pos&eacute;e aujourd&rsquo;hui.</div>
+      </div>
+    </div>
+
+    <!-- filter chips -->
+    <div class="chips">
+      <div class="addChip"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="#33A089" stroke-width="2" stroke-linecap="round"/></svg></div>
+      <div class="chip sel"><span class="dot"></span>Running</div>
+      <div class="chip"><span class="dot"></span>Yoga</div>
+      <div class="chip sel"><span class="dot"></span>Cycling</div>
+      <div class="chip"><span class="dot"></span>Wellness</div>
+    </div>
+
+    <!-- masonry grid -->
+    <div class="grid">
+
+      <div class="cell">
+        <div class="media" style="aspect-ratio:7/10;">
+          <div class="ph"></div>
+          <div class="mediaScrim"></div>
+          <div class="authorChip"><div class="av">AR</div><div class="nm">Alex Rivera</div></div>
+        </div>
+      </div>
+
+      <div class="cell">
+        <div class="soft">
+          <div class="badge" style="background:rgba(51,160,137,.14); color:#1F7A66;">Activit&eacute;</div>
+          <div class="softTitle">Sunset Yoga Session</div>
+          <div class="softMeta">Central Park, NY</div>
+          <div class="softCta">Rejoindre</div>
+          <div class="authorRow"><div class="av">SK</div><div class="nm">Sara Kovac</div></div>
+        </div>
+      </div>
+
+      <div class="cell">
+        <div class="media" style="aspect-ratio:7/10;">
+          <div class="ph"></div>
+          <div class="mediaScrim"></div>
+          <div class="playPill"><svg width="9" height="9" viewBox="0 0 10 10"><path d="M2 1l6 4-6 4z" fill="#fff"/></svg>0:18</div>
+          <div class="mediaName">Morning trail</div>
+        </div>
+      </div>
+
+      <div class="cell">
+        <div class="soft">
+          <div class="badge" style="background:rgba(255,166,61,.16); color:#B5710A;">&Eacute;v&eacute;nement</div>
+          <div class="softTitle">Weekend hike?</div>
+          <div class="softMeta">Sam 7 juin &middot; 09h</div>
+          <div class="softCta">Je participe</div>
+        </div>
+      </div>
+
+      <div class="cell">
+        <div class="soft">
+          <div class="badge" style="background:rgba(153,102,255,.16); color:#6E45C4;">Communaut&eacute;</div>
+          <div class="softTitle">Runners de Montr&eacute;al</div>
+          <div class="softMeta">320 membres</div>
+          <div class="softCta">Ouvrir</div>
+        </div>
+      </div>
+
+      <div class="cell">
+        <div class="soft">
+          <div class="quoteText">Connection is the energy between people.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- G5 bottom-nav -->
+  <div class="bnav">
+    <div class="nav active"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M3 11l9-7 9 7" stroke="#33A089" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 9.5V20h14V9.5" fill="#33A089" fill-opacity=".18" stroke="#33A089" stroke-width="2" stroke-linejoin="round"/></svg></div>
+    <div class="nav"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+    <div class="nav"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+    <div class="nav"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M3 17l5-6 4 4 4-7 5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="nav"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+  </div>
+
+</body>
+</html>

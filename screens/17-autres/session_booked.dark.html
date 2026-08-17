@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SessionBookedView — V2 Dark</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #05070D; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+  .stage { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+
+  /* Device frame 393x852 */
+  .device {
+    position: relative;
+    width: 393px;
+    height: 852px;
+    background: #0A0E1A;            /* surface */
+    border-radius: 44px;
+    overflow: hidden;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Faux iOS status bar inside the 54px top safe-area inset */
+  .statusbar {
+    height: 54px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 24px 8px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .statusbar .time { letter-spacing: 0.2px; }
+  .statusbar .icons { display: flex; align-items: center; gap: 6px; }
+  .sb-svg { display: block; }
+
+  /* ── Root View: flex:1, surface bg ── */
+  .root { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+
+  /* ── ScrollView contentContainer: px24 pt56(->8 after safe-area) pb32 center ── */
+  .scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 24px 32px;          /* pt56 already partially absorbed by 54px inset; +8 breathing */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .scroll::-webkit-scrollbar { display: none; }
+
+  /* ── Success hero: 72x72 filled adaptive primary circle (#33A089), onPrimary check ── */
+  .checkRing {
+    width: 72px; height: 72px; border-radius: 36px;
+    background: #33A089;             /* adaptive primary fill */
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+  }
+  .checkGlyph { font-size: 38px; line-height: 44px; font-weight: 800; color: #062019; } /* onPrimary (dark ink on mint fill, dark mode) */
+
+  /* ── Title + subtitle ── */
+  .title {
+    font-size: 23px; font-weight: 900; letter-spacing: -0.4px;
+    text-align: center; color: #FFFFFF;
+  }
+  .subtitle {
+    font-size: 14px; line-height: 21px; text-align: center;
+    margin-top: 8px; margin-bottom: 4px; max-width: 300px;
+    color: #94A3B8; font-weight: 400;
+  }
+
+  /* ── Summary card ── */
+  .card {
+    align-self: stretch; width: 100%;
+    border-radius: 20px; border: 1px solid #2A3142;
+    background: #161B2A;             /* surfaceContainer */
+    padding: 16px 8px 4px;
+    margin-top: 28px;
+  }
+
+  /* Coach header */
+  .coachRow { display: flex; flex-direction: row; align-items: center; padding: 0 8px; margin-bottom: 14px; }
+  .coachAvatar {
+    width: 52px; height: 52px; border-radius: 26px; overflow: hidden; margin-right: 12px;
+    flex-shrink: 0;
+    background: #1E2435;             /* surfaceContainerHigh placeholder for avatar slot */
+    display: flex; align-items: center; justify-content: center;
+  }
+  .coachAvatar .initials { color: #94A3B8; font-size: 18px; font-weight: 700; }
+  .coachMeta { flex: 1; min-width: 0; }
+  .coachName {
+    font-size: 17px; font-weight: 700; color: #FFFFFF;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .sessionType { font-size: 13px; font-weight: 500; color: #94A3B8; margin-top: 2px; }
+
+  .divider { height: 1px; background: #2A3142; margin: 0 8px 4px; }
+
+  /* ── ListRow ── */
+  .row {
+    display: flex; flex-direction: row; align-items: center;
+    padding: 12px 0; gap: 13px;
+    min-height: 56px;
+  }
+  .iconSquare {
+    width: 34px; height: 34px; border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    background: rgba(51,160,137,0.133);  /* primary @ 22 hex alpha (#33A08922) */
+  }
+  .rowTexts { flex: 1; min-width: 0; }
+  .rowTitle {
+    font-size: 15px; font-weight: 600; color: #FFFFFF;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .rowSubtitle {
+    font-size: 12.5px; font-weight: 500; color: #94A3B8; margin-top: 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* Paid chip — MEANING graphic: onPrimary ink on adaptive primary fill */
+  .paidChip {
+    padding: 4px 10px; border-radius: 999px;
+    background: #33A089;             /* adaptive primary fill */
+    flex-shrink: 0;
+  }
+  .paidChipText {
+    font-size: 11px; font-weight: 800; letter-spacing: 0.4px;
+    color: #062019;                  /* onPrimary dark ink (dark mode) */
+    white-space: nowrap;
+  }
+
+  /* Add-to-calendar (ghost button) */
+  .calendarWrap { align-self: stretch; width: 100%; margin-top: 16px; }
+  .btnGhost {
+    height: 44px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    background: transparent;
+  }
+  .btnGhost span {
+    color: #33A089; font-size: 16px; line-height: 24px; font-weight: 600;
+  }
+
+  /* ── Footer (pinned) ── */
+  .footer {
+    flex-shrink: 0;
+    padding: 12px 24px 34px;
+    border-top: 1px solid #2A3142;
+    background: #0A0E1A;             /* surface */
+  }
+  .btnGradient {
+    height: 52px; border-radius: 999px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #1A7D68, #157082);  /* CTA gradient */
+  }
+  .btnGradient span {
+    color: #FFFFFF; font-size: 17px; line-height: 25px; font-weight: 600;
+  }
+
+  /* flat icon strokes */
+  .ic { display: block; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="device">
+
+    <!-- Faux iOS status bar within 54px top safe-area inset -->
+    <div class="statusbar">
+      <span class="time">9:41</span>
+      <span class="icons">
+        <!-- signal -->
+        <svg class="sb-svg" width="18" height="11" viewBox="0 0 18 11" fill="none"><rect x="0" y="7" width="3" height="4" rx="1" fill="#fff"/><rect x="5" y="5" width="3" height="6" rx="1" fill="#fff"/><rect x="10" y="2.5" width="3" height="8.5" rx="1" fill="#fff"/><rect x="15" y="0" width="3" height="11" rx="1" fill="#fff"/></svg>
+        <!-- wifi -->
+        <svg class="sb-svg" width="16" height="11" viewBox="0 0 16 11" fill="none"><path d="M8 9.8a1.3 1.3 0 100-2.6 1.3 1.3 0 000 2.6z" fill="#fff"/><path d="M3.5 5.6a6.4 6.4 0 019 0" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><path d="M1 3.1a10 10 0 0114 0" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <!-- battery -->
+        <svg class="sb-svg" width="25" height="11" viewBox="0 0 25 11" fill="none"><rect x="0.5" y="0.5" width="21" height="10" rx="3" stroke="#fff" stroke-opacity="0.5"/><rect x="2" y="2" width="18" height="7" rx="1.5" fill="#fff"/><path d="M23 4v3a1.8 1.8 0 000-3z" fill="#fff" fill-opacity="0.6"/></svg>
+      </span>
+    </div>
+
+    <!-- Root View (surface) -->
+    <div class="root">
+
+      <!-- ScrollView -->
+      <div class="scroll">
+
+        <!-- Success hero -->
+        <div class="checkRing" role="img" aria-label="Séance réservée avec Marie Lefèvre">
+          <span class="checkGlyph">✓</span>
+        </div>
+
+        <!-- Title + subtitle -->
+        <div class="title">Séance réservée 🎉</div>
+        <div class="subtitle">Ta séance privée est confirmée. On a hâte de te voir.</div>
+
+        <!-- Summary card -->
+        <div class="card">
+
+          <!-- Coach header -->
+          <div class="coachRow">
+            <div class="coachAvatar"><span class="initials">ML</span></div>
+            <div class="coachMeta">
+              <div class="coachName">Marie Lefèvre</div>
+              <div class="sessionType">Séance privée 1:1</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Date row -->
+          <div class="row">
+            <div class="iconSquare">
+              <!-- calendar flat icon, mint stroke -->
+              <svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="3" stroke="#33A089" stroke-width="1.8"/><path d="M3 9h18M8 3v4M16 3v4" stroke="#33A089" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="rowTexts">
+              <div class="rowTitle">Date</div>
+              <div class="rowSubtitle">samedi 15 juin 2026</div>
+            </div>
+          </div>
+
+          <!-- Time row -->
+          <div class="row">
+            <div class="iconSquare">
+              <!-- clock flat icon, mint stroke -->
+              <svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#33A089" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="#33A089" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="rowTexts">
+              <div class="rowTitle">Heure</div>
+              <div class="rowSubtitle">15:00 • 60 min</div>
+            </div>
+          </div>
+
+          <!-- Price row + paid chip -->
+          <div class="row">
+            <div class="iconSquare">
+              <!-- card / amount flat icon, mint stroke -->
+              <svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="3" stroke="#33A089" stroke-width="1.8"/><path d="M3 10h18" stroke="#33A089" stroke-width="1.8"/><path d="M7 14h3" stroke="#33A089" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="rowTexts">
+              <div class="rowTitle">Montant</div>
+              <div class="rowSubtitle">99,00 $</div>
+            </div>
+            <div class="paidChip"><span class="paidChipText">PAYÉ</span></div>
+          </div>
+
+        </div>
+
+        <!-- Add-to-calendar (ghost) -->
+        <div class="calendarWrap">
+          <div class="btnGhost"><span>Ajouter au calendrier</span></div>
+        </div>
+
+      </div>
+
+      <!-- Pinned footer: primary gradient CTA -->
+      <div class="footer">
+        <div class="btnGradient"><span>Voir les détails</span></div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

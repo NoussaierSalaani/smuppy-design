@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=393, initial-scale=1" />
+<title>xplorer_map_v2 — light</title>
+<style>
+  :root{
+    --surface:#FFFFFF;
+    --surfaceContainer:#F8FAFC;
+    --surfaceContainerHigh:#EEF2F7;
+    --onSurface:#0F172A;
+    --onSurfaceVariant:#475569;
+    --outline:#E2E8F0;
+    --mint:#33A089;
+    --logo:#0F172A;
+    --onPrimary:#FFFFFF;
+    --hair:0.5px solid var(--outline);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+  html,body{background:#000;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    display:flex;justify-content:center;align-items:flex-start;
+  }
+  .device{
+    position:relative;
+    width:393px;height:852px;overflow:hidden;
+    background:var(--surface);
+  }
+
+  /* ── faux iOS status bar ── */
+  .statusbar{
+    position:absolute;top:0;left:0;right:0;height:54px;z-index:50;
+    display:flex;align-items:flex-end;justify-content:space-between;
+    padding:0 22px 8px;
+    pointer-events:none;
+  }
+  .statusbar .time{color:var(--onSurface);font-size:15px;font-weight:600;letter-spacing:0.2px;}
+  .statusbar .glyphs{display:flex;align-items:center;gap:6px;color:var(--onSurface);font-size:13px;}
+  .statusbar .bars{display:flex;align-items:flex-end;gap:2px;height:11px;}
+  .statusbar .bars i{width:3px;background:var(--onSurface);border-radius:1px;display:block;}
+  .statusbar .bars i:nth-child(1){height:4px;}
+  .statusbar .bars i:nth-child(2){height:6px;}
+  .statusbar .bars i:nth-child(3){height:8px;}
+  .statusbar .bars i:nth-child(4){height:11px;}
+  .batt{width:24px;height:12px;border:1px solid var(--onSurfaceVariant);border-radius:3px;position:relative;}
+  .batt::after{content:"";position:absolute;right:-3px;top:3px;width:2px;height:6px;background:var(--onSurfaceVariant);border-radius:0 1px 1px 0;}
+  .batt i{position:absolute;left:1px;top:1px;bottom:1px;width:16px;background:var(--onSurface);border-radius:1px;}
+
+  /* ── flex root ── */
+  .flex{position:absolute;inset:0;background:var(--surface);}
+
+  /* ── map slot (absolute fill) — injected Mapbox, faux here ── */
+  .mapSlot{position:absolute;inset:0;}
+  .fauxMap{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(circle at 30% 25%, rgba(51,160,137,.10), transparent 42%),
+      radial-gradient(circle at 78% 65%, rgba(96,165,250,.08), transparent 40%),
+      linear-gradient(160deg,#EEF4F2 0%, #F1F5F9 60%, #E8EEF4 100%);
+  }
+  .fauxMap .grid{position:absolute;inset:0;opacity:.6;
+    background-image:
+      linear-gradient(transparent 95%, rgba(71,85,105,.12) 95%),
+      linear-gradient(90deg, transparent 95%, rgba(71,85,105,.12) 95%);
+    background-size:46px 46px;}
+  .fauxMap .road{position:absolute;background:rgba(71,85,105,.16);}
+  .r1{top:230px;left:-20px;width:460px;height:6px;transform:rotate(-12deg);}
+  .r2{top:120px;left:120px;width:6px;height:420px;transform:rotate(8deg);}
+  .r3{top:360px;left:-30px;width:480px;height:5px;transform:rotate(6deg);}
+  /* map pins */
+  .pin{position:absolute;width:34px;height:34px;border-radius:999px;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.95);box-shadow:0 4px 12px rgba(15,23,42,.20);}
+  .pin svg{width:17px;height:17px;display:block;}
+  .pin.me{width:18px;height:18px;background:#3B82F6;border:3px solid rgba(59,130,246,.30);box-shadow:0 0 0 8px rgba(59,130,246,.12);}
+  .p1{top:276px;left:96px;background:#33A089;}
+  .p2{top:360px;left:240px;background:#3B82F6;}
+  .p3{top:448px;left:150px;background:#8B5CF6;}
+  .p4{top:250px;left:282px;background:#F97316;}
+  .pme{top:400px;left:200px;}
+
+  /* ── G6 FEED HEADER (below safe-area 54px) ── */
+  .header{
+    position:absolute;top:54px;left:0;right:0;z-index:35;
+    padding:8px 16px 10px;
+  }
+  .topRow{display:flex;flex-direction:row;align-items:center;justify-content:space-between;height:40px;}
+  .iconBtn{
+    width:40px;height:40px;border-radius:999px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--surfaceContainer);border:var(--hair);
+    position:relative;
+  }
+  .iconBtn svg{width:21px;height:21px;display:block;}
+  .wordmark{font-size:21px;font-weight:800;letter-spacing:-0.5px;color:var(--logo);}
+  .bellBadge{position:absolute;top:7px;right:8px;width:8px;height:8px;border-radius:999px;background:#EF4444;border:1.5px solid var(--surfaceContainer);}
+
+  /* segmented pills Fan / Vibes / Xplorer */
+  .segmented{display:flex;flex-direction:row;gap:8px;margin-top:12px;}
+  .seg{
+    flex:1;display:flex;align-items:center;justify-content:center;
+    height:36px;border-radius:999px;
+    border:1px solid var(--outline);background:transparent;
+    font-size:13.5px;font-weight:700;color:var(--onSurfaceVariant);
+  }
+  .seg.on{border:1px solid var(--mint);color:var(--mint);background:rgba(51,160,137,.10);}
+
+  /* ── G7 CHIP rail (type filter) ── */
+  .chipRail{position:absolute;top:198px;left:0;right:0;z-index:30;}
+  .chipRailContent{display:flex;flex-direction:row;gap:8px;padding:0 16px;overflow-x:auto;scrollbar-width:none;}
+  .chipRailContent::-webkit-scrollbar{display:none;}
+  .chip{
+    display:flex;flex-direction:row;align-items:center;
+    height:34px;padding:0 14px;
+    border-radius:999px;
+    border:1px solid var(--mint);
+    background:var(--surface);
+    white-space:nowrap;flex:0 0 auto;
+  }
+  .chip.on{background:rgba(51,160,137,.12);}
+  .chipLabel{font-size:13px;font-weight:700;color:var(--mint);}
+
+  /* ── sheet (absolute bottom, above bottom-nav) ── */
+  .sheet{
+    position:absolute;left:0;right:0;bottom:62px;
+    max-height:46%;
+    background:var(--surfaceContainer);
+    border:var(--hair);
+    border-top-left-radius:24px;border-top-right-radius:24px;
+    padding:8px 16px 12px;
+    display:flex;flex-direction:column;
+    z-index:40;
+  }
+  .handle{align-self:center;width:40px;height:5px;border-radius:999px;background:var(--outline);margin-bottom:12px;opacity:.8;}
+  .sheetTitle{font-size:18px;font-weight:800;letter-spacing:-0.4px;color:var(--onSurface);margin-bottom:12px;}
+
+  .cards{display:flex;flex-direction:column;gap:10px;padding-bottom:4px;overflow-y:auto;scrollbar-width:none;}
+  .cards::-webkit-scrollbar{display:none;}
+
+  .card{
+    background:var(--surface);
+    border:0.5px solid var(--outline);
+    border-radius:20px;
+    padding:8px;
+    overflow:hidden;
+  }
+  .cardInner{display:flex;flex-direction:row;align-items:center;gap:12px;}
+  .thumb{width:56px;height:56px;border-radius:14px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;}
+  .thumb svg{width:26px;height:26px;display:block;}
+  .cardBody{flex:1;min-width:0;}
+  .badge{
+    display:inline-flex;flex-direction:row;align-items:center;align-self:flex-start;
+    padding:3px 8px;border-radius:999px;margin-bottom:5px;
+    background:var(--surfaceContainerHigh);
+  }
+  .badgeDot{width:6px;height:6px;border-radius:999px;margin-right:5px;flex:0 0 auto;}
+  .badgeText{font-size:11px;font-weight:700;color:var(--onSurfaceVariant);white-space:nowrap;}
+  .cardName{font-size:15px;font-weight:800;letter-spacing:-0.2px;color:var(--onSurface);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cardMetaRow{display:flex;flex-direction:row;align-items:center;margin-top:3px;}
+  .metaIcon{margin-right:4px;display:flex;}
+  .metaIcon svg{width:12px;height:12px;display:block;}
+  .cardMeta{flex:1;font-size:12.5px;font-weight:500;color:var(--onSurfaceVariant);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  /* ── G5 BOTTOM-NAV ── */
+  .bottomNav{
+    position:absolute;left:0;right:0;bottom:0;height:62px;z-index:45;
+    display:flex;flex-direction:row;align-items:center;justify-content:space-around;
+    background:var(--surfaceContainer);border-top:var(--hair);
+    padding-bottom:6px;
+  }
+  .navItem{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1;}
+  .navItem svg{width:24px;height:24px;display:block;}
+  .navLabel{font-size:10px;font-weight:600;color:var(--onSurfaceVariant);}
+  .navItem.on .navLabel{color:var(--mint);}
+</style>
+</head>
+<body>
+  <div class="device">
+    <!-- root flex -->
+    <div class="flex">
+
+      <!-- map region (injected Mapbox in RN — faux here) -->
+      <div class="mapSlot">
+        <div class="fauxMap">
+          <div class="grid"></div>
+          <div class="road r1"></div>
+          <div class="road r2"></div>
+          <div class="road r3"></div>
+          <div class="pin p1"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M15 9h.01M9 13h.01M15 13h.01"/></svg></div>
+          <div class="pin p2"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+          <div class="pin p3"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M12 7v6M9 22l3-5 3 5M7 11l5 2 5-2"/></svg></div>
+          <div class="pin p4"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+          <div class="pin me pme"></div>
+        </div>
+      </div>
+
+      <!-- G6 feed header -->
+      <div class="header">
+        <div class="topRow">
+          <div class="iconBtn" aria-label="Rechercher">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+          </div>
+          <div class="wordmark">Smuppy</div>
+          <div class="iconBtn" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+            <span class="bellBadge"></span>
+          </div>
+        </div>
+        <div class="segmented">
+          <div class="seg">Fan</div>
+          <div class="seg">Vibes</div>
+          <div class="seg on">Xplorer</div>
+        </div>
+      </div>
+
+      <!-- G7 type filter chip rail -->
+      <div class="chipRail">
+        <div class="chipRailContent">
+          <div class="chip on"><span class="chipLabel">Tous</span></div>
+          <div class="chip"><span class="chipLabel">Business</span></div>
+          <div class="chip"><span class="chipLabel">Événements</span></div>
+          <div class="chip"><span class="chipLabel">Activités</span></div>
+          <div class="chip"><span class="chipLabel">Spots</span></div>
+        </div>
+      </div>
+
+      <!-- result sheet -->
+      <div class="sheet">
+        <div class="handle"></div>
+        <div class="sheetTitle">Près de toi</div>
+
+        <div class="cards">
+          <!-- biz-1 -->
+          <div class="card">
+            <div class="cardInner">
+              <div class="thumb" style="background:#33A08918;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#33A089" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M15 9h.01M9 13h.01M15 13h.01"/></svg>
+              </div>
+              <div class="cardBody">
+                <div class="badge"><span class="badgeDot" style="background:#33A089;"></span><span class="badgeText">Business</span></div>
+                <div class="cardName">Vibe Fitness Studio</div>
+                <div class="cardMetaRow"><span class="metaIcon"><svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span class="cardMeta">0.4 km · 12 rue de Rivoli</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- evt-1 (no thumbnail) -->
+          <div class="card">
+            <div class="cardInner">
+              <div class="cardBody">
+                <div class="badge"><span class="badgeDot" style="background:#3B82F6;"></span><span class="badgeText">Événement</span></div>
+                <div class="cardName">Morning Run Collective</div>
+                <div class="cardMetaRow"><span class="metaIcon"><svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span class="cardMeta">1.1 km · Sam 7 juin · 7h</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- act-1 -->
+          <div class="card">
+            <div class="cardInner">
+              <div class="thumb" style="background:#8B5CF618;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M12 7v6M9 22l3-5 3 5M7 11l5 2 5-2"/></svg>
+              </div>
+              <div class="cardBody">
+                <div class="badge"><span class="badgeDot" style="background:#8B5CF6;"></span><span class="badgeText">Activité</span></div>
+                <div class="cardName">Yoga au parc</div>
+                <div class="cardMetaRow"><span class="metaIcon"><svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span class="cardMeta">0.8 km · Dim 8 juin · 9h30</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- spot-1 (no thumbnail) -->
+          <div class="card">
+            <div class="cardInner">
+              <div class="cardBody">
+                <div class="badge"><span class="badgeDot" style="background:#F97316;"></span><span class="badgeText">Spot</span></div>
+                <div class="cardName">Calisthenics Park</div>
+                <div class="cardMetaRow"><span class="metaIcon"><svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span class="cardMeta">2.3 km · Quai de la Loire</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- G5 bottom-nav -->
+      <div class="bottomNav">
+        <div class="navItem on">
+          <svg viewBox="0 0 24 24" fill="#33A089" stroke="#33A089" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z"/></svg>
+          <span class="navLabel">Accueil</span>
+        </div>
+        <div class="navItem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+          <span class="navLabel">Recherche</span>
+        </div>
+        <div class="navItem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg>
+          <span class="navLabel">Créer</span>
+        </div>
+        <div class="navItem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2 7 4-14 2 7h6"/></svg>
+          <span class="navLabel">Activités</span>
+        </div>
+        <div class="navItem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6 8-6s8 2 8 6"/></svg>
+          <span class="navLabel">Profil</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- faux iOS status bar (top) -->
+    <div class="statusbar">
+      <span class="time">9:41</span>
+      <span class="glyphs">
+        <span class="bars"><i></i><i></i><i></i><i></i></span>
+        <span style="font-size:12px;">5G</span>
+        <span class="batt"><i></i></span>
+      </span>
+    </div>
+  </div>
+</body>
+</html>

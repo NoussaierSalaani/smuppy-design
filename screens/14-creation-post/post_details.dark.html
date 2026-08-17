@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html class="dark" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Smuppy — Nouveau post</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --mint:#33A089; --accent:#33A089;
+    --page:#0A0E1A; --card:#161B2A; --card-inner:#0F1422;
+    --text:#FFFFFF; --sub:#94A3B8; --section:#94A3B8;
+    --outline:#2A3142; --input-bg:rgba(255,255,255,0.04); --input-border:#2A3142;
+    --grad-a:#1A7D68; --grad-b:#157082;
+    --logo:#33A089;
+    --safe-top:54px;
+  }
+  * { box-sizing:border-box; -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent; }
+  html { background:var(--page); }
+  html, body { max-width:100%; overflow-x:hidden; }
+  body {
+    margin:0; width:393px; height:852px; overflow:hidden;
+    background:var(--page); color:var(--text);
+    font-family:'Plus Jakarta Sans',-apple-system,system-ui,sans-serif;
+    font-size:15px; line-height:1.5; position:relative;
+  }
+  .phone-root { position:relative; width:100%; height:100%; background:var(--page); overflow:hidden; }
+
+  /* ── G1 faux iOS status bar (inside the 54px safe-area inset) ───── */
+  .statusbar { position:absolute; top:0; left:0; right:0; height:var(--safe-top); z-index:60;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 22px 0; pointer-events:none; }
+  .statusbar .sb-time { font-size:15px; font-weight:700; color:var(--text); letter-spacing:.02em; }
+  .statusbar .sb-right { display:flex; align-items:center; gap:6px; color:var(--text); }
+
+  /* ── Sub-screen header (below safe-area) ────────────────────────── */
+  .topbar { position:absolute; top:var(--safe-top); left:0; right:0; z-index:50;
+    height:52px; display:flex; align-items:center; gap:8px; padding:0 14px;
+    background:var(--page); }
+  .back-circle { width:38px; height:38px; flex-shrink:0; border:1px solid var(--outline);
+    background:var(--card); border-radius:999px; display:flex; align-items:center;
+    justify-content:center; cursor:pointer; }
+  .topbar h1 { flex:1; text-align:center; font-size:17px; font-weight:700; margin:0;
+    color:var(--text); letter-spacing:-.01em; }
+  .publish { flex-shrink:0; padding:9px 18px; border:none; border-radius:999px;
+    background:linear-gradient(135deg, var(--grad-a) 0%, var(--grad-b) 100%); color:#FFFFFF;
+    font-family:inherit; font-size:13px; font-weight:800; cursor:pointer;
+    box-shadow:0 4px 14px rgba(26,125,104,.35); }
+
+  /* ── Main (no scroll — content fits one screen) ─────────────────── */
+  main { position:absolute; top:calc(var(--safe-top) + 52px); left:0; right:0; bottom:0;
+    padding:14px 18px 18px; overflow:hidden; }
+
+  /* ── Caption row : thumbnail + textarea ─────────────────────────── */
+  .caption-row { display:flex; gap:14px; align-items:flex-start; }
+  .thumb { width:76px; height:76px; flex-shrink:0; border-radius:16px; overflow:hidden;
+    border:1px solid var(--outline); }
+  .thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+  .caption { flex:1; min-height:76px; border:none; background:transparent; outline:none;
+    resize:none; color:var(--text); font-family:inherit; font-size:15px; line-height:1.4;
+    font-weight:500; }
+  .caption::placeholder { color:var(--sub); }
+
+  /* ── Section label ──────────────────────────────────────────────── */
+  .section-label { font-size:10px; font-weight:800; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--sub); margin:22px 0 10px; }
+
+  /* ── G7 chips : mint text + mint contour, transparent bg ────────── */
+  .chips { display:flex; flex-wrap:wrap; gap:8px; }
+  .chip { display:inline-flex; align-items:center; gap:5px; padding:7px 13px;
+    border-radius:999px; background:transparent; color:var(--sub);
+    border:1px solid var(--outline); font-size:13px; font-weight:600; cursor:pointer; }
+  .chip-on { background:rgba(51,160,137,.10); color:var(--mint);
+    border:1px solid var(--mint); }
+  .chip-x { display:inline-flex; align-items:center; opacity:.8; }
+
+  /* ── Settings card (lieu / fans / visibilité) ───────────────────── */
+  .settings { margin-top:22px; padding:4px 4px; background:var(--card);
+    border-radius:22px; border:1px solid var(--outline); overflow:hidden; }
+  .srow { display:flex; align-items:center; gap:14px; padding:14px 14px; cursor:pointer; }
+  .srow-ico { width:36px; height:36px; flex-shrink:0; border-radius:11px;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(51,160,137,.12); }
+  .srow-text { flex:1; min-width:0; }
+  .srow-title { font-size:14px; font-weight:700; color:var(--text); }
+  .srow-sub { font-size:12px; font-weight:500; color:var(--sub); margin-top:2px;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .srow-sep { height:1px; background:var(--outline); margin:0 18px; }
+  .chev { flex-shrink:0; color:var(--sub); }
+
+  /* ── Advanced button ────────────────────────────────────────────── */
+  .advanced { display:flex; align-items:center; justify-content:center; gap:6px;
+    margin:18px auto 0; padding:10px 18px; border:1px solid var(--outline);
+    border-radius:999px; background:transparent; color:var(--sub); cursor:pointer;
+    font-family:inherit; font-size:12px; font-weight:600; width:fit-content; }
+</style>
+</head>
+<body>
+<div class="phone-root">
+
+  <!-- G1 faux iOS status bar -->
+  <div class="statusbar">
+    <span class="sb-time">9:41</span>
+    <span class="sb-right">
+      <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+      <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><path d="M8 2.2c2 0 3.9.8 5.3 2.1l1.1-1.2A9.4 9.4 0 0 0 8 .5 9.4 9.4 0 0 0 1.6 3.1l1.1 1.2A7.4 7.4 0 0 1 8 2.2zm0 3.1c1.2 0 2.3.5 3.1 1.3l1.1-1.2A6 6 0 0 0 8 3.6a6 6 0 0 0-4.2 1.8l1.1 1.2A4.3 4.3 0 0 1 8 5.3zm0 3.1c.6 0 1.1.2 1.5.7L8 11l-1.5-1.9c.4-.5.9-.7 1.5-.7z"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="20" height="10" rx="2.5" stroke="currentColor" stroke-opacity="0.5"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.3" fill="currentColor"/><rect x="22.5" y="4" width="1.6" height="4" rx="0.8" fill="currentColor" fill-opacity="0.5"/></svg>
+    </span>
+  </div>
+
+  <!-- Sub-screen header : back chevron in circle + centered title -->
+  <header class="topbar">
+    <button class="back-circle" aria-label="Retour">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h1>Nouveau post</h1>
+    <button class="publish">Publier</button>
+  </header>
+
+  <main>
+    <!-- Caption -->
+    <section class="caption-row">
+      <div class="thumb">
+        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&q=80" alt="Aperçu"/>
+      </div>
+      <textarea class="caption" placeholder="Écris une légende…" rows="3"></textarea>
+    </section>
+
+    <!-- G7 chips : hashtags -->
+    <section>
+      <h3 class="section-label">Hashtags</h3>
+      <div class="chips">
+        <span class="chip chip-on">#summer<span class="chip-x"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></span>
+        <span class="chip chip-on">#vibes<span class="chip-x"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></span>
+        <span class="chip">#outfit</span>
+        <span class="chip">#ootd</span>
+        <span class="chip">#fashion</span>
+      </div>
+    </section>
+
+    <!-- Settings card : lieu / fans / visibilité -->
+    <section class="settings">
+      <div class="srow">
+        <span class="srow-ico">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--mint)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </span>
+        <div class="srow-text">
+          <div class="srow-title">Ajouter un lieu</div>
+          <div class="srow-sub">Montmartre, Paris</div>
+        </div>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="srow-sep"></div>
+      <div class="srow">
+        <span class="srow-ico">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--mint)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </span>
+        <div class="srow-text">
+          <div class="srow-title">Identifier des fans</div>
+          <div class="srow-sub">Aucune personne identifiée</div>
+        </div>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="srow-sep"></div>
+      <div class="srow">
+        <span class="srow-ico">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--mint)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </span>
+        <div class="srow-text">
+          <div class="srow-title">Visibilité</div>
+          <div class="srow-sub">Public · visible dans Explorer</div>
+        </div>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </section>
+
+    <!-- Advanced -->
+    <button class="advanced">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Paramètres avancés
+    </button>
+  </main>
+
+</div>
+</body></html>

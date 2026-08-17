@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=393, initial-scale=1">
+<title>blocked_region_v2 — dark</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 393px; height: 852px; overflow: hidden;
+    background: #0A0E1A;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Device root ── */
+  .device {
+    width: 393px; height: 852px;
+    background: #0A0E1A;
+    display: flex; flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── G1 SAFE-AREA: faux iOS status bar (54px top inset) ── */
+  .statusbar {
+    height: 54px; flex: 0 0 54px;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 0 22px 8px;
+    color: #FFFFFF;
+  }
+  .statusbar .time { font-size: 15px; font-weight: 600; letter-spacing: -0.2px; }
+  .statusbar .glyphs { display: flex; align-items: center; gap: 6px; }
+  .statusbar .glyphs svg { display: block; }
+
+  /* ── SUB-SCREEN header: back chevron in circle + centered title ── */
+  .subheader {
+    flex: 0 0 auto;
+    height: 52px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    padding: 0 16px;
+  }
+  .backBtn {
+    position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+    width: 38px; height: 38px; border-radius: 19px;
+    display: flex; align-items: center; justify-content: center;
+    background: #161B2A; border: 1px solid #2A3142;
+  }
+  .backBtn svg { display: block; }
+  .subTitle {
+    font-size: 17px; font-weight: 700; letter-spacing: -0.2px;
+    color: #FFFFFF;
+  }
+
+  /* ── Content (G3: no scroll, fits one screen, compact) ── */
+  .content {
+    flex: 1 1 auto;
+    padding: 8px 28px 28px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+
+  .heroRegion {
+    align-self: stretch;
+    display: flex; flex-direction: column; align-items: center;
+  }
+
+  /* ── Tinted bubble: mint @12% ── */
+  .bubble {
+    width: 108px; height: 108px; border-radius: 54px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    margin-bottom: 22px;
+    background: rgba(51, 160, 137, 0.122);
+  }
+  .bubble svg { display: block; }
+
+  .title {
+    font-size: 24px; font-weight: 800; letter-spacing: -0.4px;
+    text-align: center; color: #FFFFFF;
+  }
+
+  .message {
+    font-size: 15px; line-height: 22px; text-align: center;
+    margin-top: 12px; max-width: 320px;
+    color: #94A3B8; font-weight: 500;
+  }
+
+  /* ── Region pill (G7 chip style: mint contour + subtle mint tint) ── */
+  .pill {
+    display: flex; flex-direction: row; align-items: center; gap: 7px;
+    padding: 8px 14px; border-radius: 18px;
+    border: 1px solid #33A089; background: rgba(51, 160, 137, 0.10);
+    margin-top: 18px;
+  }
+  .pill svg { display: block; }
+  .pillText { font-size: 13px; color: #33A089; font-weight: 600; white-space: nowrap; }
+
+  .notice {
+    font-size: 13px; line-height: 18px; text-align: center;
+    margin-top: 22px; max-width: 320px;
+    color: #94A3B8; font-weight: 400;
+  }
+
+  .actions {
+    align-self: stretch; margin-top: 28px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+
+  .btn {
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; border-radius: 16px;
+    font-weight: 700; letter-spacing: -0.1px;
+  }
+  /* Gradient CTA: linear-gradient(135deg,#1A7D68,#157082) WHITE ink */
+  .btn-solid {
+    height: 54px; background: linear-gradient(135deg, #1A7D68, #157082);
+    color: #FFFFFF; font-size: 16px; padding: 0 24px;
+  }
+  /* Outline: transparent bg, mint border, mint ink */
+  .btn-outline {
+    height: 48px; background: transparent;
+    border: 1.5px solid #33A089; color: #33A089;
+    font-size: 15px; padding: 0 20px; font-weight: 600;
+  }
+
+  .signOut {
+    min-height: 42px; display: flex; align-items: center; justify-content: center;
+    margin-top: 2px;
+  }
+  .signOutText {
+    font-size: 14px; color: #94A3B8; font-weight: 600;
+    text-decoration: underline;
+  }
+
+  .hint {
+    font-size: 12px; line-height: 17px; text-align: center;
+    margin-top: 22px; color: #94A3B8; font-weight: 400;
+  }
+</style>
+</head>
+<body>
+  <div class="device">
+
+    <!-- G1 SAFE-AREA: Faux iOS status bar -->
+    <div class="statusbar">
+      <span class="time">9:41</span>
+      <span class="glyphs">
+        <svg width="18" height="11" viewBox="0 0 18 11" fill="none"><rect x="0" y="7" width="3" height="4" rx="0.6" fill="#fff"/><rect x="4.5" y="5" width="3" height="6" rx="0.6" fill="#fff"/><rect x="9" y="2.5" width="3" height="8.5" rx="0.6" fill="#fff"/><rect x="13.5" y="0" width="3" height="11" rx="0.6" fill="#fff"/></svg>
+        <svg width="17" height="11" viewBox="0 0 17 11" fill="none"><path d="M8.5 2.2c2.3 0 4.4.9 6 2.4l1.2-1.3C13.8 1.4 11.3.4 8.5.4S3.2 1.4 1.3 3.3L2.5 4.6c1.6-1.5 3.7-2.4 6-2.4z" fill="#fff"/><path d="M8.5 5.6c1.3 0 2.5.5 3.4 1.4l1.2-1.3c-1.2-1.2-2.9-2-4.6-2s-3.4.8-4.6 2L5.1 7c.9-.9 2.1-1.4 3.4-1.4z" fill="#fff"/><circle cx="8.5" cy="9.4" r="1.4" fill="#fff"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#fff" stroke-opacity="0.5"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="#fff"/><rect x="23" y="3.5" width="1.5" height="5" rx="0.75" fill="#fff" fill-opacity="0.6"/></svg>
+      </span>
+    </div>
+
+    <!-- SUB-SCREEN header: back chevron in circle + centered title -->
+    <div class="subheader">
+      <div class="backBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <span class="subTitle">Disponibilité</span>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+      <div class="heroRegion">
+
+        <!-- Tinted bubble + flat SVG globe glyph (G4: no emoji) -->
+        <div class="bubble">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="#33A089" stroke-width="1.7"/>
+            <path d="M3 12h18M12 3c2.5 2.4 3.8 5.5 3.8 9s-1.3 6.6-3.8 9c-2.5-2.4-3.8-5.5-3.8-9S9.5 5.4 12 3z" stroke="#33A089" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <div class="title">Smuppy n'est pas encore disponible ici</div>
+
+        <div class="message">Nous ne pouvons pas encore proposer Smuppy dans ta région pour le moment. Nous travaillons à étendre notre disponibilité, étape par étape.</div>
+
+        <!-- Detected region pill (G7: mint contour + subtle tint) -->
+        <div class="pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 22s7-5.5 7-12a7 7 0 1 0-14 0c0 6.5 7 12 7 12z" stroke="#33A089" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.6" stroke="#33A089" stroke-width="1.8"/></svg>
+          <span class="pillText">Région détectée : France</span>
+        </div>
+
+      </div>
+
+      <div class="notice">La disponibilité dépend de notre plan de conformité local. Cette restriction n'est pas liée à ton compte.</div>
+
+      <div class="actions">
+        <div class="btn btn-solid">Préviens-moi quand c'est disponible</div>
+        <div class="btn btn-outline">En savoir plus sur la disponibilité</div>
+        <div class="signOut"><span class="signOutText">Se déconnecter</span></div>
+      </div>
+
+      <div class="hint">Tire vers le bas pour vérifier à nouveau ta région.</div>
+
+    </div>
+  </div>
+</body>
+</html>

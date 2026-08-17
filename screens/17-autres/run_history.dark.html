@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>RunHistoryView — V2 Dark</title>
+<style>
+  /* ============================================================
+     V2 RunHistoryView — faithful static maquette (happy path)
+     Source: src/components/v2/RunHistoryView/RunHistoryView.tsx
+     Fixture: runHistoryHappy (FR, v2RunHistoryView.json)
+     Device 393x852. V2 DARK tokens exact.
+     ============================================================ */
+  :root {
+    --surface: #0A0E1A;
+    --surfaceContainer: #161B2A;
+    --surfaceContainerHigh: #1E2435;
+    --onSurface: #FFFFFF;
+    --onSurfaceVariant: #94A3B8;
+    --outline: #2A3142;
+    --mint: #33A089;            /* primaryAccent (muted) */
+    --gradStart: #1A7D68;       /* primaryGradientStart */
+    --gradEnd: #157082;         /* primaryGradientEnd */
+    --onPrimary: #FFFFFF;       /* dark-mode button ink (white on mint solid) */
+    --info: #60A5FA;
+    --success: #34D399;
+    --warning: #FBBF24;
+    --danger: #F87171;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  html, body { background: #05070D; font-family: var(--font); }
+
+  .device {
+    width: 393px;
+    height: 852px;
+    margin: 24px auto;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ---- faux iOS status bar ---- */
+  .statusbar {
+    height: 54px;            /* SAFE-AREA top inset: status bar + breathing room */
+    flex: none;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 22px 6px;
+    color: var(--onSurface);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+  .statusbar .time { font-variant-numeric: tabular-nums; }
+  .statusbar .right { display: flex; align-items: center; gap: 6px; }
+  .statusbar .right svg { display: block; }
+
+  /* ---- Header (paddingH 12, paddingTop 8, paddingBottom 6) ---- */
+  .header {
+    flex: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 12px 6px;
+  }
+  .back {                    /* BackButton: 44x44 centered touch target */
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    flex: none;
+  }
+  .back svg { display: block; }
+  .headerTitle {
+    flex: 1;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--onSurface);
+    letter-spacing: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .headerSpacer { width: 40px; flex: none; }
+
+  /* ---- Tabs (paddingH 20, paddingBottom 6) ---- */
+  .tabs { flex: none; padding: 0 20px 6px; }
+  /* pill variant: surfaceContainer track, PILL_INSET 3, radius pill */
+  .tabbar {
+    height: 44px;
+    background: var(--surfaceContainer);
+    border-radius: 999px;
+    padding: 3px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+  }
+  .tab {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    z-index: 1;
+  }
+  .tab .lbl {
+    font-size: 16px;          /* title preset */
+    line-height: 22px;
+    font-weight: 600;
+    text-align: center;
+  }
+  /* active indicator = solid mint pill, white onPrimary label */
+  .tab.active {
+    background: var(--mint);
+  }
+  .tab.active .lbl { color: var(--onPrimary); }
+  .tab.inactive .lbl { color: var(--onSurfaceVariant); }
+
+  /* ---- Scroll body (paddingH 20, paddingBottom 40) ---- */
+  .scroll {
+    flex: 1;
+    overflow: hidden;
+    padding: 0 20px 40px;
+  }
+
+  /* ---- ringWrap: row, align center, gap 22, marginTop 18, marginBottom 6 ---- */
+  .ringWrap {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 22px;
+    margin-top: 18px;
+    margin-bottom: 6px;
+  }
+  .ring { width: 180px; height: 180px; position: relative; flex: none; }
+  .ring svg { display: block; }
+  .ringCenter {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .ringLabel {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.6px;
+    color: var(--onSurface);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .ringSub {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--onSurfaceVariant);
+    margin-top: 2px;
+  }
+
+  /* ringSide: flex 1, gap 14 */
+  .ringSide {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+  }
+  /* StatTile (md, left align) */
+  .statTile { display: flex; flex-direction: column; align-items: flex-start; }
+  .statValueRow { display: flex; flex-direction: row; align-items: baseline; }
+  .statValue {
+    font-size: 20px;          /* md value */
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    color: var(--onSurface);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .statUnit {
+    margin-left: 3px;
+    font-size: 12px;          /* md unit */
+    font-weight: 600;
+    color: var(--onSurfaceVariant);
+    font-variant-numeric: tabular-nums;
+  }
+  .statLabel {
+    margin-top: 3px;
+    font-size: 12px;          /* label-caps */
+    line-height: 17px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--onSurfaceVariant);
+  }
+
+  /* ---- list: radius 20, hairline border outline, paddingH 16, marginTop 18 ---- */
+  .list {
+    border-radius: 20px;
+    border: 0.5px solid var(--outline);
+    padding: 0 16px;
+    margin-top: 18px;
+  }
+  /* ListRow: minHeight 56, justify center; row paddingV 12, gap 13 */
+  .listRow { min-height: 56px; display: flex; flex-direction: column; justify-content: center; }
+  .listRow + .listRow { border-top: 0.5px solid var(--outline); }
+  .rowInner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 0;
+    gap: 13px;
+  }
+  .rowTexts { flex: 1; min-width: 0; }
+  .rowTitle {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--onSurface);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+  }
+  .rowSubtitle {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--onSurfaceVariant);
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .chevron {
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--onSurfaceVariant);
+    margin-left: 2px;
+    margin-top: -2px;
+    line-height: 1;
+  }
+  /* PR badge — flat trophy glyph + "PR" (no emoji per canonical rule).
+     Mirrors the inline "  🏆 PR" appended in the row title. */
+  .prBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 8px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(51,160,137,0.45);
+    color: var(--mint);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    line-height: 1;
+  }
+  .prBadge svg { display: block; }
+</style>
+</head>
+<body>
+  <div class="device">
+
+    <!-- faux iOS status bar (top safe-area inset 54px) -->
+    <div class="statusbar">
+      <span class="time">9:41</span>
+      <span class="right">
+        <!-- signal -->
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+          <rect x="0" y="8" width="3" height="4" rx="1" fill="#FFFFFF"/>
+          <rect x="5" y="5" width="3" height="7" rx="1" fill="#FFFFFF"/>
+          <rect x="10" y="2.5" width="3" height="9.5" rx="1" fill="#FFFFFF"/>
+          <rect x="15" y="0" width="3" height="12" rx="1" fill="#FFFFFF"/>
+        </svg>
+        <!-- wifi -->
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+          <path d="M8.5 2.2c2.7 0 5.2 1 7.1 2.7l-1.5 1.6A8 8 0 0 0 8.5 4.3 8 8 0 0 0 2.9 6.5L1.4 4.9A10.4 10.4 0 0 1 8.5 2.2Z" fill="#FFFFFF"/>
+          <path d="M8.5 6.2c1.6 0 3.1.6 4.2 1.6l-1.5 1.6a3.9 3.9 0 0 0-5.4 0L4.3 7.8A6 6 0 0 1 8.5 6.2Z" fill="#FFFFFF"/>
+          <path d="M8.5 10.1l1.6-1.7a2.2 2.2 0 0 0-3.2 0l1.6 1.7Z" fill="#FFFFFF"/>
+        </svg>
+        <!-- battery -->
+        <svg width="27" height="12" viewBox="0 0 27 12" fill="none">
+          <rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="#FFFFFF" stroke-opacity="0.5"/>
+          <rect x="2" y="2" width="18" height="8" rx="1.5" fill="#FFFFFF"/>
+          <rect x="24" y="4" width="2" height="4" rx="1" fill="#FFFFFF" fill-opacity="0.5"/>
+        </svg>
+      </span>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+      <div class="back" role="button" aria-label="Retour">
+        <!-- Ionicons chevron-back, 26px, onSurface -->
+        <svg width="26" height="26" viewBox="0 0 512 512" fill="none">
+          <path d="M328 112L184 256l144 144" stroke="#FFFFFF" stroke-width="48" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="headerTitle">Mes runs</div>
+      <div class="headerSpacer"></div>
+    </div>
+
+    <!-- Runs / Records tabs (pill variant) -->
+    <div class="tabs">
+      <div class="tabbar" role="tablist" aria-label="Sections de mes runs">
+        <div class="tab active" role="tab" aria-selected="true"><span class="lbl">Runs</span></div>
+        <div class="tab inactive" role="tab" aria-selected="false"><span class="lbl">Records</span></div>
+      </div>
+    </div>
+
+    <!-- Scroll body -->
+    <div class="scroll">
+
+      <!-- Weekly goal hero (ActivityRing) + side stats -->
+      <div class="ringWrap">
+        <div class="ring" role="progressbar" aria-label="Objectif hebdomadaire : 12,5 / 25 km" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+          <!--
+            ActivityRing: size 180, strokeWidth 14.
+            r = 180/2 - 14/2 - 2 = 81. circumference = 2*pi*81 = 508.94.
+            progress 0.5 -> dashoffset = circ*(1-0.5) = 254.47. start at 12h (rotate -90).
+          -->
+          <svg width="180" height="180" viewBox="0 0 180 180">
+            <defs>
+              <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#1A7D68"/>
+                <stop offset="1" stop-color="#157082"/>
+              </linearGradient>
+            </defs>
+            <!-- track: mint, opacity 0.16 -->
+            <circle cx="90" cy="90" r="81" stroke="#33A089" stroke-opacity="0.16" stroke-width="14" fill="none"/>
+            <!-- progress: gradient, round cap, 50% -->
+            <circle cx="90" cy="90" r="81" stroke="url(#ringGrad)" stroke-width="14" stroke-linecap="round" fill="none"
+                    stroke-dasharray="508.94" stroke-dashoffset="254.47"
+                    transform="rotate(-90 90 90)"/>
+          </svg>
+          <div class="ringCenter">
+            <div class="ringLabel">12,5</div>
+            <div class="ringSub">/ 25 km</div>
+          </div>
+        </div>
+
+        <div class="ringSide">
+          <div class="statTile">
+            <div class="statValueRow"><span class="statValue">3</span></div>
+            <div class="statLabel">runs</div>
+          </div>
+          <div class="statTile">
+            <div class="statValueRow"><span class="statValue">16,3</span><span class="statUnit">km</span></div>
+            <div class="statLabel">km</div>
+          </div>
+          <div class="statTile">
+            <div class="statValueRow"><span class="statValue">1h30</span></div>
+            <div class="statLabel">cette sem.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Runs list -->
+      <div class="list">
+
+        <!-- r1: 5,2 km · PR -->
+        <div class="listRow" role="button" aria-label="5,2 km, record personnel. Aujourd'hui · 7h12. Durée 28:30, allure 5'29&quot;/km">
+          <div class="rowInner">
+            <div class="rowTexts">
+              <div class="rowTitle">
+                5,2 km
+                <span class="prBadge">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 4h10v3a5 5 0 0 1-10 0V4Z" stroke="#33A089" stroke-width="1.8" stroke-linejoin="round"/>
+                    <path d="M7 5H4v1a3 3 0 0 0 3 3M17 5h3v1a3 3 0 0 1-3 3" stroke="#33A089" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M10 12h4M12 12v4M9 20h6M9 20l1-2h4l1 2" stroke="#33A089" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  PR
+                </span>
+              </div>
+              <div class="rowSubtitle">Aujourd'hui · 7h12&nbsp;&nbsp;&nbsp;28:30 · 5'29"/km</div>
+            </div>
+            <span class="chevron">&#8250;</span>
+          </div>
+        </div>
+
+        <!-- r2: 8,1 km -->
+        <div class="listRow" role="button" aria-label="8,1 km. Hier · 18h40. Durée 46:12, allure 5'42&quot;/km">
+          <div class="rowInner">
+            <div class="rowTexts">
+              <div class="rowTitle">8,1 km</div>
+              <div class="rowSubtitle">Hier · 18h40&nbsp;&nbsp;&nbsp;46:12 · 5'42"/km</div>
+            </div>
+            <span class="chevron">&#8250;</span>
+          </div>
+        </div>
+
+        <!-- r3: 3,0 km -->
+        <div class="listRow" role="button" aria-label="3,0 km. Lun. · 6h55. Durée 15:48, allure 5'16&quot;/km">
+          <div class="rowInner">
+            <div class="rowTexts">
+              <div class="rowTitle">3,0 km</div>
+              <div class="rowSubtitle">Lun. · 6h55&nbsp;&nbsp;&nbsp;15:48 · 5'16"/km</div>
+            </div>
+            <span class="chevron">&#8250;</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

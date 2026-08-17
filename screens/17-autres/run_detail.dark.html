@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RunDetailView · V2 Dark</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: #05070D;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+  }
+
+  /* ── Device frame 393×852 ── */
+  .device {
+    width: 393px;
+    height: 852px;
+    background: #0A0E1A;            /* surface */
+    border-radius: 46px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Faux iOS status bar inside the 54px top safe-area inset ── */
+  .statusbar {
+    height: 54px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 24px 8px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+  .statusbar .right { display: flex; align-items: center; gap: 6px; }
+  .statusbar svg { display: block; }
+
+  /* ── Header: close · title · share ── */
+  .header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 14px;
+    border-bottom: 0.5px solid #2A3142;     /* outline, hairline */
+    flex-shrink: 0;
+  }
+  .header-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: default;
+  }
+  .header-glyph { color: #FFFFFF; }
+  .header-title {
+    flex: 1;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 800;
+    color: #FFFFFF;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+  }
+
+  /* ── Scroll region ── */
+  .scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    padding-bottom: 30px;
+  }
+  .scroll::-webkit-scrollbar { width: 0; }
+
+  /* ── Summary stats grid ── */
+  .stats-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 0 -4px 16px;
+  }
+  .stat-cell {
+    flex-grow: 1;
+    flex-basis: 21%;
+    min-width: 72px;
+    margin: 4px;
+    padding: 12px 6px;
+    border-radius: 16px;
+    background: #161B2A;                 /* surfaceContainer */
+    border: 0.5px solid #2A3142;         /* outline, hairline */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .value-row {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: center;
+  }
+  .stat-value {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    color: #FFFFFF;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .stat-value.accent { color: #33A089; }   /* mint */
+  .stat-unit {
+    margin-left: 3px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #94A3B8;                        /* onSurfaceVariant */
+    font-variant-numeric: tabular-nums;
+  }
+  .label-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3px;
+  }
+  .stat-label {
+    font-size: 11px;
+    line-height: 14px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #94A3B8;                        /* onSurfaceVariant */
+  }
+
+  /* ── Section title ── */
+  .section-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin: 6px 0 12px;
+  }
+
+  /* ── Splits ── */
+  .splits { margin-bottom: 20px; }
+  .split {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 9px;
+  }
+  .split-km {
+    width: 18px;
+    font-size: 13px;
+    font-weight: 800;
+    text-align: center;
+    color: #94A3B8;                        /* onSurfaceVariant */
+  }
+  .split-bar {
+    flex: 1;
+    height: 22px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0 10px;
+    background: #161B2A;                   /* surfaceContainer */
+  }
+  .split-fill {
+    height: 100%;
+    border-radius: 8px;
+    background: #33A089;                   /* primaryAccent — mint */
+  }
+  .split-pace {
+    width: 48px;
+    font-size: 13px;
+    font-weight: 800;
+    text-align: right;
+    color: #FFFFFF;
+    font-variant-numeric: tabular-nums;
+  }
+  .split-elev {
+    width: 32px;
+    font-size: 11px;
+    font-weight: 500;
+    text-align: right;
+    margin-left: 8px;
+    color: #94A3B8;                        /* onSurfaceVariant */
+  }
+
+  /* ── CTA ── */
+  .cta { margin-top: 4px; }
+  .btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-weight: 600;
+  }
+  .btn-gradient {
+    height: 52px;                          /* lg control */
+    border-radius: 999px;                  /* pill */
+    background: linear-gradient(135deg, #1A7D68, #157082);
+    color: #FFFFFF;                        /* constant white ink */
+    font-size: 17px;
+    letter-spacing: 0.1px;
+  }
+  .btn-ghost {
+    height: 44px;                          /* md control */
+    border-radius: 14px;
+    background: transparent;
+    color: #33A089;                        /* primary */
+    font-size: 15px;
+    margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+  <div class="device">
+
+    <!-- Faux iOS status bar (top safe-area inset = 54px) -->
+    <div class="statusbar">
+      <span>9:41</span>
+      <span class="right">
+        <!-- signal -->
+        <svg width="18" height="11" viewBox="0 0 18 11" fill="none">
+          <rect x="0"  y="7" width="3" height="4"  rx="1" fill="#FFFFFF"/>
+          <rect x="5"  y="5" width="3" height="6"  rx="1" fill="#FFFFFF"/>
+          <rect x="10" y="3" width="3" height="8"  rx="1" fill="#FFFFFF"/>
+          <rect x="15" y="0" width="3" height="11" rx="1" fill="#FFFFFF"/>
+        </svg>
+        <!-- wifi -->
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="none">
+          <path d="M8 11l2-2.4a3 3 0 00-4 0L8 11z" fill="#FFFFFF"/>
+          <path d="M3.2 5.6a7 7 0 019.6 0l-1.4 1.5a5 5 0 00-6.8 0L3.2 5.6z" fill="#FFFFFF" opacity="0.95"/>
+          <path d="M.7 3.1a10.5 10.5 0 0114.6 0l-1.4 1.5a8.5 8.5 0 00-11.8 0L.7 3.1z" fill="#FFFFFF" opacity="0.95"/>
+        </svg>
+        <!-- battery -->
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none">
+          <rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="#FFFFFF" opacity="0.6"/>
+          <rect x="2" y="2" width="18" height="8" rx="1.6" fill="#FFFFFF"/>
+          <rect x="24" y="4" width="1.6" height="4" rx="0.8" fill="#FFFFFF" opacity="0.6"/>
+        </svg>
+      </span>
+    </div>
+
+    <!-- Header: close · title · share -->
+    <div class="header">
+      <button class="header-btn" aria-label="Fermer">
+        <!-- close (×) flat icon -->
+        <svg class="header-glyph" width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M6 6l12 12M18 6L6 18" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <span class="header-title">
+        Run du matin
+        <!-- trophy flat icon (replaces 🏆 from fixture title "Run du matin 🏆") -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 4h10v3a5 5 0 01-10 0V4z" stroke="#FBBF24" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M7 5H4.5a2.5 2.5 0 002.5 2.5M17 5h2.5A2.5 2.5 0 0117 7.5" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M12 12v3M9 19h6M10 19a2 2 0 014 0" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+
+      <button class="header-btn" aria-label="Partager">
+        <!-- share (↗) flat icon -->
+        <svg class="header-glyph" width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M7 17L17 7M9 7h8v8" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Scroll content (mapNode null in happy fixture → hero hidden) -->
+    <div class="scroll">
+
+      <!-- Summary StatTiles: Distance / Temps / Allure (accent) / Calories -->
+      <div class="stats-grid">
+        <div class="stat-cell">
+          <div class="value-row">
+            <span class="stat-value">5,2</span>
+            <span class="stat-unit">km</span>
+          </div>
+          <div class="label-row"><span class="stat-label">Distance</span></div>
+        </div>
+
+        <div class="stat-cell">
+          <div class="value-row">
+            <span class="stat-value">28:30</span>
+            <span class="stat-unit">temps</span>
+          </div>
+          <div class="label-row"><span class="stat-label">Temps</span></div>
+        </div>
+
+        <div class="stat-cell">
+          <div class="value-row">
+            <span class="stat-value accent">5'29"</span>
+            <span class="stat-unit">/km</span>
+          </div>
+          <div class="label-row"><span class="stat-label">Allure</span></div>
+        </div>
+
+        <div class="stat-cell">
+          <div class="value-row">
+            <span class="stat-value">412</span>
+            <span class="stat-unit">cal</span>
+          </div>
+          <div class="label-row"><span class="stat-label">Calories</span></div>
+        </div>
+      </div>
+
+      <!-- Splits par km -->
+      <div class="section-title">Splits par km</div>
+      <div class="splits">
+        <div class="split">
+          <span class="split-km">1</span>
+          <div class="split-bar"><div class="split-fill" style="width:100%"></div></div>
+          <span class="split-pace">5'16"</span>
+          <span class="split-elev">+2m</span>
+        </div>
+        <div class="split">
+          <span class="split-km">2</span>
+          <div class="split-bar"><div class="split-fill" style="width:92%"></div></div>
+          <span class="split-pace">5'24"</span>
+          <span class="split-elev">−1m</span>
+        </div>
+        <div class="split">
+          <span class="split-km">3</span>
+          <div class="split-bar"><div class="split-fill" style="width:86%"></div></div>
+          <span class="split-pace">5'29"</span>
+          <span class="split-elev">+4m</span>
+        </div>
+        <div class="split">
+          <span class="split-km">4</span>
+          <div class="split-bar"><div class="split-fill" style="width:80%"></div></div>
+          <span class="split-pace">5'31"</span>
+          <span class="split-elev"></span>
+        </div>
+        <div class="split">
+          <span class="split-km">5</span>
+          <div class="split-bar"><div class="split-fill" style="width:97%"></div></div>
+          <span class="split-pace">5'18"</span>
+          <span class="split-elev">0m</span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="cta">
+        <div class="btn btn-gradient">Repartager ce run</div>
+        <div class="btn btn-ghost">Supprimer ce run</div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
